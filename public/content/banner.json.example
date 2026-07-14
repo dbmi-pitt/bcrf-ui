@@ -1,0 +1,8 @@
+{
+  "default": {
+    "variant": "warning",
+    "containerClassName": null,
+    "title": "This is the DEV BCRF UI",
+    "content": "<p>For the production instance of the BCRF UI click <a href='http://bcrf.org/'>here</a>."
+  }
+}

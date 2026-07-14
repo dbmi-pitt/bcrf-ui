@@ -1,0 +1,18 @@
+.c-header
+  pos-rel()
+  border none
+  padding-top 6px
+  &__logo
+    margin-right 50px
+    padding-top 0
+
+    img
+      pos-abs()
+      width 50px
+      top 0
+      +md-max()
+        top 10px
+
+  [aria-labelledby="basic-nav-dropdown"]
+    left inherit !important
+    right 0

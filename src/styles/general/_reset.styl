@@ -1,0 +1,60 @@
+.clear
+  clear both
+*
+  margin 0
+  padding 0
+  box-sizing border-box
+
+html 
+  font-size 14px
+  line-height 22px
+  
+html, body
+  height 100%
+
+body
+  p4()
+  pos-rel()
+  $col-xlgt-grey
+  line-height 1.5
+  text-size-adjust none
+  font-family $font-family
+
+table
+  border 0
+  
+li  
+  list-style-position inside
+
+a, a:visited, a:hover
+  text-decoration none
+
+
+.hide 
+  hide()
+
+details
+  margin-top $mgn
+
+ul ~ h1, ul ~ h2, ul ~ h3, ul ~ h4, ul ~ h5, ul ~ h6, table ~ h2, table ~ h3
+  margin-top 1rem
+
+[tabindex="0"]:active, [tabindex="0"]:focus, [tabindex="1"]:active, [tabindex="1"]:focus, a:active, a:focus, button:active, button:focus, input:active, input:focus, select:active, select:focus, textarea:active, textarea:focus
+  outline: 1px dotted $col-primary-blue
+
+img:not(.w-fixed)
+  width 100%
+  width -webkit-fill-available
+  +sm()
+    width 100%
+
+.body__wrapper 
+  display flex
+  flex-direction column
+  min-height 100vh
+  margin 0
+
+.lnk--ic 
+  align-items center
+  text-decoration none
+  display inline-flex !important

@@ -1,0 +1,4 @@
+services:
+  bcrf-ui:
+    # Use the published image and tag from DockerHub
+    image: dbmi/bcrf-ui-dev:latest

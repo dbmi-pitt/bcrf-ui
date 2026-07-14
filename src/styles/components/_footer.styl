@@ -1,0 +1,25 @@
+.c-footer
+  background-color $col-bcrf-blue
+  margin-top auto
+  width 100%
+  z-index 1
+  color white
+  li
+    list-style none
+  .navbar-brand
+    pos-rel()
+    &-name
+      p3()
+      pos-abs()
+      top 10px
+      left 60px
+  .col
+    +md-max()
+      &--main
+        width 100% 
+        .col-sm-2 
+          width 33.3%
+      &--logos
+        width 100%
+      &--placeholder
+        hide()

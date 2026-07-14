@@ -1,0 +1,75 @@
+Object.assign(String.prototype, {
+  contains(t) {
+    return this.indexOf(t) !== -1;
+  },
+  toCamelCase() {
+    return this.replace(/\s(.)/g, function (a) {
+      return a.toUpperCase();
+    })
+      .replace(/\s/g, '')
+      .replace(/^(.)/, function (b) {
+        return b.toLowerCase();
+      });
+  },
+  toTitleCase() {
+    return this.replace(
+      /\w\S*/g,
+      (text) => text.charAt(0).toUpperCase() + text.substring(1).toLowerCase(),
+    );
+  },
+  toDashedCase() {
+    return this.replace(/[^a-zA-Z0-9]+/g, '-').toLowerCase();
+  },
+  upCaseFirst() {
+    if (this.length === 0) {
+      return '';
+    }
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  },
+  format() {
+    let args = arguments;
+    return this.replace(/{(\d+)}/g, function (match, number) {
+      return typeof args[number] != 'undefined' ? args[number] : match;
+    });
+  },
+  eq(s2, insensitive = true) {
+    let res = this === s2;
+    if (insensitive && this !== undefined && s2 !== undefined) {
+      res = this?.toLowerCase() === s2?.toLowerCase();
+    }
+    return res;
+  },
+  csvToJson(delimiter = ",")  {
+  const [headers, ...rows] = this.split("\n");
+  const headerArray = headers.split(delimiter);
+  
+  return rows.map(row => {
+    const values = row.split(delimiter);
+    return headerArray.reduce((obj, header, index) => {
+      obj[header.trim()] = values[index]?.trim();
+      return obj;
+    }, {});
+  });
+}
+});
+
+export const flipObj = (obj) => {
+  return Object.keys(obj).reduce((ret, key) => {
+    ret[obj[key]] = key;
+    return ret;
+  }, {});
+};
+
+
+
+export function autoBlobDownloader(data, type, filename) {
+  const a = document.createElement('a');
+  const url = window.URL.createObjectURL(new Blob(data, { type }));
+  a.href = url;
+  a.download = filename;
+  document.body.append(a);
+  a.click();
+  a.remove();
+  window.URL.revokeObjectURL(url);
+}
+
