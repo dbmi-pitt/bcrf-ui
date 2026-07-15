@@ -3,13 +3,15 @@ import { Card, Badge, Tag } from 'antd';
 import Accordion from 'react-bootstrap/Accordion';
 import THEME from '@/lib/theme';
 
-function SummaryCard({ data }) {
+function SummaryCard({ data, onTagClick }) {
   useEffect(() => {
     console.log('d', data);
   }, []);
 
-  const handleTagClick = () => {
-    
+  const handleTagClick = (tag, value) => {
+    if (onTagClick) {
+      onTagClick({data, tag, value})
+    }
   }
 
   const getHighlightedTags = () => {
@@ -17,14 +19,14 @@ function SummaryCard({ data }) {
     let tags = [];
     for (const h of data.higlighted_tags) {
       tags = [];
-      for (const t of data.tags) {
-        if (t.name === h) {
-          for (const i of t.values) {
+      for (const tag of data.tags) {
+        if (tag.name === h) {
+          for (const v of tag.values) {
             tags.push(
-              <Tag key={i} className="mx-1" onClick={handleTagClick} 
+              <Tag className='c-tag' key={v} onClick={() => handleTagClick(tag, v)} 
                     style={{ cursor: 'pointer' }}>
-                {i}
-              </Tag>,
+                {v}
+              </Tag>
             );
           }
         }
@@ -62,7 +64,7 @@ function SummaryCard({ data }) {
           </span>
         </>
       }
-      style={{ width: '60%' }}
+      style={{ width: '100%' }}
       actions={[]}
     >
       <p>{data.description}</p>
@@ -77,7 +79,7 @@ function SummaryCard({ data }) {
               <Accordion.Header>{tag.name}</Accordion.Header>
               <Accordion.Body>
                 {tag.values.map((value) => (
-                  <Tag  key={value} className="mx-1" onClick={handleTagClick} 
+                  <Tag className='c-tag' key={value} onClick={() => handleTagClick(tag, value)} 
                     style={{ cursor: 'pointer' }}>
                     {value}
                   </Tag>
