@@ -74,13 +74,16 @@ export default function Home() {
     setTags(newTags)
   }
 
+  const headerTags = getHeaderTags()
+
   return (
     <div>
       <BasicLayout fluid={undefined}>
-        <Row className='c-selectedTags'>
-          <Container>{getHeaderTags()}</Container>
-        </Row>
-        {cards && <Masonry
+        <div className='c-selectedTags' aria-label='Selected Tags'>
+          {headerTags.length > 0 && <div className='c-selectedTags__wrap'>{headerTags}</div>}
+        </div>
+        <div aria-label="Clinical Data Sources">
+          {cards && <Masonry
           columns={{xs: 1, sm: 2, md: 3}}
           gutter={10}
           items={cards.map((source, index) => ({
@@ -91,6 +94,7 @@ export default function Home() {
             <AppCard data={data} index={index} key={`card-${index}`} onTagClick={onCardTagClick} />
           )}
         />}
+        </div>
         {cards.length <= 0 && <AppSpinner />}
       </BasicLayout>
     </div>
