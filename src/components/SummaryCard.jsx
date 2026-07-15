@@ -42,6 +42,7 @@ function SummaryCard({ data, onTagClick }) {
   };
   return (
     <Card
+      className='c-summaryCard'
       title={data.name}
       extra={
         <>
