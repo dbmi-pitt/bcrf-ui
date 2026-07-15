@@ -8,6 +8,10 @@ function SummaryCard({ data }) {
     console.log('d', data);
   }, []);
 
+  const handleTagClick = () => {
+    
+  }
+
   const getHighlightedTags = () => {
     const list = [];
     let tags = [];
@@ -17,7 +21,8 @@ function SummaryCard({ data }) {
         if (t.name === h) {
           for (const i of t.values) {
             tags.push(
-              <Tag key={i} className="mx-1">
+              <Tag key={i} className="mx-1" onClick={handleTagClick} 
+                    style={{ cursor: 'pointer' }}>
                 {i}
               </Tag>,
             );
@@ -72,7 +77,8 @@ function SummaryCard({ data }) {
               <Accordion.Header>{tag.name}</Accordion.Header>
               <Accordion.Body>
                 {tag.values.map((value) => (
-                  <Tag key={value} className="mx-1">
+                  <Tag  key={value} className="mx-1" onClick={handleTagClick} 
+                    style={{ cursor: 'pointer' }}>
                     {value}
                   </Tag>
                 ))}
