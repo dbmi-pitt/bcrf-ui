@@ -1,0 +1,517 @@
+{
+  "data_sources": [
+    {
+      "source": "aurora_us",
+      "name": "Aurora US",
+      "description": "Aurora US is a clinical study, not a treatment trial, that will collect biospecimens from patient volunteers who have received a diagnosis of metastatic breast cancer after having been treated for early stage breast cancer.",
+      "patients": 55,
+      "samples": 155,
+      "data_types": [
+        "Methylation",
+        "RNASeq",
+        "H&E Slides",
+        "WES",
+        "WGS"
+      ],
+      "tags": [
+        {
+          "name": "Did the patient receive adjuvant treatment for localized disease?",
+          "values": [
+            "NA",
+            "No",
+            "Not applicable (Stage IV at presentation)",
+            "Yes"
+          ]
+        },
+        {
+          "name": "Cancer Type",
+          "values": [
+            "Breast Cancer"
+          ]
+        },
+        {
+          "name": "Cancer Type Detailed",
+          "values": [
+            "Breast Invasive Ductal Carcinoma",
+            "Breast Invasive Lobular Carcinoma",
+            "Breast Mixed Ductal and Lobular Carcinoma",
+            "Invasive Breast Carcinoma"
+          ]
+        },
+        {
+          "name": "Ethnicity",
+          "values": [
+            "Hispanic/Latina",
+            "Not Hispanic/Latina",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Family history of breast or ovarian cancer?",
+          "values": [
+            false,
+            true
+          ]
+        },
+        {
+          "name": "Race",
+          "values": [
+            "Asian",
+            "Black or African American",
+            "Other",
+            "Unknown",
+            "White"
+          ]
+        },
+        {
+          "name": "Disease Free Status",
+          "values": [
+            "1:Recurred/Progressed"
+          ]
+        },
+        {
+          "name": "Histologic Type",
+          "values": [
+            "Infiltrating Ductal Carcinoma",
+            "Infiltrating Lobular Carcinoma",
+            "Mixed Ductal and Lobular Carcinoma",
+            "Other histology"
+          ]
+        },
+        {
+          "name": "Source of tissue used for mutational profile",
+          "values": [
+            "Metastatic tumor, post-treatment",
+            "Metastatic tumor, pre-treatment",
+            "NA",
+            "Primary tumor pre-treatment",
+            "Primary tumor, post-treatment"
+          ]
+        },
+        {
+          "name": "Number Proliferating Cells",
+          "values": [
+            "NA",
+            "None"
+          ]
+        },
+        {
+          "name": "Oncotree Code",
+          "values": [
+            "BRCA",
+            "IDC",
+            "ILC",
+            "MDLC"
+          ]
+        },
+        {
+          "name": "Overall Survival Status",
+          "values": [
+            "0:LIVING",
+            "1:DECEASED"
+          ]
+        },
+        {
+          "name": "Participating site",
+          "values": [
+            "Baylor College of Medicine",
+            "Dana Farber Cancer Institute",
+            "Duke University",
+            "Georgetown University",
+            "Indiana University",
+            "Mayo Clinic",
+            "Memorial Sloan Kettering",
+            "University of North Carolina at Chapel Hill",
+            "University of Pittsburgh"
+          ]
+        },
+        {
+          "name": "Preservation",
+          "values": [
+            "FFPE",
+            "Fresh"
+          ]
+        },
+        {
+          "name": "Does the patient have a second breast primary?",
+          "values": [
+            false,
+            true
+          ]
+        },
+        {
+          "name": "Estrogen Receptor Status",
+          "values": [
+            "Negative",
+            "Positive",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Primary tumor HER2/neu Receptor status by IHC",
+          "values": [
+            "0",
+            "1+",
+            "2+",
+            "3+",
+            "NA",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Is HER2 copy number known? (Primary tumor)",
+          "values": [
+            "NA",
+            "No",
+            "Yes"
+          ]
+        },
+        {
+          "name": "HER2 copy number for primary tumor",
+          "values": [
+            "1.5",
+            "1.7",
+            "NA"
+          ]
+        },
+        {
+          "name": "Primary tumor HER2 FISH",
+          "values": [
+            "Amplified",
+            "NA",
+            "Not amplified",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Primary tumor HER2 status interpretation",
+          "values": [
+            "Negative",
+            "Positive",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Clinical M stage of first primary",
+          "values": [
+            "M0",
+            "M1",
+            "Mx",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Clinical N stage of first primary",
+          "values": [
+            "Unknown",
+            "cN0",
+            "cN1",
+            "cN2",
+            "cN3",
+            "cNx"
+          ]
+        },
+        {
+          "name": "Did patient receive a genomic prognostic assay for this tumor?",
+          "values": [
+            "No",
+            "Unknown",
+            "Yes"
+          ]
+        },
+        {
+          "name": "Source of genomic prognostic assay on first primary",
+          "values": [
+            "NA",
+            "Oncotype DX"
+          ]
+        },
+        {
+          "name": "Progesterone Receptor Status",
+          "values": [
+            "Negative",
+            "Positive",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Clinical Stage",
+          "values": [
+            "Stage I",
+            "Stage IIA",
+            "Stage IIB",
+            "Stage IIIA",
+            "Stage IIIB",
+            "Stage IV",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Clinical T stage of first primary",
+          "values": [
+            "Unknown",
+            "cT1",
+            "cT2",
+            "cT3",
+            "cT4"
+          ]
+        },
+        {
+          "name": "Did patient receive radiation for localized disease?",
+          "values": [
+            false,
+            true
+          ]
+        },
+        {
+          "name": "Did patient receive radiation for metastatic disease?",
+          "values": [
+            false,
+            true
+          ]
+        },
+        {
+          "name": "Number of Samples Per Patient",
+          "values": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            7,
+            9,
+            10
+          ]
+        },
+        {
+          "name": "Sample_Type",
+          "values": [
+            "Metastatic",
+            "Primary"
+          ]
+        },
+        {
+          "name": "Sex",
+          "values": [
+            "Female"
+          ]
+        },
+        {
+          "name": "Type of primary tumor final resection",
+          "values": [
+            "Bilateral mastectomy",
+            "Biopsy only",
+            "Lumpectomy",
+            "Mastectomy",
+            "None",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Pathologic M",
+          "values": [
+            "M0",
+            "M1",
+            "Mx",
+            "NA",
+            "Unknown"
+          ]
+        },
+        {
+          "name": "Pathologic N",
+          "values": [
+            "NA",
+            "Unknown",
+            "pN0",
+            "pN1",
+            "pN2",
+            "pN3",
+            "pNx"
+          ]
+        },
+        {
+          "name": "Does the patient have a second breast primary?_1",
+          "values": [
+            "No",
+            "Unknown",
+            "Yes"
+          ]
+        },
+        {
+          "name": "Pathologic T",
+          "values": [
+            "NA",
+            "Unknown",
+            "pT1",
+            "pT2",
+            "pT3",
+            "pT4"
+          ]
+        },
+        {
+          "name": "Pathologic Stage",
+          "values": [
+            "NA",
+            "Stage I",
+            "Stage IIA",
+            "Stage IIB",
+            "Stage IIIA",
+            "Stage IIIB",
+            "Stage IIIC",
+            "Stage IV",
+            "Unknown"
+          ]
+        }
+      ]
+    },
+    {
+      "source": "aurora_eu",
+      "name": "Aurora EU",
+      "description": "AURORA is an international, academic research programme that uses molecular technologies to analyse the genetic characteristics of a tumour and identify the changes (genetic aberrations) that drive disease evolution over time in patients with recurrent or locally relapsed metastatic breast cancer. AURORA seeks to address an important unmet need in metastatic breast cancer and gain a deeper understanding of this complex largely incurable disease.",
+      "patients": 55,
+      "samples": 155,
+      "data_types": [
+        "TGS",
+        "OncoScan CNA",
+        "RNASeq",
+        "H&E Slides",
+        "CNV"
+      ],
+      "tags": [
+        {
+          "name": "type",
+          "values": [
+            "HER2+",
+            "HR+/HER2-",
+            "TNBC"
+          ]
+        },
+        {
+          "name": "PAM50_primary",
+          "values": [
+            "Basal",
+            "Her2",
+            "LumA",
+            "LumB",
+            "N/A",
+            "Normal"
+          ]
+        },
+        {
+          "name": "PAM50_meta",
+          "values": [
+            "Basal",
+            "Her2",
+            "LumA",
+            "LumB",
+            "N/A",
+            "Normal"
+          ]
+        },
+        {
+          "name": "IHC_primary",
+          "values": [
+            "HER2+",
+            "HR+/HER2-",
+            "N/A",
+            "TNBC"
+          ]
+        },
+        {
+          "name": "IHC_meta",
+          "values": [
+            "HER2+",
+            "HR+/HER2-",
+            "N/A",
+            "TNBC"
+          ]
+        },
+        {
+          "name": "metastatic_biopsy_site",
+          "values": [
+            "Abdominal wall",
+            "Brain",
+            "Breast",
+            "Chest wall",
+            "Liver",
+            "Lung",
+            "Lymph node",
+            "N/A",
+            "Other",
+            "Ovary",
+            "Pleura",
+            "Skin",
+            "Soft tissue"
+          ]
+        },
+        {
+          "name": "is_de_novo",
+          "values": [
+            false,
+            true
+          ]
+        },
+        {
+          "name": "adjuvant",
+          "values": [
+            false,
+            true
+          ]
+        },
+        {
+          "name": "neoadjuvant",
+          "values": [
+            false,
+            true
+          ]
+        },
+        {
+          "name": "block_before_or_after_neo_treatment",
+          "values": [
+            "After neoadjuvant treatment",
+            "Before neodjuvant treatment",
+            "N/A"
+          ]
+        },
+        {
+          "name": "primary_grade",
+          "values": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "N/A",
+            "NA"
+          ]
+        },
+        {
+          "name": "primary_patho_node_status",
+          "values": [
+            "N/A",
+            "N0",
+            "N1",
+            "N2",
+            "N3",
+            "NA",
+            "NX"
+          ]
+        },
+        {
+          "name": "primary_size_t1_or_t2",
+          "values": [
+            "FALSE",
+            "N/A",
+            "TRUE"
+          ]
+        },
+        {
+          "name": "patient_in_oncoplot",
+          "values": [
+            false,
+            true
+          ]
+        }
+      ]
+    }
+  ]
+}
