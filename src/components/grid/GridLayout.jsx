@@ -3,7 +3,7 @@ import { Responsive, useContainerWidth } from 'react-grid-layout';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import GridWidget from '@/components/grid_layout/GridWidget';
+import GridWidget from '@/components/grid/GridWidget';
 import { CONFIG } from '../../../datasource_config';
 
 const STORAGE_KEY = 'grid-layout';
