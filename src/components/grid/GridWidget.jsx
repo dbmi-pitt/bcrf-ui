@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Dropdown, Tooltip } from 'antd';
@@ -18,9 +18,7 @@ export default function GridWidget({
   widgetKey,
   chartData,
   onRemove,
-  layout,
 }) {
-
   const items = [
     {
       key: '1',
@@ -63,12 +61,10 @@ export default function GridWidget({
   ];
 
   return (
-    <Card
-      className="h-100"
-      key={widgetKey}
-      style={{ width: '100%', height: '100%', overflow: 'hidden' }}
-    >
-      <Card.Header className="d-flex justify-content-between align-items-center py-1">
+    <Card className="h-100" key={widgetKey} style={{ overflow: 'hidden' }}>
+      <Card.Header className="d-flex justify-content-between align-items-center py-1 drag-header-handle"
+      style={{cursor: 'move'}}
+      >
         <Tooltip title={title}>
           <span className={'card-title text-truncate mb-0'}>{title}</span>
         </Tooltip>
@@ -78,7 +74,6 @@ export default function GridWidget({
             <InfoCircleOutlined />
           </Tooltip>
 
-          {/*TODO: Define content component */}
           <Dropdown menu={{ items }}>
             <a
               onClick={(e) => e.preventDefault()}
@@ -99,9 +94,9 @@ export default function GridWidget({
         </div>
       </Card.Header>
 
-      <Card.Body>
+      <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }}>
         <ChartProvider>
-          <Chart data={chartData.chart} layout={layout} />
+          <Chart data={chartData.chart} />
         </ChartProvider>
       </Card.Body>
     </Card>

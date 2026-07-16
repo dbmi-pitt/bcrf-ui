@@ -15,7 +15,7 @@ function createLayout(charts) {
     w: 4,
     h: 2,
     minW: 2,
-    minH: 1
+    minH: 1,
   }));
 }
 
@@ -71,40 +71,30 @@ export default function GridLayout({ dataSource }) {
   const hiddenKeys = new Set(hiddenWidgets);
   const visibleLayout = layout.filter((item) => !hiddenKeys.has(item.i));
 
-  const getWidgetLayout = (key) => {
-    const colWidthPx = (width - margin[0] * (12 - 1)) / 12;
-    const item = layout.find((l) => l.i === key);
-    const w = item.w * colWidthPx + (item.w - 1) * margin[0];
-    const h = item.h * rowHeightPx + (item.h - 1) * margin[1];
-    return { w, h };
-  };
-
   return (
     <div ref={containerRef}>
-      {mounted && (
-        <ReactGridLayout
-          width={width}
-          layout={visibleLayout}
-          cols={12}
-          margin={margin}
-          rowHeight={rowHeightPx}
-          onLayoutChange={handleLayoutChange}
-        >
-          {widgetItems
-            .filter((item) => !hiddenKeys.has(item.key))
-            .map((item) => (
-              <div key={item.key}>
-                <GridWidget
-                  title={item.title}
-                  widgetKey={item.key}
-                  chartData={item}
-                  layout={getWidgetLayout(item.key)}
-                  onRemove={() => handleRemoveItem(item.key)}
-                />
-              </div>
-            ))}
-        </ReactGridLayout>
-      )}
+      <ReactGridLayout
+        dragConfig={{enabled: true, handle: '.drag-header-handle'}}
+        width={width}
+        layout={visibleLayout}
+        cols={12}
+        margin={margin}
+        rowHeight={rowHeightPx}
+        onLayoutChange={handleLayoutChange}
+      >
+        {widgetItems
+          .filter((item) => !hiddenKeys.has(item.key))
+          .map((item) => (
+            <div key={item.key}>
+              <GridWidget
+                title={item.title}
+                widgetKey={item.key}
+                chartData={item}
+                onRemove={() => handleRemoveItem(item.key)}
+              />
+            </div>
+          ))}
+      </ReactGridLayout>
     </div>
   );
 }
