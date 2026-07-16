@@ -5,7 +5,7 @@ import GridLayout from '@/components/grid/GridLayout';
 
 export default function Page() {
   const params = useParams();
-  const data_source = params.data_source;
+  const dataSource = params.data_source;
 
   return <GridLayout />;
 }
