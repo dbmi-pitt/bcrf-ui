@@ -9,7 +9,7 @@ import Chart from '../charts/Chart';
 export default function GridWidget({ title, widgetKey, chartData, onRemove, layout }) {
   useEffect(() => {
     console.log(chartData, layout)
-  }, [])
+  }, [layout])
   return (
     <Card className="h-100" key={widgetKey} style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
       <Card.Header className="d-flex justify-content-between align-items-center py-1">

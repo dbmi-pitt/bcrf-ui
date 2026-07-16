@@ -7,7 +7,7 @@ function Histogram({ data, layout }) {
       <VictoryChart
         domainPadding={20}
         width={layout.w}
-        height={layout.h - layout.m}
+        
         theme={VictoryTheme.clean}
       >
         <VictoryHistogram data={data.data} />

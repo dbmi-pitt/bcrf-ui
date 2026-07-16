@@ -6,7 +6,6 @@ function Scatter({ data, layout }) {
     <div className="c-chart__scatter">
       <VictoryChart
           width={layout.w}
-        height={layout.h - layout.m}
           theme={VictoryTheme.clean}
         >
           <VictoryScatter
