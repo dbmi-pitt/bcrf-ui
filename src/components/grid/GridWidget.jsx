@@ -11,7 +11,7 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove, layo
     console.log(chartData, layout)
   }, [])
   return (
-    <Card className="h-100" key={widgetKey}>
+    <Card className="h-100" key={widgetKey} style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
       <Card.Header className="d-flex justify-content-between align-items-center py-1">
         <span>{title}</span>
 
