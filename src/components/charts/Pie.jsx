@@ -1,5 +1,5 @@
 import React from 'react'
-import { VictoryPie, VictoryTheme } from 'victory'
+import { VictoryPie, VictoryTheme, VictoryChart } from 'victory'
 
 function Pie({data, layout}) {
 
