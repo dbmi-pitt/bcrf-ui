@@ -7,8 +7,5 @@ export default function Page() {
   const params = useParams();
   const dataSource = params.dataSource;
 
-  return(
-    <GridLayout/>
-  )
-
+  return <GridLayout dataSource={dataSource} />;
 }

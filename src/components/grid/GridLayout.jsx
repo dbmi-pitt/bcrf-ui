@@ -6,7 +6,6 @@ import 'react-resizable/css/styles.css';
 import GridWidget from '@/components/grid/GridWidget';
 import { CONFIG } from '../../../datasource_config';
 
-const STORAGE_KEY = 'grid-layout';
 const datasource_config = CONFIG;
 
 function createLayouts(charts) {
@@ -37,8 +36,10 @@ const cols = {
   xxs: 2,
 };
 
-export default function GridLayout() {
+export default function GridLayout({ dataSource }) {
+  const STORAGE_KEY = `grid-layout-${dataSource}`;
   const { width, containerRef, mounted } = useContainerWidth();
+  const [hiddenWidgets, setHiddenWidgets] = useState([]);
   const [widgetItems, setWidgetItems] = useState(() =>
     datasource_config.charts.map((chart) => ({
       key: chart.id,
@@ -50,6 +51,7 @@ export default function GridLayout() {
     createLayouts(datasource_config.charts),
   );
 
+  // Load modified layout view from localstorage
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -57,29 +59,33 @@ export default function GridLayout() {
     }
   }, []);
 
-  const handleLayoutChange = (currentLayout, allLayouts) => {
-    setLayouts(allLayouts);
+  // Update the layout for visible widgets, do not lose position of hidden widgets
+  const handleLayoutChange = (_, allLayouts) => {
+    setLayouts((prev) => {
+      const updated = {
+        ...prev,
+        lg: prev.lg.map((existing) => {
+          const changed = allLayouts.lg.find((x) => x.i === existing.i);
 
-    // Save modified layout to localstorage
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(allLayouts));
+          return changed || existing;
+        }),
+      };
+
+      // Save modified layout to localstorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+      return updated;
+    });
   };
 
+  // When removing a widget save that change to specific state, separate from layouts
   const handleRemoveItem = (widgetKey) => {
-    setWidgetItems((prev) => prev.filter((item) => item.key !== widgetKey));
+    setHiddenWidgets((prev) => [...prev, widgetKey]);
+  };
 
-    setLayouts((prevLayouts) => {
-      const updatedLayouts = {};
-
-      Object.keys(prevLayouts).forEach((breakpoint) => {
-        updatedLayouts[breakpoint] = prevLayouts[breakpoint].filter(
-          (layoutItem) => layoutItem.i !== widgetKey,
-        );
-      });
-
-      // localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedLayouts));
-
-      return updatedLayouts;
-    });
+  const hiddenKeys = new Set(hiddenWidgets);
+  const visibleLayouts = {
+    lg: layouts.lg.filter((item) => !hiddenKeys.has(item.i)),
   };
 
   return (
@@ -87,23 +93,24 @@ export default function GridLayout() {
       {mounted && (
         <Responsive
           width={width}
-          layouts={layouts}
+          layouts={visibleLayouts}
           breakpoints={breakpoints}
           cols={cols}
           rowHeight={30}
           onLayoutChange={handleLayoutChange}
         >
-          {widgetItems.map((item) => (
-            <div key={item.key}>
-              <GridWidget
-                title={item.title}
-                widgetKey={item.key}
-                key={item.key}
-                chartData={item}
-                onRemove={() => handleRemoveItem(item.key)}
-              />
-            </div>
-          ))}
+          {widgetItems
+            .filter((item) => !hiddenKeys.has(item.key))
+            .map((item) => (
+              <div key={item.key}>
+                <GridWidget
+                  title={item.title}
+                  widgetKey={item.key}
+                  chartData={item}
+                  onRemove={() => handleRemoveItem(item.key)}
+                />
+              </div>
+            ))}
         </Responsive>
       )}
     </div>
