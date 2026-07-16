@@ -15,7 +15,7 @@ function createLayouts(charts) {
       x: (index % 3) * 4,
       y: Math.floor(index / 3) * 4,
       w: 4,
-      h: 4,
+      h: 6,
     })),
   };
 }
@@ -39,6 +39,8 @@ const cols = {
 export default function GridLayout({ dataSource }) {
   const STORAGE_KEY = `grid-layout-${dataSource}`;
   const { width, containerRef, mounted } = useContainerWidth();
+  const rowHeightPx = 30;
+  const margin = [10, 10];
   const [hiddenWidgets, setHiddenWidgets] = useState([]);
   const [widgetItems, setWidgetItems] = useState(() =>
     datasource_config.charts.map((chart) => ({
@@ -88,6 +90,14 @@ export default function GridLayout({ dataSource }) {
     lg: layouts.lg.filter((item) => !hiddenKeys.has(item.i)),
   };
 
+  const getWidgetLayout = (key) => {
+    const colWidthPx = (width - (margin[0] * (cols.lg - 1))) / cols.lg;
+    const item = layouts.lg.filter(l => l.i === key)[0];
+    const w = (item.w * colWidthPx) + ((item.w - 1) * margin[0]);
+    const h = (item.h * rowHeightPx) + ((item.h - 1) * margin[1]);
+    return {w, h}
+  }
+
   return (
     <div ref={containerRef}>
       {mounted && (
@@ -96,7 +106,8 @@ export default function GridLayout({ dataSource }) {
           layouts={visibleLayouts}
           breakpoints={breakpoints}
           cols={cols}
-          rowHeight={30}
+          margin={margin}
+          rowHeight={rowHeightPx}
           onLayoutChange={handleLayoutChange}
         >
           {widgetItems
@@ -107,6 +118,7 @@ export default function GridLayout({ dataSource }) {
                   title={item.title}
                   widgetKey={item.key}
                   chartData={item}
+                  layout={getWidgetLayout(item.key)}
                   onRemove={() => handleRemoveItem(item.key)}
                 />
               </div>

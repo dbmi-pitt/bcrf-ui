@@ -4,11 +4,11 @@ import Accordion from 'react-bootstrap/Accordion';
 import THEME from '@/lib/theme';
 
 function SummaryCard({ data, onTagClick }) {
-  useEffect(() => {
-    console.log('d', data);
-  }, []);
 
-  const handleTagClick = (tag, value) => {
+
+  const handleTagClick = (e, tag, value) => {
+    e.preventDefault()
+    e.stopPropagation()
     if (onTagClick) {
       onTagClick({data, tag, value})
     }
@@ -23,7 +23,7 @@ function SummaryCard({ data, onTagClick }) {
         if (tag.name === h) {
           for (const v of tag.values) {
             tags.push(
-              <Tag className='c-tag' key={v} onClick={() => handleTagClick(tag, v)} 
+              <Tag className='c-tag' key={v} onClick={(e) => handleTagClick(e, tag, v)} 
                     style={{ cursor: 'pointer' }}>
                 {v}
               </Tag>
@@ -40,8 +40,16 @@ function SummaryCard({ data, onTagClick }) {
     }
     return list;
   };
+
+  const goToSource = (e, d) => {
+    e.preventDefault()
+    e.stopPropagation()
+    window.location = `/source/${d.source}`
+  }
+
   return (
     <Card
+      onClick={(e) => goToSource(e, data)}
       className='c-summaryCard'
       title={data.name}
       extra={
@@ -80,7 +88,7 @@ function SummaryCard({ data, onTagClick }) {
               <Accordion.Header>{tag.name}</Accordion.Header>
               <Accordion.Body>
                 {tag.values.map((value) => (
-                  <Tag className='c-tag' key={value} onClick={() => handleTagClick(tag, value)} 
+                  <Tag className='c-tag' key={value} onClick={(e) => handleTagClick(e, tag, value)} 
                     style={{ cursor: 'pointer' }}>
                     {value}
                   </Tag>
