@@ -39,6 +39,8 @@ const cols = {
 
 export default function GridLayout() {
   const { width, containerRef, mounted } = useContainerWidth();
+  const rowHeightPx = 30;
+  const margin = [10, 10];
   const [widgetItems, setWidgetItems] = useState(() =>
     datasource_config.charts.map((chart) => ({
       key: chart.id,
@@ -82,6 +84,17 @@ export default function GridLayout() {
     });
   };
 
+
+
+  const getWidgetLayout = (key) => {
+
+    const colWidthPx = (width - (margin[0] * (cols.lg - 1)))
+    const item = layouts.lg.filter(l => l.i === key)[0];
+    const w = (item.w * colWidthPx) + ((item.w - 1) * margin[0]);
+    const h = (item.h * rowHeightPx) + ((item.h - 1) * margin[1]);
+    return {w, h}
+  }
+
   return (
     <div ref={containerRef}>
       {mounted && (
@@ -90,7 +103,8 @@ export default function GridLayout() {
           layouts={layouts}
           breakpoints={breakpoints}
           cols={cols}
-          rowHeight={30}
+          margin={margin}
+          rowHeight={rowHeightPx}
           onLayoutChange={handleLayoutChange}
         >
           {widgetItems.map((item) => (
@@ -100,6 +114,7 @@ export default function GridLayout() {
                 widgetKey={item.key}
                 key={item.key}
                 chartData={item}
+                layout={getWidgetLayout(item.key)}
                 onRemove={() => handleRemoveItem(item.key)}
               />
             </div>
