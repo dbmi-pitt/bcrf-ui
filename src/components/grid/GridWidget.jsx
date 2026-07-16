@@ -1,19 +1,77 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import { Popover, Tooltip } from 'antd';
-import { InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
+import { Dropdown, Tooltip } from 'antd';
+import {
+  BarChartOutlined,
+  DownloadOutlined,
+  InfoCircleOutlined,
+  MenuOutlined,
+  PieChartOutlined,
+  TableOutlined,
+} from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '../charts/Chart';
 
-export default function GridWidget({ title, widgetKey, chartData, onRemove, layout }) {
-  useEffect(() => {
-    console.log(chartData, layout)
-  }, [])
+export default function GridWidget({
+  title,
+  widgetKey,
+  chartData,
+  onRemove,
+  layout,
+}) {
+
+  const items = [
+    {
+      key: '1',
+      label: <a target="_blank">Show table</a>,
+      icon: <TableOutlined />,
+    },
+    {
+      key: '2',
+      label: <a target="_blank">Download</a>,
+      icon: <DownloadOutlined />,
+      children: [
+        {
+          key: '2-1',
+          label: <a target="_blank">Summary Data</a>,
+        },
+        {
+          key: '2-2',
+          label: <a target="_blank">Full Data</a>,
+        },
+        {
+          key: '2-3',
+          label: <a target="_blank">SVG</a>,
+        },
+        {
+          key: '2-4',
+          label: <a target="_blank">PDF</a>,
+        },
+      ],
+    },
+    {
+      key: '3',
+      label: <a target="_blank">Show Pie</a>,
+      icon: <PieChartOutlined />,
+    },
+    {
+      key: '4',
+      label: <a target="_blank">Custom Bins</a>,
+      icon: <BarChartOutlined />,
+    },
+  ];
+
   return (
-    <Card className="h-100" key={widgetKey} style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+    <Card
+      className="h-100"
+      key={widgetKey}
+      style={{ width: '100%', height: '100%', overflow: 'hidden' }}
+    >
       <Card.Header className="d-flex justify-content-between align-items-center py-1">
-        <span>{title}</span>
+        <Tooltip title={title}>
+          <span className={'card-title text-truncate mb-0'}>{title}</span>
+        </Tooltip>
 
         <div className="d-flex align-items-center gap-2">
           <Tooltip title={'Test tooltip'}>
@@ -21,9 +79,14 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove, layo
           </Tooltip>
 
           {/*TODO: Define content component */}
-          <Popover content={'Test'} title="Title" trigger="click">
-            <MenuOutlined />
-          </Popover>
+          <Dropdown menu={{ items }}>
+            <a
+              onClick={(e) => e.preventDefault()}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <MenuOutlined />
+            </a>
+          </Dropdown>
 
           <Button
             variant="link"
