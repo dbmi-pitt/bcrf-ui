@@ -15,7 +15,7 @@ function createLayouts(charts) {
       x: (index % 3) * 4,
       y: Math.floor(index / 3) * 4,
       w: 4,
-      h: 4,
+      h: 6,
     })),
   };
 }
@@ -89,8 +89,6 @@ export default function GridLayout({ dataSource }) {
   const visibleLayouts = {
     lg: layouts.lg.filter((item) => !hiddenKeys.has(item.i)),
   };
-
-
 
   const getWidgetLayout = (key) => {
     const colWidthPx = (width - (margin[0] * (cols.lg - 1))) / cols.lg;

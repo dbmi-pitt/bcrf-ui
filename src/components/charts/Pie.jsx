@@ -6,8 +6,9 @@ function Pie({data, layout}) {
   return (
     <div className='c-chart__pie'>
       <VictoryPie
-   
-        height={layout.h}
+        domainPadding={{ x: 10, y: 10 }}
+        width={layout.w}
+        height={layout.h - 40} // magic number for now.
         data={data.data}
         theme={VictoryTheme.clean}
       />
