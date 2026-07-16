@@ -1,7 +1,7 @@
 import React from 'react'
 import Pie from './Pie'
 import Histogram from './Histogram'
-import Table from './Table'
+import Tabula from './Tabula'
 import Scatter from './Scatter'
 
 function Chart({data, children, containerClassName = '', ...otherProps}) {
@@ -9,7 +9,7 @@ function Chart({data, children, containerClassName = '', ...otherProps}) {
     pie: Pie,
     histogram: Histogram,
     scatter: Scatter,
-    table: Table
+    table: Tabula
   }
   
   const DisplayChart = charts[data.types[0]]
