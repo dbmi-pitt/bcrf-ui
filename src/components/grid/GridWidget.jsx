@@ -41,10 +41,8 @@ export default function GridWidget({
     if (chartData.chart.types.length > 1) {
       const switchTo = resolveChartType();
       items.push({
-        key: 'switchChart',
-        label: (
-          <span onClick={() => setChartType(switchTo)}>Show {switchTo}</span>
-        ),
+        key: `switchChart:${switchTo}`,
+        label: `Show ${switchTo}`,
         icon: icons[switchTo],
       });
     }
@@ -87,6 +85,17 @@ export default function GridWidget({
     return items;
   };
 
+  const handleMenuClick = ({ key }) => {
+    if (key.startsWith('switchChart:')) {
+      const newType = key.split(':')[1];
+      setChartType(newType);
+    }
+  };
+  const menuProps = {
+    items: getItems(),
+    onClick: handleMenuClick,
+  };
+
   return (
     <Card className="h-100" key={widgetKey} style={{ overflow: 'hidden' }}>
       <Card.Header
@@ -102,7 +111,7 @@ export default function GridWidget({
             <InfoCircleOutlined />
           </Tooltip>
 
-          <Dropdown menu={{ items: getItems() }}>
+          <Dropdown menu={menuProps}>
             <a
               onClick={(e) => e.preventDefault()}
               style={{ textDecoration: 'none', color: 'inherit' }}
