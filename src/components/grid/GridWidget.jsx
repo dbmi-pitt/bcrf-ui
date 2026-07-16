@@ -1,12 +1,17 @@
+import React, {useEffect} from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import React from 'react';
 import { Popover, Tooltip } from 'antd';
 import { InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
+import { ChartProvider } from '@/context/ChartContext';
+import Chart from '../charts/Chart';
 
-export default function GridWidget({ title, widgetKey, chartData, onRemove }) {
+export default function GridWidget({ title, widgetKey, chartData, onRemove, layout }) {
+  useEffect(() => {
+    console.log(chartData, layout)
+  }, [])
   return (
-    <Card className="h-100" key={widgetKey}>
+    <Card className="h-100" key={widgetKey} style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
       <Card.Header className="d-flex justify-content-between align-items-center py-1">
         <span>{title}</span>
 
@@ -16,8 +21,8 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove }) {
           </Tooltip>
 
           {/*TODO: Define content component */}
-          <Popover content={"Test"} title="Title" trigger="click">
-              <MenuOutlined />
+          <Popover content={'Test'} title="Title" trigger="click">
+            <MenuOutlined />
           </Popover>
 
           <Button
@@ -31,7 +36,11 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove }) {
         </div>
       </Card.Header>
 
-      <Card.Body>{/*  TODO: Add graph component here*/}</Card.Body>
+      <Card.Body>
+        <ChartProvider>
+          <Chart data={chartData.chart} layout={layout} />
+        </ChartProvider>
+      </Card.Body>
     </Card>
   );
 }
