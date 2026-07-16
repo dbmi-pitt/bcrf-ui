@@ -1,15 +1,63 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import { Popover, Tooltip } from 'antd';
+import { Popover, Tooltip, Dropdown } from 'antd';
 import { InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
-import Chart from '../charts/Chart';
+import Chart from '@/components/charts/Chart';
 
 export default function GridWidget({ title, widgetKey, chartData, onRemove, layout }) {
+
+  const [chartType, setChartType] = useState(chartData.chart.types[0])
+
+  const resolveChartType = () => {
+    let defaultType = chartData.chart.types[0]
+    return chartData.chart.types.filter((t) => t !== chartType)[0] || defaultType
+  }
+
+
+
+  const getItems = () => {
+    const items = []
+    if (chartData.chart.types.length > 1) {
+      const switchTo = resolveChartType()
+      items.push(
+        {
+          key: 'switchChart',
+          label: <span onClick={() => setChartType(switchTo)}>Show {switchTo}</span>
+        }
+      )
+    }
+    items.push({
+      key: 'download',
+      label: <span>Download</span>,
+      children: [
+        {
+          key: 'downloadSummary',
+          label: 'Summary Data',
+        },
+        {
+          key: 'downloadData',
+          label: 'Full Data',
+        },
+        {
+          key: 'downloadSVG',
+          label: 'SVG',
+        },
+        {
+          key: 'downloadPDF',
+          label: 'PDG',
+        },
+      ]
+    })
+
+    return items;
+  }
+
   useEffect(() => {
     console.log(chartData, layout)
-  }, [layout])
+  }, [])
+
   return (
     <Card className="h-100" key={widgetKey} style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
       <Card.Header className="d-flex justify-content-between align-items-center py-1">
@@ -21,9 +69,12 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove, layo
           </Tooltip>
 
           {/*TODO: Define content component */}
-          <Popover content={'Test'} title="Title" trigger="click">
+          {/* <Popover content={'Test'} title="Title" trigger="click">
             <MenuOutlined />
-          </Popover>
+          </Popover> */}
+          <Dropdown menu={{ items: getItems() }} placement="bottomLeft" arrow>
+            <MenuOutlined />
+          </Dropdown>
 
           <Button
             variant="link"
@@ -38,7 +89,7 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove, layo
 
       <Card.Body>
         <ChartProvider>
-          <Chart data={chartData.chart} layout={layout} />
+          <Chart data={chartData.chart} chartType={chartType} layout={layout} />
         </ChartProvider>
       </Card.Body>
     </Card>

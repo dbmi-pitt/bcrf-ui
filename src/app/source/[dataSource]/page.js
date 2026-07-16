@@ -2,10 +2,13 @@
 
 import { useParams } from 'next/navigation';
 import GridLayout from '@/components/grid/GridLayout';
+import BasicLayout from '@/components/layout/BasicLayout';
 
 export default function Page() {
   const params = useParams();
   const dataSource = params.dataSource;
 
-  return <GridLayout dataSource={dataSource} />;
+  return <BasicLayout>
+    <GridLayout dataSource={dataSource} />
+  </BasicLayout>;
 }
