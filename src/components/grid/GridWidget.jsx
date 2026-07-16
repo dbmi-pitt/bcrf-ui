@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Popover, Tooltip, Dropdown } from 'antd';
@@ -9,6 +9,7 @@ import {
   MenuOutlined,
   PieChartOutlined,
   TableOutlined,
+  CalculatorOutlined
 } from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '@/components/charts/Chart';
@@ -20,32 +21,44 @@ export default function GridWidget({
   onRemove,
   layout,
 }) {
-
-
-  const [chartType, setChartType] = useState(chartData.chart.types[0])
+  const [chartType, setChartType] = useState(chartData.chart.types[0]);
 
   const resolveChartType = () => {
-    let defaultType = chartData.chart.types[0]
-    return chartData.chart.types.filter((t) => t !== chartType)[0] || defaultType
-  }
+    let defaultType = chartData.chart.types[0];
+    return (
+      chartData.chart.types.filter((t) => t !== chartType)[0] || defaultType
+    );
+  };
 
   const icons = {
     table: <TableOutlined />,
     pie: <PieChartOutlined />,
-    histogram: <BarChartOutlined />
-  }
+    histogram: <BarChartOutlined />,
+  };
 
   const getItems = () => {
-    const items = []
+    const items = [];
     if (chartData.chart.types.length > 1) {
-      const switchTo = resolveChartType()
-      items.push(
-        {
-          key: 'switchChart',
-          label: <span onClick={() => setChartType(switchTo)}>Show {switchTo}</span>,
-          icon: icons[switchTo],
-        }
-      )
+      const switchTo = resolveChartType();
+      items.push({
+        key: 'switchChart',
+        label: (
+          <span onClick={() => setChartType(switchTo)}>Show {switchTo}</span>
+        ),
+        icon: icons[switchTo],
+      });
+    }
+    if (chartType === 'histogram') {
+      items.push({
+        key: 'compareGroups',
+        label: <span>Compare Groups</span>,
+        icon: <CalculatorOutlined />,
+      });
+      items.push({
+        key: 'customBins',
+        label: <span>Custom Bins</span>,
+        icon: icons.histogram,
+      });
     }
     items.push({
       key: 'download',
@@ -68,11 +81,11 @@ export default function GridWidget({
           key: 'downloadPDF',
           label: 'PDG',
         },
-      ]
-    })
+      ],
+    });
 
     return items;
-  }
+  };
 
   return (
     <Card
@@ -90,7 +103,6 @@ export default function GridWidget({
             <InfoCircleOutlined />
           </Tooltip>
 
-      
           <Dropdown menu={{ items: getItems() }}>
             <a
               onClick={(e) => e.preventDefault()}
