@@ -1,6 +1,10 @@
 'use server';
 
+import { DuckDBInstance } from '@duckdb/node-api';
 import { buildFilterClause } from './filter.js';
+
+const instance = await DuckDBInstance.create(process.env.DUCK_DB_PATH);
+const connection = await instance.connect();
 
 const sourceMap = {
   'aurora-us': (await import('./config/auroraUS.js')).CONFIG,
@@ -35,6 +39,7 @@ export const getFilteredChartData = async (sourceId, filters) => {
     return { notFound: true };
   }
 
+  const cleanFilters = {};
   const mappedFilters = {};
   for (const [key, value] of Object.entries(filters)) {
     // skip empty filters
@@ -55,15 +60,28 @@ export const getFilteredChartData = async (sourceId, filters) => {
     }
 
     mappedFilters[column] = value;
+    cleanFilters[key] = value;
   }
 
   // if no valid mapped filters, return the chart data without filtering
   if (!mappedFilters || !Object.keys(mappedFilters).length) {
     return {
-      data: config.charts.map(({ id, data }) => ({ id, data })),
+      data: config.charts.map(({ id, data }) => ({ id: id, data: data })),
       filters: {},
     };
   }
 
+  // build the filter clause and query the database for each chart
   const { clause, params } = buildFilterClause(mappedFilters);
+  const data = [];
+  for (const chart of config.charts) {
+    const query = chart.query(clause);
+    const result = await connection.query(query, params);
+    data.push({ id: chart.id, data: result });
+  }
+
+  return {
+    data: data,
+    filters: cleanFilters,
+  };
 };
