@@ -15,7 +15,7 @@ function createLayout(charts) {
     w: 4,
     h: 2,
     minW: 2,
-    minH: 1
+    minH: 1,
   }));
 }
 
@@ -82,30 +82,29 @@ export default function GridLayout({ dataSource }) {
 
   return (
     <div ref={containerRef}>
-      {mounted && (
-        <ReactGridLayout
-          width={width}
-          layout={visibleLayout}
-          cols={cols}
-          margin={margin}
-          rowHeight={rowHeightPx}
-          onLayoutChange={handleLayoutChange}
-        >
-          {widgetItems
-            .filter((item) => !hiddenKeys.has(item.key))
-            .map((item) => (
-              <div key={item.key}>
-                <GridWidget
-                  title={item.title}
-                  widgetKey={item.key}
-                  chartData={item}
-                  layout={getWidgetLayout(item.key)}
-                  onRemove={() => handleRemoveItem(item.key)}
-                />
-              </div>
-            ))}
-        </ReactGridLayout>
-      )}
+      <ReactGridLayout
+        dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
+        width={width}
+        layout={visibleLayout}
+        cols={12}
+        margin={margin}
+        rowHeight={rowHeightPx}
+        onLayoutChange={handleLayoutChange}
+      >
+        {widgetItems
+          .filter((item) => !hiddenKeys.has(item.key))
+          .map((item) => (
+            <div key={item.key}>
+              <GridWidget
+                title={item.title}
+                widgetKey={item.key}
+                chartData={item}
+                layout={getWidgetLayout(item.key)}
+                onRemove={() => handleRemoveItem(item.key)}
+              />
+            </div>
+          ))}
+      </ReactGridLayout>
     </div>
   );
 }

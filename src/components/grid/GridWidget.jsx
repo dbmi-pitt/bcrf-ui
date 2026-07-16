@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import { Popover, Tooltip, Dropdown } from 'antd';
+import { Dropdown, Tooltip } from 'antd';
 import {
   BarChartOutlined,
+  CalculatorOutlined,
   DownloadOutlined,
   InfoCircleOutlined,
   MenuOutlined,
   PieChartOutlined,
   TableOutlined,
-  CalculatorOutlined
 } from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '@/components/charts/Chart';
@@ -88,12 +88,11 @@ export default function GridWidget({
   };
 
   return (
-    <Card
-      className="h-100"
-      key={widgetKey}
-      style={{ width: '100%', height: '100%', overflow: 'hidden' }}
-    >
-      <Card.Header className="d-flex justify-content-between align-items-center py-1">
+    <Card className="h-100" key={widgetKey} style={{ overflow: 'hidden' }}>
+      <Card.Header
+        className="d-flex justify-content-between align-items-center py-1 drag-header-handle"
+        style={{ cursor: 'move' }}
+      >
         <Tooltip title={title}>
           <span className={'card-title text-truncate mb-0'}>{title}</span>
         </Tooltip>
@@ -123,7 +122,7 @@ export default function GridWidget({
         </div>
       </Card.Header>
 
-      <Card.Body>
+      <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }}>
         <ChartProvider>
           <Chart data={chartData.chart} chartType={chartType} layout={layout} />
         </ChartProvider>
