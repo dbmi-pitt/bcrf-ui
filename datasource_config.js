@@ -7,6 +7,7 @@ export const CONFIG = {
       types: ['pie', 'table'],
       filterColumn: 'Ethnicity', // column name in the tsv file
       labels: {
+        x: 'Ethnicity',
         y: 'Count', // label key maps to the data key in the data array
         freq: 'Frequency',
       },
@@ -202,6 +203,7 @@ export const CONFIG = {
       types: ['pie', 'table'],
       filterColumn: 'Cancer Type Detailed',
       labels: {
+        x: 'Cancer Type',
         y: 'Count',
         freq: 'Frequency',
       },

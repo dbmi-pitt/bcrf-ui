@@ -51,6 +51,7 @@ docker/senotype-editor/src
 # UI react-app
 src/pnpm-lock.yaml
 pnpm-lock.yaml
+package-lock.json
 
 /.secrets
 public/sample-fixtures
