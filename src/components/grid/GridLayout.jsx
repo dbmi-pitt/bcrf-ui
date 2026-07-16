@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Responsive, useContainerWidth } from 'react-grid-layout';
 
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import GridWidget from '@/components/grid/GridWidget';
+import { CONFIG } from '../../../datasource_config';
 
 const STORAGE_KEY = 'grid-layout';
+const datasource_config = CONFIG;
 
-const defaultData = [
-  { title: 'A', key: 'a' },
-  { title: 'B', key: 'b' },
-  { title: 'C', key: 'c' },
-];
-
-const defaultLayouts = {
-  lg: [
-    { i: 'a', x: 0, y: 0, w: 4, h: 4 },
-    { i: 'b', x: 4, y: 0, w: 4, h: 4 },
-    { i: 'c', x: 8, y: 0, w: 4, h: 4 },
-  ],
-};
+function createLayouts(charts) {
+  return {
+    lg: charts.map((chart, index) => ({
+      i: chart.id,
+      x: (index % 3) * 4,
+      y: Math.floor(index / 3) * 4,
+      w: 4,
+      h: 4,
+    })),
+  };
+}
 
 const breakpoints = {
   lg: 1200,
@@ -39,28 +39,33 @@ const cols = {
 
 export default function GridLayout() {
   const { width, containerRef, mounted } = useContainerWidth();
-  const [items, setItems] = useState(defaultData);
-  // Use default layout but if localstorage contains modifications load that
-  const [layouts, setLayouts] = useState(defaultLayouts);
+  const [widgetItems, setWidgetItems] = useState(() =>
+    datasource_config.charts.map((chart) => ({
+      key: chart.id,
+      title: chart.title,
+      chart,
+    })),
+  );
+  const [layouts, setLayouts] = useState(() =>
+    createLayouts(datasource_config.charts),
+  );
 
-  // We can reenable this to load modifications from localstorage. This interferes with removing items.
-  // useEffect(() => {
-  //   const saved = localStorage.getItem(STORAGE_KEY);
-  //   if (saved) {
-  //     setLayouts(JSON.parse(saved));
-  //   }
-  // }, []);
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      setLayouts(JSON.parse(saved));
+    }
+  }, []);
 
   const handleLayoutChange = (currentLayout, allLayouts) => {
     setLayouts(allLayouts);
 
-    // We can reenable this to load modifications from localstorage. This interferes with removing items.
-    //   // Save modified layout to localstorage
-    //   localStorage.setItem(STORAGE_KEY, JSON.stringify(allLayouts));
+    // Save modified layout to localstorage
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(allLayouts));
   };
 
   const handleRemoveItem = (widgetKey) => {
-    setItems((prev) => prev.filter((item) => item.key !== widgetKey));
+    setWidgetItems((prev) => prev.filter((item) => item.key !== widgetKey));
 
     setLayouts((prevLayouts) => {
       const updatedLayouts = {};
@@ -71,7 +76,7 @@ export default function GridLayout() {
         );
       });
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedLayouts));
+      // localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedLayouts));
 
       return updatedLayouts;
     });
@@ -88,12 +93,13 @@ export default function GridLayout() {
           rowHeight={30}
           onLayoutChange={handleLayoutChange}
         >
-          {items.map((item) => (
+          {widgetItems.map((item) => (
             <div key={item.key}>
               <GridWidget
                 title={item.title}
                 widgetKey={item.key}
                 key={item.key}
+                chartData={item}
                 onRemove={() => handleRemoveItem(item.key)}
               />
             </div>

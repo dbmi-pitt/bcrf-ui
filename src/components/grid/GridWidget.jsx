@@ -4,7 +4,7 @@ import React from 'react';
 import { Popover, Tooltip } from 'antd';
 import { InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
 
-export default function GridWidget({ title, widgetKey, onRemove }) {
+export default function GridWidget({ title, widgetKey, chartData, onRemove }) {
   return (
     <Card className="h-100" key={widgetKey}>
       <Card.Header className="d-flex justify-content-between align-items-center py-1">
