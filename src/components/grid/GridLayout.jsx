@@ -14,6 +14,8 @@ function createLayout(charts) {
     y: Math.floor(index / 3) * 6,
     w: 4,
     h: 2,
+    minW: 2,
+    minH: 1
   }));
 }
 

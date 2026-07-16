@@ -2,11 +2,25 @@ import React, {useEffect, useState} from 'react';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { Popover, Tooltip, Dropdown } from 'antd';
-import { InfoCircleOutlined, MenuOutlined } from '@ant-design/icons';
+import {
+  BarChartOutlined,
+  DownloadOutlined,
+  InfoCircleOutlined,
+  MenuOutlined,
+  PieChartOutlined,
+  TableOutlined,
+} from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '@/components/charts/Chart';
 
-export default function GridWidget({ title, widgetKey, chartData, onRemove, layout }) {
+export default function GridWidget({
+  title,
+  widgetKey,
+  chartData,
+  onRemove,
+  layout,
+}) {
+
 
   const [chartType, setChartType] = useState(chartData.chart.types[0])
 
@@ -15,7 +29,11 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove, layo
     return chartData.chart.types.filter((t) => t !== chartType)[0] || defaultType
   }
 
-
+  const icons = {
+    table: <TableOutlined />,
+    pie: <PieChartOutlined />,
+    histogram: <BarChartOutlined />
+  }
 
   const getItems = () => {
     const items = []
@@ -24,13 +42,15 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove, layo
       items.push(
         {
           key: 'switchChart',
-          label: <span onClick={() => setChartType(switchTo)}>Show {switchTo}</span>
+          label: <span onClick={() => setChartType(switchTo)}>Show {switchTo}</span>,
+          icon: icons[switchTo],
         }
       )
     }
     items.push({
       key: 'download',
       label: <span>Download</span>,
+      icon: <DownloadOutlined />,
       children: [
         {
           key: 'downloadSummary',
@@ -54,26 +74,30 @@ export default function GridWidget({ title, widgetKey, chartData, onRemove, layo
     return items;
   }
 
-  useEffect(() => {
-    console.log(chartData, layout)
-  }, [])
-
   return (
-    <Card className="h-100" key={widgetKey} style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
+    <Card
+      className="h-100"
+      key={widgetKey}
+      style={{ width: '100%', height: '100%', overflow: 'hidden' }}
+    >
       <Card.Header className="d-flex justify-content-between align-items-center py-1">
-        <span>{title}</span>
+        <Tooltip title={title}>
+          <span className={'card-title text-truncate mb-0'}>{title}</span>
+        </Tooltip>
 
         <div className="d-flex align-items-center gap-2">
           <Tooltip title={'Test tooltip'}>
             <InfoCircleOutlined />
           </Tooltip>
 
-          {/*TODO: Define content component */}
-          {/* <Popover content={'Test'} title="Title" trigger="click">
-            <MenuOutlined />
-          </Popover> */}
-          <Dropdown menu={{ items: getItems() }} placement="bottomLeft" arrow>
-            <MenuOutlined />
+      
+          <Dropdown menu={{ items: getItems() }}>
+            <a
+              onClick={(e) => e.preventDefault()}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
+              <MenuOutlined />
+            </a>
           </Dropdown>
 
           <Button

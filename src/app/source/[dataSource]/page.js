@@ -8,7 +8,9 @@ export default function Page() {
   const params = useParams();
   const dataSource = params.dataSource;
 
-  return <BasicLayout>
-    <GridLayout dataSource={dataSource} />
-  </BasicLayout>;
+  return (
+    <BasicLayout fluid={true}>
+      <GridLayout dataSource={dataSource} />
+    </BasicLayout>
+  );
 }
