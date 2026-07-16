@@ -40,8 +40,14 @@ function SummaryCard({ data, onTagClick }) {
     }
     return list;
   };
+
+  const goToSource = (d) => {
+    window.location = `/source/${d.source}`
+  }
+
   return (
     <Card
+      onClick={() => goToSource(data)}
       className='c-summaryCard'
       title={data.name}
       extra={
