@@ -1,8 +1,8 @@
 'use server';
 
 const sourceMap = {
-  aurora_us: (await import('./config/auroraUS.js')).CONFIG,
-  aurora_eu: (await import('./config/auroraEU.js')).CONFIG,
+  'aurora-us': (await import('./config/auroraUS.js')).CONFIG,
+  'aurora-eu': (await import('./config/auroraEU.js')).CONFIG,
 };
 
 export const getChartData = async (sourceId) => {

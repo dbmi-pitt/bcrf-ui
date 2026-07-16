@@ -1,8 +1,9 @@
 export const CONFIG = {
-  id: 'aurora_us',
+  id: 'aurora-us',
+  table: 'aurora_us',
   charts: [
     {
-      id: 'cancer_type_detailed',
+      id: 'cancer-type-detailed',
       title: 'Cancer Type Detailed',
       types: ['pie', 'table'],
       filterColumn: 'Cancer Type Detailed',
@@ -27,7 +28,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'mutation_count',
+      id: 'mutation-count',
       title: 'Mutation Count',
       types: ['histogram'],
       filterColumn: 'Mutation Count',
@@ -178,7 +179,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'number_of_samples_per_patient',
+      id: 'number-of-samples-per-patient',
       title: 'Number of Samples Per Patient',
       types: ['pie', 'table'],
       labels: {
@@ -207,7 +208,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'clinical_stage',
+      id: 'clinical-stage',
       title: 'Clinical Stage',
       types: ['pie', 'table'],
       filterColumn: 'Clinical Stage',
@@ -235,7 +236,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'pathologic_stage',
+      id: 'pathologic-stage',
       title: 'Pathologic Stage',
       types: ['pie', 'table'],
       filterColumn: 'Pathologic Stage',
@@ -265,7 +266,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'age_at_diagnosis',
+      id: 'age-at-diagnosis',
       title: 'Age at Diagnosis',
       types: ['histogram'],
       filterColumn: 'Age at Diagnosis',
@@ -340,7 +341,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'fraction_genome_altered',
+      id: 'fraction-genome-altered',
       title: 'Fraction Genome Altered',
       types: ['histogram'],
       filterColumn: 'Fraction Genome Altered',
@@ -492,7 +493,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'mutation_count_vs_fraction_genome_altered',
+      id: 'mutation-count-vs-fraction-genome-altered',
       title: 'Mutation Count vs Fraction Genome Altered',
       types: ['scatter'],
       labels: {
@@ -636,7 +637,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'progesterone_receptor_status',
+      id: 'progesterone-receptor-status',
       title: 'Progesterone Receptor Status',
       types: ['pie', 'table'],
       filterColumn: 'Progesterone Receptor Status',
@@ -686,7 +687,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'pathologic_t_stage',
+      id: 'pathologic-t-stage',
       title: 'Pathologic T Stage',
       types: ['pie', 'table'],
       filterColumn: 'Pathologic T',
@@ -713,7 +714,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'histologic_type',
+      id: 'histologic-type',
       title: 'Histologic Type',
       types: ['pie', 'table'],
       filterColumn: 'Histologic Type',
@@ -738,7 +739,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'overall_survival',
+      id: 'overall-survival',
       title: 'Overall Survival',
       types: ['pie', 'table'],
       filterColumn: 'Overall Survival Status',
@@ -761,7 +762,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'pathologic_m_stage',
+      id: 'pathologic-m-stage',
       title: 'Pathologic M Stage',
       types: ['pie', 'table'],
       filterColumn: 'Pathologic M',
@@ -787,7 +788,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'pathologic_n_stage',
+      id: 'pathologic-n-stage',
       title: 'Pathologic N Stage',
       types: ['pie', 'table'],
       filterColumn: 'Pathologic N',
@@ -815,7 +816,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'metastatic_site',
+      id: 'metastatic-site',
       title: 'Metastatic Site',
       types: ['pie', 'table'],
       filterColumn: 'Metastatic Site',

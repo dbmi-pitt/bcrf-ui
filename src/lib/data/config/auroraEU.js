@@ -1,5 +1,6 @@
 export const CONFIG = {
-  id: 'aurora_eu',
+  id: 'aurora-eu',
+  table: 'aurora_eu',
   charts: [
     {
       id: 'type',
@@ -26,7 +27,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'pam50_primary',
+      id: 'pam50-primary',
       title: 'PAM50 Primary',
       types: ['pie', 'table'],
       filterColumn: 'PAM50_primary',
@@ -53,7 +54,7 @@ export const CONFIG = {
       `,
     },
     {
-      id: 'metastatic_biopsy_site',
+      id: 'metastatic-biopsy-site',
       title: 'Metastatic Biopsy Site',
       types: ['pie', 'table'],
       filterColumn: 'metastatic_biopsy_site',
