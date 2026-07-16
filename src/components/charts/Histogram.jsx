@@ -3,11 +3,11 @@ import { VictoryHistogram, VictoryTheme, VictoryChart } from 'victory';
 
 function Histogram({ data, layout }) {
   return (
-    <div className="c-chart__Histogram">
+    <div className="c-chart__histogram">
       <VictoryChart
         domainPadding={20}
         width={layout.w}
-        height={layout.h - 40} // magic number for now.
+        height={layout.h - layout.m}
         theme={VictoryTheme.clean}
       >
         <VictoryHistogram data={data.data} />

@@ -2,11 +2,13 @@ import React from 'react'
 import Pie from './Pie'
 import Histogram from './Histogram'
 import Table from './Table'
+import Scatter from './Scatter'
 
 function Chart({data, children, containerClassName = '', ...otherProps}) {
     const charts = {
     pie: Pie,
     histogram: Histogram,
+    scatter: Scatter,
     table: Table
   }
   

@@ -95,7 +95,7 @@ export default function GridLayout({ dataSource }) {
     const item = layouts.lg.filter(l => l.i === key)[0];
     const w = (item.w * colWidthPx) + ((item.w - 1) * margin[0]);
     const h = (item.h * rowHeightPx) + ((item.h - 1) * margin[1]);
-    return {w, h}
+    return {w, h, m: 40}
   }
 
   return (
