@@ -8,14 +8,21 @@ const AppContext = createContext({});
 
 export const AppProvider = ({ children }) => {
 
-  const [bannerContent, setBannerContent] = useState({});
-
+  const [content, setContent] = useState({});
 
   const fetchBannerContent = async () => {
     const url = URLS.api.local('content/banner');
     const results = await API.fetch({ url, method: 'GET' });
     if (Object.values(results).length) {
-      setBannerContent(results);
+      setContent({...content, banner: results});
+    }
+  };
+
+  const fetchSummaryDataSources = async () => {
+    const url = URLS.api.local('content/summary');
+    const results = await API.fetch({ url, method: 'GET' });
+    if (Object.values(results).length) {
+      setContent({...content, summary: results});
     }
   };
 
@@ -26,7 +33,11 @@ export const AppProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchBannerContent();
+    const loadData = async () => {
+      fetchBannerContent();
+      fetchSummaryDataSources();
+    }
+    loadData();
     setLoglevel();
   }, []);
 
@@ -34,7 +45,7 @@ export const AppProvider = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        bannerContent,
+        content,
       }}
     >
       {children}
