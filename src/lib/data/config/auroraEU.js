@@ -16,15 +16,19 @@ export const CONFIG = {
         { x: 'TNBC', y: 69, freq: 18.6 },
         { x: 'HER2+', y: 58, freq: 15.63 },
       ],
-      query: `
-        SELECT 
-          "type" AS x, 
-          COUNT(*) AS y,
-          ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
-        FROM aurora_eu
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "type" AS x, 
+            COUNT(*) AS y,
+            ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
+          FROM aurora_eu
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'pam50-primary',
@@ -43,15 +47,19 @@ export const CONFIG = {
         { x: 'Her2', y: 24, freq: 6.47 },
         { x: 'Normal', y: 9, freq: 2.43 },
       ],
-      query: `
-        SELECT
-          "PAM50_primary" AS x,
-          COUNT(*) AS y,
-          ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
-        FROM aurora_eu
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT
+            "PAM50_primary" AS x,
+            COUNT(*) AS y,
+            ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
+          FROM aurora_eu
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'metastatic-biopsy-site',
@@ -77,15 +85,17 @@ export const CONFIG = {
         { x: 'Abdominal wall', y: 2, freq: 0.54 },
         { x: 'Ovary', y: 2, freq: 0.54 },
       ],
-      query: `
-        SELECT
-          "metastatic_biopsy_site" AS x,
-          COUNT(*) AS y,
-          ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
-        FROM aurora_eu
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (filters = {}) => {
+        return `
+          SELECT
+            "metastatic_biopsy_site" AS x,
+            COUNT(*) AS y,
+            ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
+          FROM aurora_eu
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
   ],
 };
