@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 
+import GridWidget from '@/components/grid/GridWidget';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import GridWidget from '@/components/grid/GridWidget';
-import { CONFIG } from '../../../datasource_config';
 
-const datasource_config = CONFIG;
 function createLayout(charts) {
   return charts.map((chart, index) => ({
     i: chart.id,
@@ -14,38 +14,52 @@ function createLayout(charts) {
     y: Math.floor(index / 3) * 6,
     w: 4,
     h: 2,
-    minW: 3,
-    minH: 2,
+    minW: 2,
+    minH: 1,
   }));
 }
 
-export default function GridLayout({ dataSource }) {
+export default function GridLayout({ dataSource, charts }) {
   const STORAGE_KEY = `grid-layout-${dataSource}`;
-  const { width, containerRef, mounted } = useContainerWidth();
+  const { width, containerRef, mounted } = useContainerWidth({
+    measureBeforeMount: true,
+  });
   const rowHeightPx = 30;
   const margin = [10, 10];
   const cols = 12;
+
   const [loaded, setLoaded] = useState(false);
   const [hiddenWidgets, setHiddenWidgets] = useState([]);
   const [widgetItems, setWidgetItems] = useState(() =>
-    datasource_config.charts.map((chart) => ({
+    charts.map((chart) => ({
       key: chart.id,
       title: chart.title,
       chart,
     })),
   );
-  const [layout, setLayout] = useState(() =>
-    createLayout(datasource_config.charts),
-  );
+  const [layout, setLayout] = useState(() => createLayout(charts));
 
-  // Load modified layout view from localstorage
+  // Charts are already server-rendered; only the layout positions need to come
+  // from localstorage, since that's only available client-side.
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       setLayout(JSON.parse(saved));
     }
     setLoaded(true);
-  }, []);
+  }, [STORAGE_KEY]);
+
+  // If the data source changes on the client (e.g. via navigation without a full
+  // reload), keep widgetItems in sync with the newly server-rendered charts.
+  useEffect(() => {
+    setWidgetItems(
+      charts.map((chart) => ({
+        key: chart.id,
+        title: chart.title,
+        chart,
+      })),
+    );
+  }, [charts]);
 
   // Update the layout for visible widgets, do not lose position of hidden widgets
   const handleLayoutChange = (newLayout) => {
@@ -74,28 +88,30 @@ export default function GridLayout({ dataSource }) {
 
   return (
     <div ref={containerRef}>
-      <ReactGridLayout
-        dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
-        width={width}
-        layout={visibleLayout}
-        cols={12}
-        margin={margin}
-        rowHeight={rowHeightPx}
-        onLayoutChange={handleLayoutChange}
-      >
-        {widgetItems
-          .filter((item) => !hiddenKeys.has(item.key))
-          .map((item) => (
-            <div key={item.key}>
-              <GridWidget
-                title={item.title}
-                widgetKey={item.key}
-                chartData={item}
-                onRemove={() => handleRemoveItem(item.key)}
-              />
-            </div>
-          ))}
-      </ReactGridLayout>
+      {mounted && (
+        <ReactGridLayout
+          dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
+          width={width}
+          layout={visibleLayout}
+          cols={12}
+          margin={margin}
+          rowHeight={rowHeightPx}
+          onLayoutChange={handleLayoutChange}
+        >
+          {widgetItems
+            .filter((item) => !hiddenKeys.has(item.key))
+            .map((item) => (
+              <div key={item.key}>
+                <GridWidget
+                  title={item.title}
+                  widgetKey={item.key}
+                  chartData={item}
+                  onRemove={() => handleRemoveItem(item.key)}
+                />
+              </div>
+            ))}
+        </ReactGridLayout>
+      )}
     </div>
   );
 }

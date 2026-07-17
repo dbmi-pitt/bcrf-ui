@@ -1,8 +1,14 @@
 import React, {useMemo} from 'react';
-import { VictoryHistogram, VictoryTheme, VictoryChart, VictoryTooltip } from 'victory';
-import log from 'xac-loglevel';
+import {
+  VictoryChart,
+  VictoryHistogram,
+  VictoryTheme,
+  VictoryTooltip,
+} from 'victory';
+import log from 'xac-loglevel'
 
 function Histogram({ data, width, height }) {
+  log.debug('Histogram', data)
   
   const histogramData = useMemo(() => {
     const rawData = data.data
@@ -12,9 +18,8 @@ function Histogram({ data, width, height }) {
         list.push(...Array(d.y).fill({x: d.x}))
       }
     } else {
-      return rawData
+      return rawData.sort((a, b) => a.x - b.x)
     }
-    log.debug('Histogram', list)
     return list;
   }, [])
 
@@ -61,20 +66,39 @@ function Histogram({ data, width, height }) {
   return (
     <div className="c-chart__histogram">
       <VictoryChart
-        domainPadding={20}
+        domainPadding={10}
+        padding={30}
         width={width}
         height={height}
         theme={VictoryTheme.clean}
       >
-        <VictoryHistogram 
-         labels={({ datum }) =>
-            `Bin count:\n ${datum.y}`
-          }
-          labelComponent={<VictoryTooltip />}
+        <VictoryHistogram
           bins={resolveBins()}
           data={histogramData} 
+          labels={({ datum }) =>
+            `Number of samples: ${datum.y}\nRange: ${datum.x0} - ${datum.x1}`
+          }
+          labelComponent={<VictoryTooltip constrainToVisibleArea />}
+          events={[
+            {
+              target: 'data',
+              eventHandlers: {
+                onMouseOver: () => [
+                  {
+                    target: 'labels',
+                    mutation: () => ({ active: true }),
+                  },
+                ],
+                onMouseOut: () => [
+                  {
+                    target: 'labels',
+                    mutation: () => ({ active: false }),
+                  },
+                ],
+              },
+            },
+          ]}
         />
-     
       </VictoryChart>
     </div>
   );

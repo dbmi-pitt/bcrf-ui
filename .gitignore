@@ -56,3 +56,6 @@ package-lock.json
 /.secrets
 public/sample-fixtures
 public/content/banner.json
+
+# database
+*.db

@@ -17,15 +17,19 @@ export const CONFIG = {
         { x: 'Breast Mixed Ductal and Lobular Carcinoma', y: 7, freq: 4.52 },
         { x: 'Breast Invasive Lobular Carcinoma', y: 6, freq: 3.87 },
       ],
-      query: `
-        SELECT 
-          "Cancer Type Detailed" AS x,
-          COUNT(*) AS y,
-          ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Cancer Type Detailed" AS x,
+            COUNT(*) AS y,
+            ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'mutation-count',
@@ -172,11 +176,15 @@ export const CONFIG = {
         { x: 858 },
         { x: 1860 },
       ],
-      query: `
-        SELECT "Mutation Count" AS x
-        FROM aurora_us
-        WHERE x IS NOT NULL;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `AND ${clause}` : '';
+        return `
+          SELECT "Mutation Count" AS x
+          FROM aurora_us
+          WHERE x IS NOT NULL
+          ${whereClause};
+        `;
+      },
     },
     {
       id: 'number-of-samples-per-patient',
@@ -197,15 +205,19 @@ export const CONFIG = {
         { x: 5, y: 1, freq: 1.82 },
         { x: 10, y: 1, freq: 1.82 },
       ],
-      query: `
-        SELECT 
-          "Number of Samples Per Patient" AS x,
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Number of Samples Per Patient" AS x,
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC
+        `;
+      },
     },
     {
       id: 'clinical-stage',
@@ -225,15 +237,19 @@ export const CONFIG = {
         { x: 'Stage IIIB', y: 5, freq: 9.09 },
         { x: 'Stage IIIA', y: 2, freq: 3.64 },
       ],
-      query: `
-        SELECT 
-          "Clinical Stage" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Clinical Stage" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'pathologic-stage',
@@ -255,15 +271,19 @@ export const CONFIG = {
         { x: 'Stage IV', y: 2, freq: 3.64 },
         { x: 'Stage IIIB', y: 2, freq: 3.64 },
       ],
-      query: `
-        SELECT 
-          "Pathologic Stage" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Pathologic Stage" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'age-at-diagnosis',
@@ -331,14 +351,18 @@ export const CONFIG = {
         { x: 44.45833333 },
         { x: 40.76388889 },
       ],
-      query: `
-        SELECT x FROM (
-          SELECT DISTINCT
-            "Patient ID",
-            "Age at Diagnosis" AS x
-          FROM aurora_us
-        ) AS one_per_patient;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT x FROM (
+            SELECT DISTINCT
+              "Patient ID",
+              "Age at Diagnosis" AS x
+            FROM aurora_us
+            ${whereClause}
+          ) AS one_per_patient;
+        `;
+      },
     },
     {
       id: 'fraction-genome-altered',
@@ -486,11 +510,14 @@ export const CONFIG = {
         { x: 0.9993 },
         { x: 0.9997 },
       ],
-      query: `
-        SELECT "Fraction Genome Altered" AS x
-        FROM aurora_us
-        WHERE x IS NOT NULL;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `AND ${clause}` : '';
+        return `
+          SELECT "Fraction Genome Altered" AS x
+          FROM aurora_us
+          WHERE x IS NOT NULL ${whereClause};
+        `;
+      },
     },
     {
       id: 'mutation-count-vs-fraction-genome-altered',
@@ -627,14 +654,18 @@ export const CONFIG = {
         { x: 0.9997, y: 858 },
         { x: 0.9999, y: 1860 },
       ],
-      query: `
-        SELECT 
-          "Fraction Genome Altered" AS x,
-          "Mutation Count" AS y
-        FROM aurora_us
-        WHERE "Fraction Genome Altered" IS NOT NULL 
-          AND "Mutation Count" IS NOT NULL
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `AND ${clause}` : '';
+        return `
+          SELECT 
+            "Fraction Genome Altered" AS x,
+            "Mutation Count" AS y
+          FROM aurora_us
+          WHERE "Fraction Genome Altered" IS NOT NULL 
+            AND "Mutation Count" IS NOT NULL
+            ${whereClause};
+        `;
+      },
     },
     {
       id: 'progesterone-receptor-status',
@@ -650,15 +681,19 @@ export const CONFIG = {
         { x: 'Positive', y: 25, freq: 45.45 },
         { x: 'Unknown', y: 2, freq: 3.64 },
       ],
-      query: `
-        SELECT 
-          "Progesterone Receptor Status" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Progesterone Receptor Status" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'race',
@@ -676,15 +711,19 @@ export const CONFIG = {
         { x: 'Other', y: 2, freq: 3.64 },
         { x: 'Asian', y: 1, freq: 1.82 },
       ],
-      query: `
-        SELECT 
-          "Race" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Race" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'pathologic-t-stage',
@@ -703,15 +742,19 @@ export const CONFIG = {
         { x: 'pT3', y: 3, freq: 5.45 },
         { x: 'Unknown', y: 2, freq: 3.64 },
       ],
-      query: `
-        SELECT 
-          "Pathologic T" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Pathologic T" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'histologic-type',
@@ -728,15 +771,19 @@ export const CONFIG = {
         { x: 'Infiltrating Lobular Carcinoma', y: 3, freq: 5.45 },
         { x: 'Mixed Ductal and Lobular Carcinoma', y: 3, freq: 5.45 },
       ],
-      query: `
-        SELECT 
-          "Histologic Type" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Histologic Type" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'overall-survival',
@@ -751,15 +798,19 @@ export const CONFIG = {
         { x: '1:DECEASED', y: 46, freq: 83.64 },
         { x: '0:LIVING', y: 9, freq: 16.36 },
       ],
-      query: `
-        SELECT 
-          "Overall Survival Status" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Overall Survival Status" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'pathologic-m-stage',
@@ -777,15 +828,19 @@ export const CONFIG = {
         { x: 'M1', y: 2, freq: 3.64 },
         { x: 'Unknown', y: 1, freq: 1.82 },
       ],
-      query: `
-        SELECT 
-          "Pathologic M" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Pathologic M" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'pathologic-n-stage',
@@ -805,15 +860,19 @@ export const CONFIG = {
         { x: 'Unknown', y: 2, freq: 3.64 },
         { x: 'pNx', y: 1, freq: 1.82 },
       ],
-      query: `
-        SELECT 
-          "Pathologic N" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Pathologic N" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'metastatic-site',
@@ -877,15 +936,19 @@ export const CONFIG = {
         { x: 'Left Upper Lobe Lung #1', y: 1, freq: 0.65 },
         { x: 'Left Inferior Thyroid', y: 1, freq: 0.65 },
       ],
-      query: `
-        SELECT 
-          "Metastatic Site" AS x, 
-          COUNT(*) AS y,
-          ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC;
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Metastatic Site" AS x, 
+            COUNT(*) AS y,
+            ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC;
+        `;
+      },
     },
     {
       id: 'ethnicity',
@@ -901,15 +964,19 @@ export const CONFIG = {
         { x: 'Unknown', y: 11, freq: 20.0 },
         { x: 'Hispanic/Latina', y: 4, freq: 7.27 },
       ],
-      query: `
-        SELECT 
-          "Ethnicity" AS x, 
-          COUNT(DISTINCT "Patient ID") AS y,
-          ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
-        FROM aurora_us
-        GROUP BY x
-        ORDER BY y DESC; 
-      `,
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Ethnicity" AS x, 
+            COUNT(DISTINCT "Patient ID") AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
     },
   ],
 };
