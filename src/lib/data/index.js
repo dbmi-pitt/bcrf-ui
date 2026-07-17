@@ -3,7 +3,9 @@
 import { DuckDBInstance } from '@duckdb/node-api';
 import { buildFilterClause } from './filter.js';
 
-const instance = await DuckDBInstance.create(process.env.DUCK_DB_PATH);
+const instance = await DuckDBInstance.create(process.env.DUCK_DB_PATH, {
+  access_mode: 'READ_ONLY',
+});
 const connection = await instance.connect();
 
 const sourceMap = {
