@@ -7,7 +7,7 @@ import Draggable from 'react-draggable';
 function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
   const defaultBin = options.bin || 'customBins';
   const defaultBinSize = options.binSize || 6;
-  const defaultBinMinValue = options.binMinValue || 1;
+  const defaultBinMinValue = options.binMinValue || 5;
   const defaultCustomBins = options.customBins || '';
   const [values, setValues] = useState({
     bin: defaultBin,
@@ -51,7 +51,7 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
     log.debug('HistogramBins.onBinChange', e);
     setValues({ ...values, bin: e.target.value });
     if (onChange) {
-      onChange({ bin: e.target.value, ...values });
+      onChange({ ...values, bin: e.target.value });
     }
   };
 

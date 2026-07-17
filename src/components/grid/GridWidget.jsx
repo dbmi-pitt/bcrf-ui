@@ -13,7 +13,6 @@ import {
 } from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '@/components/charts/Chart';
-import AppModal from '../AppModal';
 import HistogramBinsModal from '../charts/partials/HistogramBinsModal';
 
 export default function GridWidget({
