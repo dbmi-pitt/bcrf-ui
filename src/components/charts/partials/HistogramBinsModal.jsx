@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { Input, Flex, Radio, InputNumber } from 'antd';
+import React, { useState, useRef } from 'react';
+import { Input, Flex, Radio, InputNumber, Modal } from 'antd';
 const { TextArea } = Input;
 import log from 'xac-loglevel';
-import AppModal from '@/components/AppModal';
+import Draggable from 'react-draggable';
 
 function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
-  const defaultBin = options.bin || 'customBins'
+  const defaultBin = options.bin || 'customBins';
   const defaultBinSize = options.binSize || 6;
   const defaultBinMinValue = options.binMinValue || 1;
   const defaultCustomBins = options.customBins || '';
@@ -16,11 +16,24 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
     customBins: defaultCustomBins,
   });
 
+  const [dragDisabled, setDragDisabled] = useState(true);
+  const [bounds, setBounds] = useState({
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: 0,
+  });
+  const draggleRef = useRef(null);
+
   const onHandleModalOk = () => {
     if (onChange) {
       onChange(values);
     }
-    setModal({...modal, open: false})
+    closeModal()
+  };
+
+  const closeModal = () => {
+    setModal({ ...modal, open: false });
   };
 
   const onGenerateBinValueChange = (field, value) => {
@@ -29,22 +42,68 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
   };
 
   const onCustomBins = (e) => {
-    const values = e.target.value.split(',')
-    const list = values.map((v) => Number(v))
-    onGenerateBinValueChange('customBins', list)
-  }
+    const values = e.target.value.split(',');
+    const list = values.map((v) => Number(v));
+    onGenerateBinValueChange('customBins', list);
+  };
 
   const onBinChange = (e) => {
     log.debug('HistogramBins.onBinChange', e);
-    setValues({...values, bin: e.target.value})
+    setValues({ ...values, bin: e.target.value });
     if (onChange) {
       onChange({ bin: e.target.value, ...values });
     }
   };
 
+  const onStart = (_event, uiData) => {
+    const { clientWidth, clientHeight } = window.document.documentElement;
+    const targetRect = draggleRef.current?.getBoundingClientRect();
+    if (!targetRect) {
+      return;
+    }
+    setBounds({
+      left: -targetRect.left + uiData.x,
+      right: clientWidth - (targetRect.right - uiData.x),
+      top: -targetRect.top + uiData.y,
+      bottom: clientHeight - (targetRect.bottom - uiData.y),
+    });
+  };
+
   return (
-    <div className='c-gridWidget__histogramBinsModal'>
-      <AppModal modal={modal} setModal={setModal} handleModalOk={onHandleModalOk}>
+    <div className="c-gridWidget__histogramBinsModal">
+      <Modal
+        title={
+          <div
+            style={{ width: '100%', cursor: 'move' }}
+            onMouseOver={() => {
+              if (dragDisabled) {
+                setDragDisabled(false);
+              }
+            }}
+            onMouseOut={() => {
+              setDragDisabled(true);
+            }}
+
+            onFocus={() => {}}
+            onBlur={() => {}}
+          >
+            Custom Bins
+          </div>
+        }
+        open={modal.open}
+        onOk={onHandleModalOk}
+        onCancel={closeModal}
+        modalRender={(modal) => (
+          <Draggable
+            disabled={dragDisabled}
+            bounds={bounds}
+            nodeRef={draggleRef}
+            onStart={(event, uiData) => onStart(event, uiData)}
+          >
+            <div ref={draggleRef}>{modal}</div>
+          </Draggable>
+        )}
+      >
         <Flex vertical gap="medium">
           <Radio.Group
             defaultValue={values.bin}
@@ -58,7 +117,6 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
           </Radio.Group>
           {values.bin.eq('generateBins') && (
             <Flex gap={'large'}>
-
               {/* TODO: Find out what this is on cbioportal */}
               {/* <span>Bin Size{' '}</span>
               <InputNumber
@@ -67,7 +125,7 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
                 name="binSize"
                 onChange={(v) => onGenerateBinValueChange('binSize', v)}
               /> */}
-              <span>Number of bins{' '}</span>
+              <span>Number of bins </span>
               <InputNumber
                 min={1}
                 defaultValue={values.binMinValue}
@@ -86,7 +144,7 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
             />
           )}
         </Flex>
-      </AppModal>
+      </Modal>
     </div>
   );
 }

@@ -116,7 +116,7 @@ export default function GridWidget({
       setChartType(newType);
     }
     if (key.eq('customBins')) {
-      setModal({ ...modal, open: true, title: 'Custom Bins' });
+      setModal({ ...modal, open: true });
     }
   };
 
