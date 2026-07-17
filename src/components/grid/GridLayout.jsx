@@ -88,28 +88,30 @@ export default function GridLayout({ dataSource, charts }) {
 
   return (
     <div ref={containerRef}>
-      <ReactGridLayout
-        dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
-        width={width}
-        layout={visibleLayout}
-        cols={12}
-        margin={margin}
-        rowHeight={rowHeightPx}
-        onLayoutChange={handleLayoutChange}
-      >
-        {widgetItems
-          .filter((item) => !hiddenKeys.has(item.key))
-          .map((item) => (
-            <div key={item.key}>
-              <GridWidget
-                title={item.title}
-                widgetKey={item.key}
-                chartData={item}
-                onRemove={() => handleRemoveItem(item.key)}
-              />
-            </div>
-          ))}
-      </ReactGridLayout>
+      {mounted && (
+        <ReactGridLayout
+          dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
+          width={width}
+          layout={visibleLayout}
+          cols={12}
+          margin={margin}
+          rowHeight={rowHeightPx}
+          onLayoutChange={handleLayoutChange}
+        >
+          {widgetItems
+            .filter((item) => !hiddenKeys.has(item.key))
+            .map((item) => (
+              <div key={item.key}>
+                <GridWidget
+                  title={item.title}
+                  widgetKey={item.key}
+                  chartData={item}
+                  onRemove={() => handleRemoveItem(item.key)}
+                />
+              </div>
+            ))}
+        </ReactGridLayout>
+      )}
     </div>
   );
 }
