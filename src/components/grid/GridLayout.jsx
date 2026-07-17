@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+'use client';
+
+import { useEffect, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 
+import GridWidget from '@/components/grid/GridWidget';
+import { getChartData } from '@/lib/data/index';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import GridWidget from '@/components/grid/GridWidget';
-import { CONFIG } from '../../../datasource_config';
 
-const datasource_config = CONFIG;
 function createLayout(charts) {
   return charts.map((chart, index) => ({
     i: chart.id,
@@ -25,27 +26,47 @@ export default function GridLayout({ dataSource }) {
   const rowHeightPx = 30;
   const margin = [10, 10];
   const cols = 12;
-  const [loaded, setLoaded] = useState(false);
-  const [hiddenWidgets, setHiddenWidgets] = useState([]);
-  const [widgetItems, setWidgetItems] = useState(() =>
-    datasource_config.charts.map((chart) => ({
-      key: chart.id,
-      title: chart.title,
-      chart,
-    })),
-  );
-  const [layout, setLayout] = useState(() =>
-    createLayout(datasource_config.charts),
-  );
 
-  // Load modified layout view from localstorage
+  const [loaded, setLoaded] = useState(false);
+  const [notFound, setNotFound] = useState(false);
+  const [hiddenWidgets, setHiddenWidgets] = useState([]);
+  const [widgetItems, setWidgetItems] = useState([]);
+  const [layout, setLayout] = useState([]);
+
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setLayout(JSON.parse(saved));
+    let cancelled = false;
+
+    async function loadCharts() {
+      const data = await getChartData(dataSource);
+      if (cancelled) return;
+
+      if (data.notFound) {
+        setNotFound(true);
+        setLoaded(true);
+        return;
+      }
+
+      const { charts } = data;
+
+      setWidgetItems(
+        charts.map((chart) => ({
+          key: chart.id,
+          title: chart.title,
+          chart,
+        })),
+      );
+
+      const saved = localStorage.getItem(STORAGE_KEY);
+      setLayout(saved ? JSON.parse(saved) : createLayout(charts));
+      setLoaded(true);
     }
-    setLoaded(true);
-  }, []);
+
+    loadCharts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dataSource, STORAGE_KEY]);
 
   // Update the layout for visible widgets, do not lose position of hidden widgets
   const handleLayoutChange = (newLayout) => {
@@ -75,10 +96,25 @@ export default function GridLayout({ dataSource }) {
   const getWidgetLayout = (key) => {
     const colWidthPx = (width - margin[0] * (cols - 1)) / cols;
     const item = layout.find((l) => l.i === key);
+    if (!item) {
+      return { w: 0, h: 0, m: 40 };
+    }
     const w = item.w * colWidthPx + (item.w - 1) * margin[0];
     const h = item.h * rowHeightPx + (item.h - 1) * margin[1];
     return { w, h, m: 40 };
   };
+
+  if (!loaded) {
+    // Loading
+    return <div ref={containerRef}>Loading...</div>;
+  }
+
+  if (notFound) {
+    // Not found
+    return (
+      <div ref={containerRef}>No datasource found named {dataSource}.</div>
+    );
+  }
 
   return (
     <div ref={containerRef}>
