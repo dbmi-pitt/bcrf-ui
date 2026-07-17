@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 
 import GridWidget from '@/components/grid/GridWidget';
-import { getChartData } from '@/lib/data/index';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -20,53 +19,47 @@ function createLayout(charts) {
   }));
 }
 
-export default function GridLayout({ dataSource }) {
+export default function GridLayout({ dataSource, charts }) {
   const STORAGE_KEY = `grid-layout-${dataSource}`;
-  const { width, containerRef, mounted } = useContainerWidth();
+  const { width, containerRef, mounted } = useContainerWidth({
+    measureBeforeMount: true,
+  });
   const rowHeightPx = 30;
   const margin = [10, 10];
   const cols = 12;
 
   const [loaded, setLoaded] = useState(false);
-  const [notFound, setNotFound] = useState(false);
   const [hiddenWidgets, setHiddenWidgets] = useState([]);
-  const [widgetItems, setWidgetItems] = useState([]);
-  const [layout, setLayout] = useState([]);
+  const [widgetItems, setWidgetItems] = useState(() =>
+    charts.map((chart) => ({
+      key: chart.id,
+      title: chart.title,
+      chart,
+    })),
+  );
+  const [layout, setLayout] = useState(() => createLayout(charts));
 
+  // Charts are already server-rendered; only the layout positions need to come
+  // from localstorage, since that's only available client-side.
   useEffect(() => {
-    let cancelled = false;
-
-    async function loadCharts() {
-      const data = await getChartData(dataSource);
-      if (cancelled) return;
-
-      if (data.notFound) {
-        setNotFound(true);
-        setLoaded(true);
-        return;
-      }
-
-      const { charts } = data;
-
-      setWidgetItems(
-        charts.map((chart) => ({
-          key: chart.id,
-          title: chart.title,
-          chart,
-        })),
-      );
-
-      const saved = localStorage.getItem(STORAGE_KEY);
-      setLayout(saved ? JSON.parse(saved) : createLayout(charts));
-      setLoaded(true);
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      setLayout(JSON.parse(saved));
     }
+    setLoaded(true);
+  }, [STORAGE_KEY]);
 
-    loadCharts();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [dataSource, STORAGE_KEY]);
+  // If the data source changes on the client (e.g. via navigation without a full
+  // reload), keep widgetItems in sync with the newly server-rendered charts.
+  useEffect(() => {
+    setWidgetItems(
+      charts.map((chart) => ({
+        key: chart.id,
+        title: chart.title,
+        chart,
+      })),
+    );
+  }, [charts]);
 
   // Update the layout for visible widgets, do not lose position of hidden widgets
   const handleLayoutChange = (newLayout) => {
@@ -104,43 +97,33 @@ export default function GridLayout({ dataSource }) {
     return { w, h, m: 40 };
   };
 
-  if (!loaded) {
-    // Loading
-    return <div ref={containerRef}>Loading...</div>;
-  }
-
-  if (notFound) {
-    // Not found
-    return (
-      <div ref={containerRef}>No datasource found named {dataSource}.</div>
-    );
-  }
-
   return (
     <div ref={containerRef}>
-      <ReactGridLayout
-        dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
-        width={width}
-        layout={visibleLayout}
-        cols={12}
-        margin={margin}
-        rowHeight={rowHeightPx}
-        onLayoutChange={handleLayoutChange}
-      >
-        {widgetItems
-          .filter((item) => !hiddenKeys.has(item.key))
-          .map((item) => (
-            <div key={item.key}>
-              <GridWidget
-                title={item.title}
-                widgetKey={item.key}
-                chartData={item}
-                layout={getWidgetLayout(item.key)}
-                onRemove={() => handleRemoveItem(item.key)}
-              />
-            </div>
-          ))}
-      </ReactGridLayout>
+      {mounted && (
+        <ReactGridLayout
+          dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
+          width={width}
+          layout={visibleLayout}
+          cols={12}
+          margin={margin}
+          rowHeight={rowHeightPx}
+          onLayoutChange={handleLayoutChange}
+        >
+          {widgetItems
+            .filter((item) => !hiddenKeys.has(item.key))
+            .map((item) => (
+              <div key={item.key}>
+                <GridWidget
+                  title={item.title}
+                  widgetKey={item.key}
+                  chartData={item}
+                  layout={getWidgetLayout(item.key)}
+                  onRemove={() => handleRemoveItem(item.key)}
+                />
+              </div>
+            ))}
+        </ReactGridLayout>
+      )}
     </div>
   );
 }
