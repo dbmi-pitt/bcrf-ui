@@ -46,7 +46,7 @@ export default function GridWidget({
         icon: icons[switchTo],
       });
     }
-    if (chartType === 'histogram') {
+    if (chartType.eq('histogram')) {
       items.push({
         key: 'compareGroups',
         label: <span>Compare Groups</span>,
