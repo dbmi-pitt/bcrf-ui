@@ -161,6 +161,7 @@ export default function GridWidget({
 
       <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }}>
         <ChartProvider>
+          {/* // TODO: build over over legend table for pie chart */}
           <Chart data={data} chartType={chartType} />
         </ChartProvider>
       </Card.Body>
