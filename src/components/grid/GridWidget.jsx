@@ -51,6 +51,20 @@ export default function GridWidget({
         key: 'compareGroups',
         label: <span>Compare Groups</span>,
         icon: <CalculatorOutlined />,
+        children: [
+          {
+            key: 'compareGroups:Quartiles',
+            label: 'Quartiles',
+          },
+          {
+            key: 'compareGroups:Median',
+            label: 'Median',
+          },
+          {
+            key: 'compareGroups:bins',
+            label: 'Current bins',
+          },
+        ],
       });
       items.push({
         key: 'customBins',
@@ -64,20 +78,20 @@ export default function GridWidget({
       icon: <DownloadOutlined />,
       children: [
         {
-          key: 'downloadSummary',
+          key: 'download:Summary',
           label: 'Summary Data',
         },
         {
-          key: 'downloadData',
+          key: 'download:Data',
           label: 'Full Data',
         },
         {
-          key: 'downloadSVG',
+          key: 'download:SVG',
           label: 'SVG',
         },
         {
-          key: 'downloadPDF',
-          label: 'PDG',
+          key: 'download:PDF',
+          label: 'PDF',
         },
       ],
     });
@@ -89,6 +103,8 @@ export default function GridWidget({
     if (key.startsWith('switchChart:')) {
       const newType = key.split(':')[1];
       setChartType(newType);
+    }
+    if (key.eq('customBins')) {
     }
   };
   const menuProps = {
