@@ -50,13 +50,13 @@ export const getFilteredChartData = async (sourceId, filters) => {
       continue;
     }
 
-    // find the chart config for this filter key
-    const chart = config.charts.find((c) => c.filterColumn === key);
+    // find the chart config for this filter key (client sends chart id)
+    const chart = config.charts.find((c) => c.id === key);
     if (!chart) {
       continue;
     }
 
-    // skip if the chart if not filterable
+    // skip if the chart is not filterable
     const column = chart.filterColumn;
     if (!column) {
       continue;
