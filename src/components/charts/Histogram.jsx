@@ -1,16 +1,47 @@
 import React from 'react';
-import { VictoryHistogram, VictoryTheme, VictoryChart } from 'victory';
+import {
+  VictoryChart,
+  VictoryHistogram,
+  VictoryTheme,
+  VictoryTooltip,
+} from 'victory';
 
-function Histogram({ data, layout }) {
+function Histogram({ data, width, height }) {
   return (
     <div className="c-chart__histogram">
       <VictoryChart
-        domainPadding={20}
-        width={layout.w}
-        
+        domainPadding={10}
+        padding={30}
+        width={width}
+        height={height}
         theme={VictoryTheme.clean}
       >
-        <VictoryHistogram data={data.data} />
+        <VictoryHistogram
+          data={data.data}
+          labels={({ datum }) =>
+            `Number of samples: ${datum.y}\nRange: ${datum.x0} - ${datum.x1}`
+          }
+          labelComponent={<VictoryTooltip />}
+          events={[
+            {
+              target: 'data',
+              eventHandlers: {
+                onMouseOver: () => [
+                  {
+                    target: 'labels',
+                    mutation: () => ({ active: true }),
+                  },
+                ],
+                onMouseOut: () => [
+                  {
+                    target: 'labels',
+                    mutation: () => ({ active: false }),
+                  },
+                ],
+              },
+            },
+          ]}
+        />
       </VictoryChart>
     </div>
   );
