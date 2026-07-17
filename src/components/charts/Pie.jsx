@@ -5,7 +5,6 @@ function Pie({ data, width, height }) {
   return (
     <div className="c-chart__pie">
       <VictoryPie
-        // domainPadding={{ x: 10, y: 10 }}
         padding={0}
         width={width}
         height={height}
