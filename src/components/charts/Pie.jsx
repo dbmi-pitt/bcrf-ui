@@ -12,7 +12,7 @@ function Pie({ data, width, height }) {
         data={data.data}
         theme={VictoryTheme.clean}
         labels={({ datum }) => `${datum.x}: ${datum.y}`}
-        labelComponent={<VictoryTooltip />}
+        labelComponent={<VictoryTooltip constrainToVisibleArea />}
         events={[
           {
             target: 'data',
