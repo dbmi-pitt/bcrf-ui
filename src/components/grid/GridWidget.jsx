@@ -13,6 +13,8 @@ import {
 } from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '@/components/charts/Chart';
+import AppModal from '../AppModal';
+import HistogramBinsModal from '../charts/partials/HistogramBinsModal';
 
 export default function GridWidget({
   title,
@@ -22,6 +24,8 @@ export default function GridWidget({
   layout,
 }) {
   const [chartType, setChartType] = useState(chartData.chart.types[0]);
+  const [modal, setModal] = useState({});
+  const [data, setData] = useState(chartData.chart);
 
   const resolveChartType = () => {
     let defaultType = chartData.chart.types[0];
@@ -36,6 +40,8 @@ export default function GridWidget({
     histogram: <BarChartOutlined />,
   };
 
+  const isHistogram = () => chartType.eq('histogram');
+
   const getItems = () => {
     const items = [];
     if (chartData.chart.types.length > 1) {
@@ -46,26 +52,28 @@ export default function GridWidget({
         icon: icons[switchTo],
       });
     }
-    if (chartType.eq('histogram')) {
-      items.push({
-        key: 'compareGroups',
-        label: <span>Compare Groups</span>,
-        icon: <CalculatorOutlined />,
-        children: [
-          {
-            key: 'compareGroups:Quartiles',
-            label: 'Quartiles',
-          },
-          {
-            key: 'compareGroups:Median',
-            label: 'Median',
-          },
-          {
-            key: 'compareGroups:bins',
-            label: 'Current bins',
-          },
-        ],
-      });
+    if (isHistogram()) {
+      // TODO: uncomment if and add corrresponding logic if needed later
+      // items.push({
+      //   key: 'compareGroups',
+      //   label: <span>Compare Groups</span>,
+      //   icon: <CalculatorOutlined />,
+      //   children: [
+      //     {
+      //       key: 'compareGroups:Quartiles',
+      //       label: 'Quartiles',
+      //     },
+      //     {
+      //       key: 'compareGroups:Median',
+      //       label: 'Median',
+      //     },
+      //     {
+      //       key: 'compareGroups:bins',
+      //       label: 'Current bins',
+      //     },
+      //   ],
+      // });
+
       items.push({
         key: 'customBins',
         label: <span>Custom Bins</span>,
@@ -99,21 +107,27 @@ export default function GridWidget({
     return items;
   };
 
+  const onChartOptions = (options) => {
+    setData({ ...data, options });
+  };
+
   const handleMenuClick = ({ key }) => {
     if (key.startsWith('switchChart:')) {
       const newType = key.split(':')[1];
       setChartType(newType);
     }
     if (key.eq('customBins')) {
+      setModal({ ...modal, open: true, title: 'Custom Bins' });
     }
   };
+
   const menuProps = {
     items: getItems(),
     onClick: handleMenuClick,
   };
 
   return (
-    <Card className="h-100" key={widgetKey} style={{ overflow: 'hidden' }}>
+    <Card className="c-gridWidget h-100" key={widgetKey} style={{ overflow: 'hidden' }}>
       <Card.Header
         className="d-flex justify-content-between align-items-center py-1 drag-header-handle"
         style={{ cursor: 'move' }}
@@ -149,9 +163,12 @@ export default function GridWidget({
 
       <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }}>
         <ChartProvider>
-          <Chart data={chartData.chart} chartType={chartType} layout={layout} />
+          <Chart data={data} chartType={chartType} layout={layout} />
         </ChartProvider>
       </Card.Body>
+      {isHistogram() && (
+        <HistogramBinsModal key={widgetKey} onChange={onChartOptions} modal={modal} setModal={setModal} options={data.options || {}} />
+      )}
     </Card>
   );
 }
