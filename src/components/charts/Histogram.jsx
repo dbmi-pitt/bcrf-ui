@@ -2,14 +2,15 @@ import React from 'react';
 import { VictoryHistogram, VictoryTheme, VictoryChart, VictoryTooltip } from 'victory';
 import log from 'xac-loglevel';
 
-function Histogram({ data, layout }) {
+function Histogram({ data, width, height }) {
   log.debug('Histogram', data)
-  
+
   return (
     <div className="c-chart__histogram">
       <VictoryChart
         domainPadding={20}
-        width={layout.w}
+        width={width}
+        height={height}
         theme={VictoryTheme.clean}
       >
         <VictoryHistogram 

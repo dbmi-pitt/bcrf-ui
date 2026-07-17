@@ -1,12 +1,13 @@
 import React from 'react';
 import { VictoryPie, VictoryTheme, VictoryTooltip } from 'victory';
 
-function Pie({ data, layout }) {
+function Pie({ data, width, height }) {
   return (
     <div className="c-chart__pie">
       <VictoryPie
         domainPadding={{ x: 10, y: 10 }}
-        width={layout.w}
+        width={width}
+        height={height}
         data={data.data}
         theme={VictoryTheme.clean}
         labels={({ datum }) => `${datum.x}: ${datum.y}`}
