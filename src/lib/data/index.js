@@ -19,7 +19,10 @@ export const getChartData = async (sourceId) => {
 
   // return non-client fields from charts array in config
   return {
-    charts: config.charts.map(({ filterColumn, query, ...rest }) => rest),
+    charts: config.charts.map(({ filterColumn, query, ...rest }) => ({
+      isFilterable: Boolean(filterColumn),
+      ...rest,
+    })),
   };
 };
 
