@@ -11,8 +11,10 @@ function Histogram({ data, width, height }) {
       if (bin.eq('customBins')) {
         return data.options.customBins
       } else if (bin.eq('quartiles')) {
+        // TODO Calculate actual quarters
         return 4
       } else if (bin.eq('median')) {
+        // TODO calculate actual median
         return 2
       } else if (bin.eq('generateBins')) {
         return Number(data.options.binMinValue)
