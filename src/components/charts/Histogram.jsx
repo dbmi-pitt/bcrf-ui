@@ -17,6 +17,7 @@ function Histogram({ data, layout }) {
             `Bin count:\n ${datum.y}`
           }
           labelComponent={<VictoryTooltip />}
+          bins={data.options?.bin.eq('customBins') ? data.options.customBins : undefined}
           data={data.data} 
         />
       </VictoryChart>

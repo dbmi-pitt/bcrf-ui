@@ -5,11 +5,13 @@ import log from 'xac-loglevel';
 import AppModal from '@/components/AppModal';
 
 function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
-  const [bin, setBin] = useState('customBins');
+  const defaultBin = options.bin || 'customBins'
+  const [bin, setBin] = useState(defaultBin);
   const defaultBinSize = options.binSize || 6;
   const defaultBinMinValue = options.binMinValue || 1;
   const defaultCustomBins = options.customBins || '';
   const [values, setValues] = useState({
+    bin: defaultBin,
     binSize: defaultBinSize,
     binMinValue: defaultBinMinValue,
     customBins: defaultCustomBins,
