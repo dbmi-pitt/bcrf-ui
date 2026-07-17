@@ -21,7 +21,7 @@ function Histogram({ data, width, height }) {
           labels={({ datum }) =>
             `Number of samples: ${datum.y}\nRange: ${datum.x0} - ${datum.x1}`
           }
-          labelComponent={<VictoryTooltip />}
+          labelComponent={<VictoryTooltip constrainToVisibleArea />}
           events={[
             {
               target: 'data',
