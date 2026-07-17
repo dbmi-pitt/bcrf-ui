@@ -72,14 +72,6 @@ export default function GridLayout({ dataSource }) {
   const hiddenKeys = new Set(hiddenWidgets);
   const visibleLayout = layout.filter((item) => !hiddenKeys.has(item.i));
 
-  const getWidgetLayout = (key) => {
-    const colWidthPx = (width - margin[0] * (cols - 1)) / cols;
-    const item = layout.find((l) => l.i === key);
-    const w = item.w * colWidthPx + (item.w - 1) * margin[0];
-    const h = item.h * rowHeightPx + (item.h - 1) * margin[1];
-    return { w, h, m: 40 };
-  };
-
   return (
     <div ref={containerRef}>
       <ReactGridLayout
@@ -99,7 +91,6 @@ export default function GridLayout({ dataSource }) {
                 title={item.title}
                 widgetKey={item.key}
                 chartData={item}
-                layout={getWidgetLayout(item.key)}
                 onRemove={() => handleRemoveItem(item.key)}
               />
             </div>

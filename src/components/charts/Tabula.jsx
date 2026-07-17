@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, Checkbox } from 'antd';
 import log from 'xac-loglevel'
 
-function Tabula({ data, layout }) {
+function Tabula({ data, width, height }) {
 
   const checkboxFilter = (v, record) => {
     log.debug('Tabula.checkboxFilter', v, record)
@@ -31,7 +31,7 @@ function Tabula({ data, layout }) {
   }
   return (
     <div>
-      <Table size="small" rowKey={'x'}  dataSource={data.data} columns={getColumns()} style={{width: layout.w - layout.m}} />
+      <Table size="small" rowKey={'x'}  dataSource={data.data} columns={getColumns()} style={{width: width, height: height}} />
     </div>
   )
 }

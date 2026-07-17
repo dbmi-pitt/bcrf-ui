@@ -19,7 +19,6 @@ export default function GridWidget({
   widgetKey,
   chartData,
   onRemove,
-  layout,
 }) {
   const [chartType, setChartType] = useState(chartData.chart.types[0]);
 
@@ -133,7 +132,7 @@ export default function GridWidget({
 
       <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }}>
         <ChartProvider>
-          <Chart data={chartData.chart} chartType={chartType} layout={layout} />
+          <Chart data={chartData.chart} chartType={chartType} />
         </ChartProvider>
       </Card.Body>
     </Card>
