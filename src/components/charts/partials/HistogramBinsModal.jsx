@@ -6,7 +6,6 @@ import AppModal from '@/components/AppModal';
 
 function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
   const defaultBin = options.bin || 'customBins'
-  const [bin, setBin] = useState(defaultBin);
   const defaultBinSize = options.binSize || 6;
   const defaultBinMinValue = options.binMinValue || 1;
   const defaultCustomBins = options.customBins || '';
@@ -37,7 +36,7 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
 
   const onBinChange = (e) => {
     log.debug('HistogramBins.onBinChange', e);
-    setBin(e.target.value);
+    setValues({...values, bin: e.target.value})
     if (onChange) {
       onChange({ bin: e.target.value, ...values });
     }
@@ -48,7 +47,7 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
       <AppModal modal={modal} setModal={setModal} handleModalOk={onHandleModalOk}>
         <Flex vertical gap="medium">
           <Radio.Group
-            defaultValue={bin}
+            defaultValue={values.bin}
             buttonStyle="solid"
             onChange={onBinChange}
           >
@@ -57,16 +56,18 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
             <Radio.Button value="generateBins">Generate bins</Radio.Button>
             <Radio.Button value="customBins">Custom bins</Radio.Button>
           </Radio.Group>
-          {bin.eq('generateBins') && (
+          {values.bin.eq('generateBins') && (
             <Flex gap={'large'}>
-              Bin Size{' '}
+
+              {/* TODO: Find out what this is on cbioportal */}
+              {/* <span>Bin Size{' '}</span>
               <InputNumber
                 min={1}
                 defaultValue={values.binSize}
                 name="binSize"
                 onChange={(v) => onGenerateBinValueChange('binSize', v)}
-              />
-              Min value{' '}
+              /> */}
+              <span>Number of bins{' '}</span>
               <InputNumber
                 min={1}
                 defaultValue={values.binMinValue}
@@ -75,7 +76,7 @@ function HistogramBinsModal({ onChange, modal, setModal, options = {} }) {
               />
             </Flex>
           )}
-          {bin.eq('customBins') && (
+          {values.bin.eq('customBins') && (
             <TextArea
               rows={2}
               name="customBins"
