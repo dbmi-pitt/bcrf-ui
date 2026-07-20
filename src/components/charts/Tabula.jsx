@@ -1,39 +1,67 @@
-import React from 'react'
-import { Table, Checkbox } from 'antd';
-import log from 'xac-loglevel'
+import { Checkbox, Table } from 'antd';
 
-function Tabula({ data, width, height }) {
-
+function Tabula({
+  data,
+  width,
+  height,
+  isFilterable,
+  activeFilters,
+  onAddFilter,
+  onRemoveFilter,
+}) {
   const checkboxFilter = (v, record) => {
-    log.debug('Tabula.checkboxFilter', v, record)
-  }
+    if (!isFilterable) {
+      return;
+    }
+    const value = record.x;
+    if (activeFilters.includes(value)) {
+      onRemoveFilter(data.id, value);
+    } else {
+      onAddFilter(data.id, value);
+    }
+  };
 
   const getColumns = () => {
     const uniqueKeys = [...new Set(data.data.flatMap(Object.keys))];
-    const columns = []
+    const columns = [];
     for (const key of uniqueKeys) {
       columns.push({
         title: data.labels[key] || key,
         dataIndex: key,
-        sorter: (a, b) => typeof a[key] === 'string' ? (a[key].localeCompare(b[key])) : (a[key] - b[key]),
+        sorter: (a, b) =>
+          typeof a[key] === 'string'
+            ? a[key].localeCompare(b[key])
+            : a[key] - b[key],
         key,
         render: (v, record) => {
           if (key === 'y') {
-            return <>
-            <Checkbox onChange={() => checkboxFilter(v, record)} /> {v}
-            </>
+            return (
+              <Checkbox
+                checked={activeFilters.includes(record.x)}
+                disabled={!isFilterable}
+                onChange={() => checkboxFilter(v, record)}
+              >
+                {v}
+              </Checkbox>
+            );
           }
-          return v
-        }
-      })
+          return v;
+        },
+      });
     }
-    return columns
-  }
+    return columns;
+  };
   return (
     <div>
-      <Table size="small" rowKey={'x'}  dataSource={data.data} columns={getColumns()} style={{width: width, height: height}} />
+      <Table
+        size="small"
+        rowKey={'x'}
+        dataSource={data.data}
+        columns={getColumns()}
+        style={{ width: width, height: height }}
+      />
     </div>
-  )
+  );
 }
 
-export default Tabula
+export default Tabula;

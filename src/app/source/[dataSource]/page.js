@@ -1,19 +1,25 @@
 import DataSourceTabs from '@/components/DataSourceTabs';
 import BasicLayout from '@/components/layout/BasicLayout';
-import { getChartData } from '@/lib/data';
+import { getChartConfig, getChartData } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
-  const data = await getChartData(dataSource);
+  const config = await getChartConfig(dataSource);
 
-  if (data.notFound) {
+  if (config.notFound) {
     notFound();
   }
 
+  const data = await getChartData(dataSource);
+
   return (
     <BasicLayout fluid={true}>
-      <DataSourceTabs data={data} dataSource={dataSource} />
+      <DataSourceTabs
+        dataSource={dataSource}
+        charts={config.charts}
+        initialData={data.data}
+      />
     </BasicLayout>
   );
 }

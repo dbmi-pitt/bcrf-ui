@@ -1,66 +1,90 @@
-import React, {useMemo} from 'react';
+import { useMemo } from 'react';
 import {
   VictoryChart,
   VictoryHistogram,
   VictoryTheme,
   VictoryTooltip,
 } from 'victory';
-import log from 'xac-loglevel'
+import log from 'xac-loglevel';
 
 function Histogram({ data, width, height }) {
-  log.debug('Histogram', data)
-  
   const histogramData = useMemo(() => {
-    const rawData = data.data
-    const list = []
-    if (rawData.length && rawData[0].y) {
+    const rawData = data.data;
+    let list = [];
+    if (rawData.length && rawData[0].y !== undefined) {
       for (const d of rawData) {
-        list.push(...Array(d.y).fill({x: d.x}))
+        const x = Number(d.x);
+        const count = Math.max(0, Math.round(Number(d.y) || 0));
+        if (Number.isFinite(x) && count > 0) {
+          list.push(...Array(count).fill({ x }));
+        }
       }
     } else {
-      return rawData.sort((a, b) => a.x - b.x)
+      // Raw, unaggregated numeric samples.
+      list = rawData
+        .map((d) => ({ ...d, x: Number(d.x) }))
+        .filter((d) => Number.isFinite(d.x))
+        .sort((a, b) => a.x - b.x);
     }
     return list;
-  }, [])
+  }, [data]);
 
   const getMedian = (list) => {
-    const sortedData = list.map(d => d.x).sort((a, b) => a - b);
-    const median = sortedData[Math.floor(sortedData.length / 2)]; 
-    return {median, sortedData}
-  }
+    const sortedData = list.map((d) => d.x).sort((a, b) => a - b);
+    const median = sortedData[Math.floor(sortedData.length / 2)];
+    return { median, sortedData };
+  };
 
   const getQuartileBins = () => {
-    const {median, sortedData} = getMedian(histogramData)
-    const midIndex = Math.floor(sortedData.length / 2)
-    const q1Arr = histogramData.slice(0, midIndex - 1)
-    const q2Arr = histogramData.slice(midIndex + 1, histogramData.length - 1)
-    const q1 = getMedian(q1Arr)
-    const q2 = getMedian(q2Arr)
-    const bins = [Math.min(...sortedData), q1.median, median, q2.median, Math.max(...sortedData)]
-    log.debug('Histogram.getQuartileBins', bins)
+    const { median, sortedData } = getMedian(histogramData);
+    const midIndex = Math.floor(sortedData.length / 2);
+    const q1Arr = histogramData.slice(0, midIndex - 1);
+    const q2Arr = histogramData.slice(midIndex + 1, histogramData.length - 1);
+    const q1 = getMedian(q1Arr);
+    const q2 = getMedian(q2Arr);
+    const bins = [
+      Math.min(...sortedData),
+      q1.median,
+      median,
+      q2.median,
+      Math.max(...sortedData),
+    ];
+    log.debug('Histogram.getQuartileBins', bins);
     return bins;
-  }
+  };
 
   const getMedianBins = () => {
-    const {median, sortedData} = getMedian(histogramData)
+    const { median, sortedData } = getMedian(histogramData);
     return [Math.min(...sortedData), median, Math.max(...sortedData)];
-  }
+  };
 
   const resolveBins = () => {
-    const bin = data.options?.bin
+    const bin = data.options?.bin;
     if (bin) {
       if (bin.eq('customBins')) {
-        return data.options.customBins
+        return data.options.customBins;
       } else if (bin.eq('quartiles')) {
-        return getQuartileBins()
+        return getQuartileBins();
       } else if (bin.eq('median')) {
-        return getMedianBins()
+        return getMedianBins();
       } else if (bin.eq('generateBins')) {
         // TODO handle like cbioportal
-        return Number(data.options.binMinValue)
+        const binMinValue = Number(data.options.binMinValue);
+        return Number.isNaN(binMinValue) ? null : binMinValue;
       }
-      return null
+      return null;
     }
+  };
+
+  if (!histogramData.length) {
+    return (
+      <div
+        className="c-chart__histogram d-flex align-items-center justify-content-center text-muted"
+        style={{ width, height }}
+      >
+        No data for the current filters
+      </div>
+    );
   }
 
   return (
@@ -74,7 +98,7 @@ function Histogram({ data, width, height }) {
       >
         <VictoryHistogram
           bins={resolveBins()}
-          data={histogramData} 
+          data={histogramData}
           labels={({ datum }) =>
             `Number of samples: ${datum.y}\nRange: ${datum.x0} - ${datum.x1}`
           }
