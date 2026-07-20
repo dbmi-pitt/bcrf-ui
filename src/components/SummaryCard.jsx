@@ -49,9 +49,8 @@ function SummaryCard({ data, onTagClick }) {
 
   return (
     <Card
-      onClick={(e) => goToSource(e, data)}
       className='c-summaryCard'
-      title={data.name}
+      title={<span onClick={(e) => goToSource(e, data)} >{data.name}</span>}
       extra={
         <>
           <span key={`patients-${data.source}`} className="mx-3">
@@ -76,7 +75,7 @@ function SummaryCard({ data, onTagClick }) {
       style={{ width: '100%' }}
       actions={[]}
     >
-      <p>{data.description}</p>
+      <p onClick={(e) => goToSource(e, data)}>{data.description}</p>
       {getHighlightedTags()}
       <div style={{ maxHeight: 200, overflowY: 'auto' }}>
         <Accordion>
