@@ -53,6 +53,32 @@ Object.assign(String.prototype, {
 }
 });
 
+Object.assign(JSON, {
+  jsonToCsv(jsonArray, columns = []) {
+    if (!jsonArray || !jsonArray.length) {
+        return '';
+    }
+
+    // 1. Extract headers from the keys of the first object
+    // TODO map provided column names to headers
+    const headers = Object.keys(jsonArray[0]);
+
+    // 2. Map rows and escape special characters like double quotes and commas
+    const csvRows = jsonArray.map(obj => 
+        headers.map(header => {
+            const value = obj[header] !== undefined && obj[header] !== null ? obj[header] : '';
+            // Escape double quotes and wrap fields with commas/newlines in quotes
+            const stringifiedValue = typeof value === 'object' ? JSON.stringify(value) : String(value);
+            const escaped = stringifiedValue.replace(/"/g, '""');
+            return `"${escaped}"`;
+        }).join(',')
+    );
+
+    // 3. Combine headers and rows with newline characters
+    return [headers.join(','), ...csvRows].join('\r\n');
+}
+})
+
 export const flipObj = (obj) => {
   return Object.keys(obj).reduce((ret, key) => {
     ret[obj[key]] = key;

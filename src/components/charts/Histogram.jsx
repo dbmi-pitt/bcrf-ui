@@ -1,12 +1,68 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   VictoryChart,
   VictoryHistogram,
   VictoryTheme,
   VictoryTooltip,
 } from 'victory';
+import log from 'xac-loglevel'
 
 function Histogram({ data, width, height }) {
+  log.debug('Histogram', data)
+  
+  const histogramData = useMemo(() => {
+    const rawData = data.data
+    const list = []
+    if (rawData.length && rawData[0].y) {
+      for (const d of rawData) {
+        list.push(...Array(d.y).fill({x: d.x}))
+      }
+    } else {
+      return rawData.sort((a, b) => a.x - b.x)
+    }
+    return list;
+  }, [])
+
+  const getMedian = (list) => {
+    const sortedData = list.map(d => d.x).sort((a, b) => a - b);
+    const median = sortedData[Math.floor(sortedData.length / 2)]; 
+    return {median, sortedData}
+  }
+
+  const getQuartileBins = () => {
+    const {median, sortedData} = getMedian(histogramData)
+    const midIndex = Math.floor(sortedData.length / 2)
+    const q1Arr = histogramData.slice(0, midIndex - 1)
+    const q2Arr = histogramData.slice(midIndex + 1, histogramData.length - 1)
+    const q1 = getMedian(q1Arr)
+    const q2 = getMedian(q2Arr)
+    const bins = [Math.min(...sortedData), q1.median, median, q2.median, Math.max(...sortedData)]
+    log.debug('Histogram.getQuartileBins', bins)
+    return bins;
+  }
+
+  const getMedianBins = () => {
+    const {median, sortedData} = getMedian(histogramData)
+    return [Math.min(...sortedData), median, Math.max(...sortedData)];
+  }
+
+  const resolveBins = () => {
+    const bin = data.options?.bin
+    if (bin) {
+      if (bin.eq('customBins')) {
+        return data.options.customBins
+      } else if (bin.eq('quartiles')) {
+        return getQuartileBins()
+      } else if (bin.eq('median')) {
+        return getMedianBins()
+      } else if (bin.eq('generateBins')) {
+        // TODO handle like cbioportal
+        return Number(data.options.binMinValue)
+      }
+      return null
+    }
+  }
+
   return (
     <div className="c-chart__histogram">
       <VictoryChart
@@ -17,7 +73,8 @@ function Histogram({ data, width, height }) {
         theme={VictoryTheme.clean}
       >
         <VictoryHistogram
-          data={data.data}
+          bins={resolveBins()}
+          data={histogramData} 
           labels={({ datum }) =>
             `Number of samples: ${datum.y}\nRange: ${datum.x0} - ${datum.x1}`
           }

@@ -1,4 +1,4 @@
-import GridLayout from '@/components/grid/GridLayout';
+import DataSourceTabs from '@/components/DataSourceTabs';
 import BasicLayout from '@/components/layout/BasicLayout';
 import { getChartData } from '@/lib/data';
 import { notFound } from 'next/navigation';
@@ -13,7 +13,7 @@ export default async function Page({ params }) {
 
   return (
     <BasicLayout fluid={true}>
-      <GridLayout dataSource={dataSource} charts={data.charts} />
+      <DataSourceTabs data={data} dataSource={dataSource} />
     </BasicLayout>
   );
 }

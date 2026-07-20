@@ -13,6 +13,8 @@ import {
 } from '@ant-design/icons';
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '@/components/charts/Chart';
+import HistogramBinsModal from '../charts/partials/HistogramBinsModal';
+import { autoBlobDownloader } from '@/lib/general';
 
 export default function GridWidget({
   title,
@@ -21,6 +23,8 @@ export default function GridWidget({
   onRemove,
 }) {
   const [chartType, setChartType] = useState(chartData.chart.types[0]);
+  const [modal, setModal] = useState({});
+  const [data, setData] = useState(chartData.chart);
 
   const resolveChartType = () => {
     let defaultType = chartData.chart.types[0];
@@ -35,6 +39,8 @@ export default function GridWidget({
     histogram: <BarChartOutlined />,
   };
 
+  const isHistogram = () => chartType.eq('histogram');
+
   const getItems = () => {
     const items = [];
     if (chartData.chart.types.length > 1) {
@@ -45,12 +51,28 @@ export default function GridWidget({
         icon: icons[switchTo],
       });
     }
-    if (chartType === 'histogram') {
-      items.push({
-        key: 'compareGroups',
-        label: <span>Compare Groups</span>,
-        icon: <CalculatorOutlined />,
-      });
+    if (isHistogram()) {
+      // TODO: uncomment if and add corrresponding logic if needed later
+      // items.push({
+      //   key: 'compareGroups',
+      //   label: <span>Compare Groups</span>,
+      //   icon: <CalculatorOutlined />,
+      //   children: [
+      //     {
+      //       key: 'compareGroups:Quartiles',
+      //       label: 'Quartiles',
+      //     },
+      //     {
+      //       key: 'compareGroups:Median',
+      //       label: 'Median',
+      //     },
+      //     {
+      //       key: 'compareGroups:bins',
+      //       label: 'Current bins',
+      //     },
+      //   ],
+      // });
+
       items.push({
         key: 'customBins',
         label: <span>Custom Bins</span>,
@@ -63,20 +85,12 @@ export default function GridWidget({
       icon: <DownloadOutlined />,
       children: [
         {
-          key: 'downloadSummary',
-          label: 'Summary Data',
+          key: 'download:data',
+          label: 'Data',
         },
         {
-          key: 'downloadData',
-          label: 'Full Data',
-        },
-        {
-          key: 'downloadSVG',
+          key: 'download:svg',
           label: 'SVG',
-        },
-        {
-          key: 'downloadPDF',
-          label: 'PDG',
         },
       ],
     });
@@ -84,19 +98,39 @@ export default function GridWidget({
     return items;
   };
 
+  const onChartOptions = (options) => {
+    setData({ ...data, options });
+  };
+
+  const widgetBodyId = `c-gridWidget__main--${crypto.randomUUID() + '-' + widgetKey}`
+
   const handleMenuClick = ({ key }) => {
     if (key.startsWith('switchChart:')) {
       const newType = key.split(':')[1];
       setChartType(newType);
     }
+    if (key.eq('download:data')) {
+      autoBlobDownloader([JSON.jsonToCsv(data.data)], 'text/csv;charset=utf-8;', `${title}.csv`)
+    }
+    if (key.eq('download:svg')){
+      let svg = document.querySelector(`#${widgetBodyId} .VictoryContainer > svg`).outerHTML
+      // To make an SVG (Scalable Vector Graphic) display properly in Mac's Preview and Finder, 
+      // it must contain strict XML code. Victory svg doesn't contain the xmlns property so let's add it
+      svg = svg.replace('<svg', `<svg xmlns="http://www.w3.org/2000/svg"`)
+      autoBlobDownloader([svg], 'image/svg+xml;charset=utf-8', `${title}.svg`)
+    }
+    if (key.eq('customBins')) {
+      setModal({ ...modal, open: true });
+    }
   };
+
   const menuProps = {
     items: getItems(),
     onClick: handleMenuClick,
   };
 
   return (
-    <Card className="h-100" key={widgetKey} style={{ overflow: 'hidden' }}>
+    <Card className="c-gridWidget h-100" key={widgetKey} style={{ overflow: 'hidden' }}>
       <Card.Header
         className="d-flex justify-content-between align-items-center py-1 drag-header-handle"
         style={{ cursor: 'move' }}
@@ -130,11 +164,15 @@ export default function GridWidget({
         </div>
       </Card.Header>
 
-      <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }}>
+      <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }} id={widgetBodyId}>
         <ChartProvider>
-          <Chart data={chartData.chart} chartType={chartType} />
+          {/* // TODO: build over over legend table for pie chart */}
+          <Chart data={data} chartType={chartType} />
         </ChartProvider>
       </Card.Body>
+      {isHistogram() && (
+        <HistogramBinsModal key={widgetKey} onChange={onChartOptions} modal={modal} setModal={setModal} options={data.options || {}} />
+      )}
     </Card>
   );
 }
