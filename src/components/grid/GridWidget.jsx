@@ -14,6 +14,7 @@ import {
 import { ChartProvider } from '@/context/ChartContext';
 import Chart from '@/components/charts/Chart';
 import HistogramBinsModal from '../charts/partials/HistogramBinsModal';
+import { autoBlobDownloader } from '@/lib/general';
 
 export default function GridWidget({
   title,
@@ -84,20 +85,12 @@ export default function GridWidget({
       icon: <DownloadOutlined />,
       children: [
         {
-          key: 'download:Summary',
-          label: 'Summary Data',
+          key: 'download:data',
+          label: 'Data',
         },
         {
-          key: 'download:Data',
-          label: 'Full Data',
-        },
-        {
-          key: 'download:SVG',
+          key: 'download:svg',
           label: 'SVG',
-        },
-        {
-          key: 'download:PDF',
-          label: 'PDF',
         },
       ],
     });
@@ -109,10 +102,22 @@ export default function GridWidget({
     setData({ ...data, options });
   };
 
+  const widgetBodyId = `c-gridWidget__main--${crypto.randomUUID() + '-' + widgetKey}`
+
   const handleMenuClick = ({ key }) => {
     if (key.startsWith('switchChart:')) {
       const newType = key.split(':')[1];
       setChartType(newType);
+    }
+    if (key.eq('download:data')) {
+      autoBlobDownloader([JSON.jsonToCsv(data.data)], 'text/csv;charset=utf-8;', `${title}.csv`)
+    }
+    if (key.eq('download:svg')){
+      let svg = document.querySelector(`#${widgetBodyId} .VictoryContainer > svg`).outerHTML
+      // To make an SVG (Scalable Vector Graphic) display properly in Mac's Preview and Finder, 
+      // it must contain strict XML code. Victory svg doesn't contain the xmlns property so let's add it
+      svg = svg.replace('<svg', `<svg xmlns="http://www.w3.org/2000/svg"`)
+      autoBlobDownloader([svg], 'image/svg+xml;charset=utf-8', `${title}.svg`)
     }
     if (key.eq('customBins')) {
       setModal({ ...modal, open: true });
@@ -159,7 +164,7 @@ export default function GridWidget({
         </div>
       </Card.Header>
 
-      <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }}>
+      <Card.Body className="d-flex flex-column" style={{ height: 0, flex: 1 }} id={widgetBodyId}>
         <ChartProvider>
           {/* // TODO: build over over legend table for pie chart */}
           <Chart data={data} chartType={chartType} />
