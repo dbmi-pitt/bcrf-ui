@@ -90,8 +90,8 @@ function Histogram({ data, width, height }) {
           labels={({ datum }) => datum.count}
           labelComponent={<VictoryTooltip />}
         />
-        <VictoryAxis dependentAxis />
-        <VictoryAxis />
+        <VictoryAxis label={data.labels.y} dependentAxis />
+        <VictoryAxis label={data.labels.x} />
       </VictoryChart>
     </div>
   );
