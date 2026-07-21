@@ -4,6 +4,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import THEME from '@/lib/theme';
 
 function SummaryCard({ data, onTagClick }) {
+  useEffect(() => {});
   const handleTagClick = (e, tag, value) => {
     e.preventDefault();
     e.stopPropagation();
@@ -27,7 +28,7 @@ function SummaryCard({ data, onTagClick }) {
               onClick={(e) => handleTagClick(e, tag, v)}
               style={{ cursor: 'pointer' }}
             >
-              {v === true ? 'yes': v === false ? 'no' : v.toString()}
+              {v === true ? 'yes' : v === false ? 'no' : v.toString()}
             </Tag>,
           );
         }
@@ -50,7 +51,6 @@ function SummaryCard({ data, onTagClick }) {
   };
 
   const handleHeaderAreaClick = (e) => {
-
     if (e.target.closest('.ant-card-head')) {
       goToSource(e, data);
     }
@@ -86,10 +86,17 @@ function SummaryCard({ data, onTagClick }) {
       actions={[]}
     >
       <p onClick={(e) => goToSource(e, data)}>{data.description}</p>
-      <div style={{ maxHeight: 400, overflowY: 'auto' }}>
-      {getHighlightedTags()}
+
+      <div
+        className="c-summaryCard__tags"
+        style={{ maxHeight: 400, overflowY: 'auto' }}
+      >
+        {getHighlightedTags()}
       </div>
-      <div style={{ maxHeight: 200, overflowY: 'auto' }}>
+      <div
+        className="c-summaryCard__collapsed"
+        style={{ maxHeight: 200, overflowY: 'auto' }}
+      >
         <Accordion>
           {data.tags
             .filter((tag) => tag.display_type === 'collapsed')

@@ -5,7 +5,6 @@ import AppSpinner from '@/components/AppSpinner';
 import AppContext from '@/context/AppContext';
 import { Masonry, Tag } from 'antd';
 import SummaryCard from '@/components/SummaryCard';
-import { Container, Row } from 'react-bootstrap';
 
 export default function Home() {
   const { content } = useContext(AppContext)
