@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import {
+  Bar,
   VictoryChart,
   VictoryHistogram,
   VictoryTheme,
@@ -7,7 +8,28 @@ import {
 } from 'victory';
 import log from 'xac-loglevel';
 
+const HistogramMinBar = (props) => {
+  const minHeight = 5;
+
+  const value = props.datum.y;
+  const actualHeight = Math.abs(props.y0 - props.y);
+  log.info(`value: ${value} actual: ${actualHeight}`);
+
+  // Don't modify zero-value bars
+  if (value <= 0) {
+    return <Bar {...props} />;
+  }
+
+  if (actualHeight < minHeight) {
+    return <Bar {...props} y={props.y0 - minHeight} />;
+  }
+
+  return <Bar {...props} />;
+};
+
 function Histogram({ data, width, height }) {
+  log.debug('Histogram', data);
+
   const histogramData = useMemo(() => {
     const rawData = data.data;
     let list = [];
@@ -99,6 +121,7 @@ function Histogram({ data, width, height }) {
         <VictoryHistogram
           bins={resolveBins()}
           data={histogramData}
+          dataComponent={<HistogramMinBar />}
           labels={({ datum }) =>
             `Number of samples: ${datum.y}\nRange: ${datum.x0} - ${datum.x1}`
           }
