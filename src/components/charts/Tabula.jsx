@@ -26,7 +26,7 @@ function Tabula({
     const columns = [];
     for (const key of uniqueKeys) {
       columns.push({
-        title: data.labels[key] || key,
+        title: data.labels[key] || (key == 'x' ? data.title : key),
         dataIndex: key,
         sorter: (a, b) =>
           typeof a[key] === 'string'
