@@ -6,64 +6,41 @@ import path from 'path';
 const DATA_DIR = process.argv[2] || './data';
 const DB_PATH = process.argv[3] || 'duckdb.db';
 
-/**
- * Converts a filename like "brca_aurora_us_2023.tsv" into a safe SQL table name.
- * - Strips the .tsv extension
- * - Replaces any character that isn't alphanumeric/underscore with an underscore
- * - Prefixes with an underscore if the name starts with a digit (invalid SQL identifier)
- */
-function toTableName(filename) {
-  const base = path.basename(filename, '.tsv');
-  let name = base.replace(/[^a-zA-Z0-9_]/g, '_');
-  if (/^[0-9]/.test(name)) {
-    name = `_${name}`;
-  }
-  return name;
-}
+const instance = await duckdb.DuckDBInstance.create(DB_PATH);
+const connection = await instance.connect();
 
-async function main() {
-  if (!fs.existsSync(DATA_DIR)) {
-    console.error(`Directory not found: ${DATA_DIR}`);
-    process.exit(1);
-  }
+const dataDir = path.resolve(DATA_DIR);
 
-  const files = fs
-    .readdirSync(DATA_DIR)
-    .filter((f) => f.toLowerCase().endsWith('.tsv'));
+// aurora us
+await connection.run(`
+  CREATE TABLE aurora_us AS
+  SELECT
+      TRY_CAST(TRIM("Age at Diagnosis") AS DOUBLE)                 AS "Age at Diagnosis",
+      TRY_CAST(TRIM("Fraction Genome Altered") AS DOUBLE)          AS "Fraction Genome Altered",
+      TRY_CAST(TRIM("Mutation Count") AS INTEGER)                  AS "Mutation Count",
+      TRY_CAST(TRIM("Percent Lymphocyte Infiltration") AS INTEGER) AS "Percent Lymphocyte Infiltration",
+      TRY_CAST(TRIM("Percent Necrosis") AS INTEGER)                AS "Percent Necrosis",
+      TRY_CAST(TRIM("Percent Normal Cells") AS INTEGER)            AS "Percent Normal Cells",
+      TRY_CAST(TRIM("Percent Stromal Cells") AS INTEGER)           AS "Percent Stromal Cells",
+      TRY_CAST(TRIM("Percent Tumor Cells") AS INTEGER)             AS "Percent Tumor Cells",
+      TRY_CAST(TRIM("Percent Tumor Nuclei") AS INTEGER)            AS "Percent Tumor Nuclei",
+      * EXCLUDE (
+          "Age at Diagnosis", "Fraction Genome Altered", "Mutation Count",
+          "Percent Lymphocyte Infiltration", "Percent Necrosis",
+          "Percent Normal Cells", "Percent Stromal Cells",
+          "Percent Tumor Cells", "Percent Tumor Nuclei"
+      )
+  FROM read_csv('${path.join(dataDir, 'aurora_us.tsv')}', delim='\t', header=true, all_varchar=true);
+`);
 
-  if (files.length === 0) {
-    console.log(`No .tsv files found in ${DATA_DIR}`);
-    return;
-  }
-
-  const instance = await duckdb.DuckDBInstance.create(DB_PATH);
-  const connection = await instance.connect();
-
-  for (const file of files) {
-    const filePath = path.join(DATA_DIR, file);
-    const tableName = toTableName(file);
-
-    console.log(`Loading ${filePath} -> table "${tableName}"`);
-
-    try {
-      const escapedPath = filePath.replace(/'/g, "''");
-
-      await connection.run(`
-        CREATE OR REPLACE TABLE "${tableName}" AS
-        SELECT * FROM read_csv('${escapedPath}', delim='\t', header=true, nullstr=['NA', 'na', 'N/A', 'n/a', 'NULL', 'null', ''])
-      `);
-
-      const countResult = await connection.run(
-        `SELECT COUNT(*) AS count FROM "${tableName}"`,
-      );
-      const [{ count }] = await countResult.getRowObjects();
-      console.log(`  -> loaded ${count} rows`);
-    } catch (err) {
-      console.error(`  Failed to load ${file}:`, err.message);
-    }
-  }
-
-  console.log(`\nDone. Database: ${DB_PATH}`);
-}
-
-main();
+// aurora eu
+await connection.run(`
+  CREATE TABLE aurora_eu AS
+  SELECT
+      TRY_CAST(TRIM("overall_survival_days") AS INTEGER)            AS "overall_survival_days",
+      TRY_CAST(TRIM("time_to_metastatic_relapse_days") AS INTEGER) AS "time_to_metastatic_relapse_days",
+      * EXCLUDE (
+          "overall_survival_days", "time_to_metastatic_relapse_days"
+      )
+  FROM read_csv('${path.join(dataDir, 'aurora_eu.tsv')}', delim='\t', header=true, all_varchar=true);
+`);
