@@ -13,7 +13,6 @@
         "WES",
         "WGS"
       ],
-      "higlighted_tags": ["Ethnicity", "Race"],
       "tags": [
         {
           "name": "Did the patient receive adjuvant treatment for localized disease?",
@@ -81,6 +80,7 @@
         },
         {
           "name": "Source of tissue used for mutational profile",
+          "display_type": "collapsed",
           "values": [
             "Metastatic tumor, post-treatment",
             "Metastatic tumor, pre-treatment",
@@ -378,7 +378,6 @@
         "H&E Slides",
         "CNV"
       ],
-      "higlighted_tags": ["type", "metastatic_biopsy_site"],
       "tags": [
         {
           "name": "type",
@@ -469,6 +468,7 @@
         },
         {
           "name": "block_before_or_after_neo_treatment",
+          "display_type": "collapsed",
           "values": [
             "After neoadjuvant treatment",
             "Before neodjuvant treatment",

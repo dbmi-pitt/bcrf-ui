@@ -4,53 +4,63 @@ import Accordion from 'react-bootstrap/Accordion';
 import THEME from '@/lib/theme';
 
 function SummaryCard({ data, onTagClick }) {
-
-
+  useEffect(() => {});
   const handleTagClick = (e, tag, value) => {
-    e.preventDefault()
-    e.stopPropagation()
+    e.preventDefault();
+    e.stopPropagation();
     if (onTagClick) {
-      onTagClick({data, tag, value})
+      onTagClick({ data, tag, value });
     }
-  }
+  };
 
   const getHighlightedTags = () => {
     const list = [];
     let tags = [];
-    for (const h of data.higlighted_tags) {
-      tags = [];
-      for (const tag of data.tags) {
-        if (tag.name === h) {
-          for (const v of tag.values) {
-            tags.push(
-              <Tag className='c-tag' key={v} onClick={(e) => handleTagClick(e, tag, v)} 
-                    style={{ cursor: 'pointer' }}>
-                {v}
-              </Tag>
-            );
-          }
+
+    for (const tag of data.tags) {
+      if (tag.display_type !== 'collapsed') {
+        tags = [];
+        for (const v of tag.values) {
+          tags.push(
+            <Tag
+              className="c-tag"
+              key={v}
+              onClick={(e) => handleTagClick(e, tag, v)}
+              style={{ cursor: 'pointer' }}
+            >
+              {v === true ? 'yes' : v === false ? 'no' : v.toString()}
+            </Tag>,
+          );
         }
+        list.push(
+          <p key={tag.name}>
+            <strong>{tag.name}</strong>
+            {tags}
+          </p>,
+        );
       }
-      list.push(
-        <p key={h}>
-          <strong>{h}</strong>
-          {tags}
-        </p>,
-      );
     }
+
     return list;
   };
 
   const goToSource = (e, d) => {
-    e.preventDefault()
-    e.stopPropagation()
-    window.location = `/source/${d.source}`
-  }
+    e.preventDefault();
+    e.stopPropagation();
+    window.location = `/source/${d.source}`;
+  };
+
+  const handleHeaderAreaClick = (e) => {
+    if (e.target.closest('.ant-card-head')) {
+      goToSource(e, data);
+    }
+  };
 
   return (
     <Card
-      className='c-summaryCard'
-      title={<span onClick={(e) => goToSource(e, data)} >{data.name}</span>}
+      onClick={handleHeaderAreaClick}
+      className="c-summaryCard"
+      title={<span onClick={(e) => goToSource(e, data)}>{data.name}</span>}
       extra={
         <>
           <span key={`patients-${data.source}`} className="mx-3">
@@ -76,25 +86,40 @@ function SummaryCard({ data, onTagClick }) {
       actions={[]}
     >
       <p onClick={(e) => goToSource(e, data)}>{data.description}</p>
-      {getHighlightedTags()}
-      <div style={{ maxHeight: 200, overflowY: 'auto' }}>
+
+      <div
+        className="c-summaryCard__tags"
+        style={{ maxHeight: 400, overflowY: 'auto' }}
+      >
+        {getHighlightedTags()}
+      </div>
+      <div
+        className="c-summaryCard__collapsed"
+        style={{ maxHeight: 200, overflowY: 'auto' }}
+      >
         <Accordion>
-          {data.tags.map((tag) => (
-            <Accordion.Item
-              eventKey={`${data.source}-${tag.name}`}
-              key={`${data.source}-${tag.name}`}
-            >
-              <Accordion.Header>{tag.name}</Accordion.Header>
-              <Accordion.Body>
-                {tag.values.map((value) => (
-                  <Tag className='c-tag' key={value} onClick={(e) => handleTagClick(e, tag, value)} 
-                    style={{ cursor: 'pointer' }}>
-                    {value}
-                  </Tag>
-                ))}
-              </Accordion.Body>
-            </Accordion.Item>
-          ))}
+          {data.tags
+            .filter((tag) => tag.display_type === 'collapsed')
+            .map((tag) => (
+              <Accordion.Item
+                eventKey={`${data.source}-${tag.name}`}
+                key={`${data.source}-${tag.name}`}
+              >
+                <Accordion.Header>{tag.name}</Accordion.Header>
+                <Accordion.Body>
+                  {tag.values.map((value) => (
+                    <Tag
+                      className="c-tag"
+                      key={value}
+                      onClick={(e) => handleTagClick(e, tag, value)}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {value}
+                    </Tag>
+                  ))}
+                </Accordion.Body>
+              </Accordion.Item>
+            ))}
         </Accordion>
       </div>
     </Card>

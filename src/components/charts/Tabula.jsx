@@ -52,7 +52,7 @@ function Tabula({
     return columns;
   };
   return (
-    <div>
+    <div className='c-chart--table'>
       <Table
         size="small"
         rowKey={'x'}

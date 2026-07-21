@@ -13,7 +13,6 @@ import { Dropdown, Tooltip } from 'antd';
 import { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
-import HistogramBinsModal from '../charts/partials/HistogramBinsModal';
 
 export default function GridWidget({
   title,
@@ -27,9 +26,8 @@ export default function GridWidget({
 }) {
   const [chartType, setChartType] = useState(chart.types[0]);
   const [modal, setModal] = useState({});
-  const [options, setOptions] = useState({});
 
-  const data = { ...options, ...chart };
+  const data = { ...chart };
 
   const resolveChartType = () => {
     let defaultType = chart.types[0];
@@ -75,12 +73,6 @@ export default function GridWidget({
       //     },
       //   ],
       // });
-
-      items.push({
-        key: 'customBins',
-        label: <span>Custom Bins</span>,
-        icon: icons.histogram,
-      });
     }
     items.push({
       key: 'download',
@@ -99,10 +91,6 @@ export default function GridWidget({
     });
 
     return items;
-  };
-
-  const onChartOptions = (options) => {
-    setOptions(options);
   };
 
   const widgetBodyId = `c-gridWidget__main--${crypto.randomUUID() + '-' + widgetKey}`;
@@ -178,7 +166,7 @@ export default function GridWidget({
       </Card.Header>
 
       <Card.Body
-        className="d-flex flex-column"
+        className="d-flex flex-column c-gridWidget__main"
         style={{ height: 0, flex: 1 }}
         id={widgetBodyId}
       >
@@ -194,15 +182,6 @@ export default function GridWidget({
           />
         </ChartProvider>
       </Card.Body>
-      {isHistogram() && (
-        <HistogramBinsModal
-          key={widgetKey}
-          onChange={onChartOptions}
-          modal={modal}
-          setModal={setModal}
-          options={data.options || {}}
-        />
-      )}
     </Card>
   );
 }
