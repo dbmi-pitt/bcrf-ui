@@ -49,8 +49,16 @@ function SummaryCard({ data, onTagClick }) {
     window.location = `/source/${d.source}`;
   };
 
+  const handleHeaderAreaClick = (e) => {
+
+    if (e.target.closest('.ant-card-head')) {
+      goToSource(e, data);
+    }
+  };
+
   return (
     <Card
+      onClick={handleHeaderAreaClick}
       className="c-summaryCard"
       title={<span onClick={(e) => goToSource(e, data)}>{data.name}</span>}
       extra={
