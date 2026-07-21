@@ -29,7 +29,7 @@ export default function GridWidget({
   const [modal, setModal] = useState({});
   const [options, setOptions] = useState({});
 
-  const data = { ...options, ...chart };
+  const data = { options, ...chart };
 
   const resolveChartType = () => {
     let defaultType = chart.types[0];
