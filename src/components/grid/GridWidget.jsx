@@ -178,7 +178,7 @@ export default function GridWidget({
       </Card.Header>
 
       <Card.Body
-        className="d-flex flex-column"
+        className="d-flex flex-column c-gridWidget__main"
         style={{ height: 0, flex: 1 }}
         id={widgetBodyId}
       >
