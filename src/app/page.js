@@ -4,7 +4,7 @@ import BasicLayout from '@/components/layout/BasicLayout';
 import AppSpinner from '@/components/AppSpinner';
 import AppContext from '@/context/AppContext';
 import { Masonry, Tag } from 'antd';
-import AppCard from '@/components/SummaryCard';
+import SummaryCard from '@/components/SummaryCard';
 import { Container, Row } from 'react-bootstrap';
 
 export default function Home() {
@@ -91,7 +91,7 @@ export default function Home() {
             data: source,
           }))}
           itemRender={({ data, index }) => (
-            <AppCard data={data} index={index} key={`card-${index}`} onTagClick={onCardTagClick} />
+            <SummaryCard data={data} index={index} key={`card-${index}`} onTagClick={onCardTagClick} />
           )}
         />}
         <br />
