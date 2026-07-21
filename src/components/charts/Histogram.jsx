@@ -12,7 +12,7 @@ import log from 'xac-loglevel';
 function findBin(x, bins) {
   let selected = bins[0];
   for (const bin of bins) {
-    if (x >= bin.value) {
+    if (x > bin.value) {
       selected = bin;
     } else {
       break;
