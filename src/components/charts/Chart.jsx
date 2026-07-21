@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Pie from './Pie';
-import Histogram from './BarHistogram';
+import Histogram from './Histogram';
 import Tabula from './Tabula';
 import Scatter from './Scatter';
 
