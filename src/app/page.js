@@ -94,6 +94,7 @@ export default function Home() {
             <AppCard data={data} index={index} key={`card-${index}`} onTagClick={onCardTagClick} />
           )}
         />}
+        <br />
         </div>
         {cards.length <= 0 && <AppSpinner />}
       </BasicLayout>
