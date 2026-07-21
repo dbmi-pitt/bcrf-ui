@@ -4,6 +4,7 @@ import {
   VictoryHistogram,
   VictoryTheme,
   VictoryTooltip,
+  VictoryAxis
 } from 'victory';
 import log from 'xac-loglevel'
 
@@ -99,6 +100,7 @@ function Histogram({ data, width, height }) {
             },
           ]}
         />
+        
       </VictoryChart>
     </div>
   );
