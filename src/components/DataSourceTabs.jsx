@@ -1,13 +1,18 @@
-import React from 'react';
 import GridLayout from '@/components/grid/GridLayout';
 import { Tabs } from 'antd';
 
-function DataSourceTabs({ data, dataSource }) {
+function DataSourceTabs({ dataSource, charts, initialData }) {
   const items = [
     {
       label: 'Visualizations & Summary',
       key: 'summary',
-      children: <GridLayout dataSource={dataSource} charts={data.charts} />,
+      children: (
+        <GridLayout
+          dataSource={dataSource}
+          charts={charts}
+          initialData={initialData}
+        />
+      ),
     },
     {
       label: 'Tabular View',

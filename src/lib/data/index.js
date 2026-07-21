@@ -1,6 +1,7 @@
 'use server';
 
 import { DuckDBInstance } from '@duckdb/node-api';
+import log from 'xac-loglevel';
 import { buildFilterClause } from './filter.js';
 
 const instance = await DuckDBInstance.create(process.env.DUCK_DB_PATH, {
@@ -13,17 +14,17 @@ const sourceMap = {
   'aurora-eu': (await import('./config/auroraEU.js')).CONFIG,
 };
 
-export const getChartData = async (sourceId) => {
+export const getChartConfig = async (sourceId) => {
   const config = sourceMap[sourceId];
   if (!config) {
     return { notFound: true };
   }
 
-  // return non-client fields from charts array in config
+  // return non-client, non-data fields from charts array in config
   return {
-    charts: config.charts.map(({ filterColumn, query, ...rest }) => ({
-      isFilterable: Boolean(filterColumn),
+    charts: config.charts.map(({ filterColumn, query, data, ...rest }) => ({
       ...rest,
+      isFilterable: Boolean(filterColumn),
     })),
   };
 };
@@ -38,7 +39,7 @@ const exampleMappedFilters = {
   'Pathologic Stage': ['Stage IIA'],
 };
 
-export const getFilteredChartData = async (sourceId, filters) => {
+export const getChartData = async (sourceId, filters = {}) => {
   const config = sourceMap[sourceId];
   if (!config) {
     return { notFound: true };
@@ -70,19 +71,35 @@ export const getFilteredChartData = async (sourceId, filters) => {
 
   // if no valid mapped filters, return the chart data without filtering
   if (!mappedFilters || !Object.keys(mappedFilters).length) {
+    const data = {};
+    for (const chart of config.charts) {
+      data[chart.id] = chart.data;
+    }
     return {
-      data: config.charts.map(({ id, data }) => ({ id: id, data: data })),
+      data: data,
       filters: {},
     };
   }
 
   // build the filter clause and query the database for each chart
-  const { clause, params } = buildFilterClause(mappedFilters);
-  const data = [];
+  const data = {};
   for (const chart of config.charts) {
-    const query = chart.query(clause);
-    const result = await connection.query(query, params);
-    data.push({ id: chart.id, data: result });
+    // skip filters that are for the current chart, since we don't want to
+    // filter a chart by its own values
+    const filtersForChart = { ...mappedFilters };
+    delete filtersForChart[chart.filterColumn];
+
+    const { clause, params } = buildFilterClause(filtersForChart);
+    const query = chart.query(clause).replace(/\s+/g, ' ').trim();
+    try {
+      const result = await connection.run(query, params);
+      const rows = await result.getRowObjectsJson();
+      data[chart.id] = rows;
+    } catch (error) {
+      data[chart.id] = [];
+      log.error(`Error querying chart ${chart.id}:`, error);
+      continue;
+    }
   }
 
   return {

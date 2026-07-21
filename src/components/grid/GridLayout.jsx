@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
+import log from 'xac-loglevel';
 
 import GridWidget from '@/components/grid/GridWidget';
+import { getChartData } from '@/lib/data';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -19,7 +21,7 @@ function createLayout(charts) {
   }));
 }
 
-export default function GridLayout({ dataSource, charts }) {
+export default function GridLayout({ dataSource, charts, initialData }) {
   const STORAGE_KEY = `grid-layout-${dataSource}`;
   const { width, containerRef, mounted } = useContainerWidth({
     measureBeforeMount: true,
@@ -28,42 +30,84 @@ export default function GridLayout({ dataSource, charts }) {
   const margin = [10, 10];
   const cols = 12;
 
-  const [loaded, setLoaded] = useState(false);
+  const loadedRef = useRef(false);
   const [hiddenWidgets, setHiddenWidgets] = useState([]);
-  const [widgetItems, setWidgetItems] = useState(() =>
-    charts.map((chart) => ({
-      key: chart.id,
-      title: chart.title,
-      chart,
-    })),
-  );
+  const [filters, setFilters] = useState({});
+  const [data, setData] = useState(initialData);
   const [layout, setLayout] = useState(() => createLayout(charts));
 
-  // Charts are already server-rendered; only the layout positions need to come
-  // from localstorage, since that's only available client-side.
+  const hasActiveFilters = Object.keys(filters).length > 0;
+
+  const widgetItems = charts.map((chart) => ({
+    ...chart,
+    key: chart.id,
+    data: hasActiveFilters
+      ? (data[chart.id] ?? initialData[chart.id])
+      : initialData[chart.id],
+  }));
+
+  log.debug('Widget Items', { data: widgetItems });
+
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLayout(JSON.parse(saved));
     }
-    setLoaded(true);
+    loadedRef.current = true;
   }, [STORAGE_KEY]);
 
-  // If the data source changes on the client (e.g. via navigation without a full
-  // reload), keep widgetItems in sync with the newly server-rendered charts.
   useEffect(() => {
-    setWidgetItems(
-      charts.map((chart) => ({
-        key: chart.id,
-        title: chart.title,
-        chart,
-      })),
-    );
-  }, [charts]);
+    if (!hasActiveFilters) return;
+
+    let cancelled = false;
+
+    async function loadData() {
+      const result = await getChartData(dataSource, filters);
+      if (cancelled || result.notFound) {
+        return;
+      }
+
+      console.log('GridLayout.loadData', { result });
+
+      setData(result.data);
+    }
+
+    loadData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [dataSource, filters, hasActiveFilters]);
+
+  // Add a filter value for a given chart
+  const handleAddFilter = (chartId, value) => {
+    setFilters((prev) => {
+      const existing = prev[chartId] ?? [];
+      if (existing.includes(value)) {
+        return prev;
+      }
+      return { ...prev, [chartId]: [...existing, value] };
+    });
+  };
+
+  // Remove a filter value for a given chart
+  const handleRemoveFilter = (chartId, value) => {
+    setFilters((prev) => {
+      const existing = prev[chartId] ?? [];
+      const updated = existing.filter((v) => v !== value);
+      if (updated.length === 0) {
+        const rest = { ...prev };
+        delete rest[chartId];
+        return rest;
+      }
+      return { ...prev, [chartId]: updated };
+    });
+  };
 
   // Update the layout for visible widgets, do not lose position of hidden widgets
   const handleLayoutChange = (newLayout) => {
-    if (!loaded) return;
+    if (!loadedRef.current) return;
 
     setLayout((prev) => {
       const updated = prev.map((existing) => {
@@ -86,6 +130,17 @@ export default function GridLayout({ dataSource, charts }) {
   const hiddenKeys = new Set(hiddenWidgets);
   const visibleLayout = layout.filter((item) => !hiddenKeys.has(item.i));
 
+  const getWidgetLayout = (key) => {
+    const colWidthPx = (width - margin[0] * (cols - 1)) / cols;
+    const item = layout.find((l) => l.i === key);
+    if (!item) {
+      return { w: 0, h: 0, m: 40 };
+    }
+    const w = item.w * colWidthPx + (item.w - 1) * margin[0];
+    const h = item.h * rowHeightPx + (item.h - 1) * margin[1];
+    return { w, h, m: 40 };
+  };
+
   return (
     <div ref={containerRef}>
       {mounted && (
@@ -105,8 +160,13 @@ export default function GridLayout({ dataSource, charts }) {
                 <GridWidget
                   title={item.title}
                   widgetKey={item.key}
-                  chartData={item}
+                  chart={item}
+                  layout={getWidgetLayout(item.key)}
                   onRemove={() => handleRemoveItem(item.key)}
+                  isFilterable={item.isFilterable}
+                  activeFilters={filters[item.key] ?? []}
+                  onAddFilter={handleAddFilter}
+                  onRemoveFilter={handleRemoveFilter}
                 />
               </div>
             ))}
