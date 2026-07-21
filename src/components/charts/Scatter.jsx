@@ -1,5 +1,5 @@
 import React from 'react';
-import { VictoryScatter, VictoryTheme, VictoryChart, VictoryTooltip } from 'victory';
+import { VictoryScatter, VictoryTheme, VictoryChart, VictoryTooltip, VictoryAxis } from 'victory';
 
 function Scatter({ data, width, height }) {
   return (
@@ -10,7 +10,7 @@ function Scatter({ data, width, height }) {
           theme={VictoryTheme.clean}
         >
           <VictoryScatter
-            size={7}
+            size={3}
             data={data.data}
             labels={({ datum }) => datum.y}
             
@@ -18,6 +18,8 @@ function Scatter({ data, width, height }) {
               <VictoryTooltip dy={-10} />
             }
           />
+          <VictoryAxis dependentAxis tickCount={10} />
+          <VictoryAxis/>
         </VictoryChart>
     </div>
   );
