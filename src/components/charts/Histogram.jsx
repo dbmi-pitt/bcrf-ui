@@ -33,16 +33,24 @@ function Histogram({ data, width, height }) {
 
   const histogramData = useMemo(() => {
     const rawData = data.data;
-    const list = [];
-    if (rawData.length && rawData[0].y) {
+    let list = [];
+    if (rawData.length && rawData[0].y !== undefined) {
       for (const d of rawData) {
-        list.push(...Array(d.y).fill({ x: d.x }));
+        const x = Number(d.x);
+        const count = Math.max(0, Math.round(Number(d.y) || 0));
+        if (Number.isFinite(x) && count > 0) {
+          list.push(...Array(count).fill({ x }));
+        }
       }
     } else {
-      return rawData.sort((a, b) => a.x - b.x);
+      // Raw, unaggregated numeric samples.
+      list = rawData
+        .map((d) => ({ ...d, x: Number(d.x) }))
+        .filter((d) => Number.isFinite(d.x))
+        .sort((a, b) => a.x - b.x);
     }
     return list;
-  }, []);
+  }, [data]);
 
   const getMedian = (list) => {
     const sortedData = list.map((d) => d.x).sort((a, b) => a - b);
@@ -84,11 +92,23 @@ function Histogram({ data, width, height }) {
         return getMedianBins();
       } else if (bin.eq('generateBins')) {
         // TODO handle like cbioportal
-        return Number(data.options.binMinValue);
+        const binMinValue = Number(data.options.binMinValue);
+        return Number.isNaN(binMinValue) ? null : binMinValue;
       }
       return null;
     }
   };
+
+  if (!histogramData.length) {
+    return (
+      <div
+        className="c-chart__histogram d-flex align-items-center justify-content-center text-muted"
+        style={{ width, height }}
+      >
+        No data for the current filters
+      </div>
+    );
+  }
 
   return (
     <div className="c-chart__histogram">

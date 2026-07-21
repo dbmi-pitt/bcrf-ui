@@ -57,5 +57,6 @@ package-lock.json
 public/sample-fixtures
 public/content/banner.json
 
-# database
+# data
 *.db
+*.tsv
