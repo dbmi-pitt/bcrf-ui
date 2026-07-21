@@ -1,7 +1,13 @@
+"use client"; 
 import GridLayout from '@/components/grid/GridLayout';
-import { Tabs } from 'antd';
+import { autoBlobDownloader } from '@/lib/general';
+import { Button, Tabs, Flex, Tooltip } from 'antd';
 
 function DataSourceTabs({ dataSource, charts, initialData }) {
+  const downloadData = () => {
+    // TODO grab data and export to csv
+    //autoBlobDownloader([JSON.jsonToCsv(initialData)], 'text/csv;charset=utf-8;', `${dataSource}.csv`)
+  };
   const items = [
     {
       label: 'Visualizations & Summary',
@@ -22,7 +28,20 @@ function DataSourceTabs({ dataSource, charts, initialData }) {
   ];
   return (
     <div>
-      <Tabs defaultActiveKey="summary" items={items} />
+      <Tabs
+        defaultActiveKey="summary"
+        tabBarExtraContent={
+          <Flex wrap gap="small">
+            <Tooltip placement="topLeft" title={<span>Download all data</span>}>
+              <Button onClick={downloadData}>
+                <i className="bi bi-download"></i>
+              </Button>
+            </Tooltip>
+            
+          </Flex>
+        }
+        items={items}
+      />
     </div>
   );
 }
