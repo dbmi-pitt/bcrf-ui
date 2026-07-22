@@ -1,12 +1,18 @@
-"use client"; 
+'use client';
+
 import GridLayout from '@/components/grid/GridLayout';
 import { autoBlobDownloader } from '@/lib/general';
-import { Button, Tabs, Flex, Tooltip } from 'antd';
+import { Button, Flex, Tabs, Tooltip } from 'antd';
+import ClinicalData from './ClinicalData';
 
-function DataSourceTabs({ dataSource, charts, initialData }) {
+function DataSourceTabs({ dataSource, charts, initialData, clinicalData }) {
   const downloadData = () => {
-    // TODO grab data and export to csv
-    //autoBlobDownloader([JSON.jsonToCsv(initialData)], 'text/csv;charset=utf-8;', `${dataSource}.csv`)
+    const allClinicalData = clinicalData.data;
+    autoBlobDownloader(
+      [JSON.jsonToCsv(allClinicalData)],
+      'text/csv;charset=utf-8;',
+      `${dataSource}.csv`,
+    );
   };
   const items = [
     {
@@ -23,7 +29,7 @@ function DataSourceTabs({ dataSource, charts, initialData }) {
     {
       label: 'Tabular View',
       key: 'table',
-      children: <>TODO Table here</>,
+      children: <ClinicalData data={clinicalData} />,
     },
   ];
   return (
@@ -37,7 +43,6 @@ function DataSourceTabs({ dataSource, charts, initialData }) {
                 <i className="bi bi-download"></i>
               </Button>
             </Tooltip>
-            
           </Flex>
         }
         items={items}

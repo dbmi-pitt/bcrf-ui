@@ -107,3 +107,19 @@ export const getChartData = async (sourceId, filters = {}) => {
     filters: cleanFilters,
   };
 };
+
+export const getAllClinicalData = async (sourceId) => {
+  const config = sourceMap[sourceId];
+  if (!config) {
+    return { notFound: true };
+  }
+
+  const tableName = config.table;
+  const result = await connection.run('SELECT * FROM ' + tableName);
+  const rows = await result.getRowObjectsJson();
+
+  return {
+    data: rows,
+    key: config.keyColumn,
+  };
+};
