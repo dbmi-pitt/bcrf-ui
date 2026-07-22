@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
-import log from 'xac-loglevel';
 
 import GridWidget from '@/components/grid/GridWidget';
 import { getChartData } from '@/lib/data';
@@ -33,7 +32,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   const loadedRef = useRef(false);
   const [hiddenWidgets, setHiddenWidgets] = useState([]);
   const [filters, setFilters] = useState({});
-  const [data, setData] = useState(initialData);
+  const [chartData, setChartData] = useState(initialData);
   const [layout, setLayout] = useState(() => createLayout(charts));
 
   const hasActiveFilters = Object.keys(filters).length > 0;
@@ -41,12 +40,8 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   const widgetItems = charts.map((chart) => ({
     ...chart,
     key: chart.id,
-    data: hasActiveFilters
-      ? (data[chart.id] ?? initialData[chart.id])
-      : initialData[chart.id],
+    data: chartData[chart.id] ?? initialData[chart.id],
   }));
-
-  log.debug('Widget Items', { data: widgetItems });
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -58,7 +53,11 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   }, [STORAGE_KEY]);
 
   useEffect(() => {
-    if (!hasActiveFilters) return;
+    if (!hasActiveFilters) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setChartData(initialData);
+      return;
+    }
 
     let cancelled = false;
 
@@ -67,10 +66,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
       if (cancelled || result.notFound) {
         return;
       }
-
-      console.log('GridLayout.loadData', { result });
-
-      setData(result.data);
+      setChartData(result.data);
     }
 
     loadData();
@@ -78,7 +74,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
     return () => {
       cancelled = true;
     };
-  }, [dataSource, filters, hasActiveFilters]);
+  }, [dataSource, filters, hasActiveFilters, initialData]);
 
   // Add a filter value for a given chart
   const handleAddFilter = (chartId, value) => {
