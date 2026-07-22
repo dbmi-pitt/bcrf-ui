@@ -16,6 +16,7 @@ function findBin(x, bins) {
     if (x > bin.value) {
       selected = bin;
     } else {
+      return bin
       break;
     }
   }
@@ -42,23 +43,34 @@ function sortIntoBins(bins, data) {
 }
 
 const HistogramMinBar = (props) => {
+  if (props.index === props.rawData.bins.length - 2) return <></>
+
   const minHeight = 3;
+  const barProps = {...props}
 
   const value = props.datum.y;
   const actualHeight = Math.abs(props.y0 - props.y);
   log.info(`value: ${value} actual: ${actualHeight}`);
 
+  if (props.index !== 0 && (props.index !== props.rawData.bins.length - 1)) {
+    barProps.alignment = "start"
+    barProps.x += barProps.x0/7
+  }
+
   // Don't modify zero-value bars
   if (value <= 0) {
-    return <Bar {...props} />;
+    return <Bar {...barProps} />;
   }
 
   if (actualHeight < minHeight) {
-    return <Bar {...props} y={props.y0 - minHeight} />;
+    return <Bar {...barProps} y={props.y0 - minHeight} />;
   }
-
-  return <Bar {...props} />;
+  return <Bar  {...barProps} />;
 };
+
+const HistogramLabel = (props) => {
+  return <VictoryTooltip {...props} />
+}
 
 function Histogram({ data, width, height }) {
   const binnedData = useMemo(() => {
@@ -78,25 +90,35 @@ function Histogram({ data, width, height }) {
     <div className="c-chart__histogram">
       <VictoryChart
         domainPadding={{ x: 50, y: 10 }}
-        padding={30}
+        padding={{
+                            left: 50,
+                            right: 20,
+                            top: 10,
+                            bottom: 60,
+                        }}
         width={width}
         height={height}
         theme={VictoryTheme.clean}
       >
         <VictoryBar
           data={histogramData}
-          dataComponent={<HistogramMinBar />}
+          dataComponent={<HistogramMinBar rawData={data} />}
           x="bin"
           y="count"
            labels={(props) => {
             const {datum, data} = props
-            const index = props.index
-            const range =
+            const index = props.index
+            let inclusiveLabel = data[index + 1]?.bin
+            if (index === data.length - 2) {
+              const bin = binnedData.filter((b) => b.label === inclusiveLabel)
+              inclusiveLabel = bin[0].bin.value
+            }
+            const range =
               index === 0 || index === data.length - 1
                 ? datum.bin
-                : `(${data[index].bin}, ${data[index + 1].bin}]`;
-            return `Number of samples: ${datum.count}\nRange: ${range}`
-          }}
+                : `(${data[index].bin}, ${inclusiveLabel}]`;
+            return `Number of samples: ${datum.count}\nRange: ${range}`
+          }}
           labelComponent={<VictoryTooltip />}
         />
         <VictoryAxis label={data.labels.y} dependentAxis />
