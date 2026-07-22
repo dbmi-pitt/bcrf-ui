@@ -18,10 +18,11 @@ export const CONFIG = {
       ],
       query: (clause) => {
         const whereClause = clause ? `WHERE ${clause}` : '';
+        // Cast y to integer to avoid returning a string value for count
         return `
           SELECT 
             "type" AS x, 
-            COUNT(*) AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
           FROM aurora_eu
           ${whereClause}
@@ -52,7 +53,7 @@ export const CONFIG = {
         return `
           SELECT
             "PAM50_primary" AS x,
-            COUNT(*) AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
           FROM aurora_eu
           ${whereClause}
@@ -89,7 +90,7 @@ export const CONFIG = {
         return `
           SELECT
             "metastatic_biopsy_site" AS x,
-            COUNT(*) AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
           FROM aurora_eu
           GROUP BY x
