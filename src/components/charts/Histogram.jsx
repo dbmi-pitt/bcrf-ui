@@ -9,6 +9,8 @@ import {
   VictoryTooltip,
 } from 'victory';
 
+import log from 'xac-loglevel';
+
 function findBin(x, bins) {
   let selected = bins[0];
   for (const bin of bins) {
@@ -16,7 +18,6 @@ function findBin(x, bins) {
       selected = bin;
     } else {
       return bin
-      break;
     }
   }
   return selected;
