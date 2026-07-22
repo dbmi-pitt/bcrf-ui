@@ -45,7 +45,6 @@ const HistogramMinBar = (props) => {
 
   const value = props.datum.y;
   const actualHeight = Math.abs(props.y0 - props.y);
-  log.info(`value: ${value} actual: ${actualHeight}`);
 
   // Don't modify zero-value bars
   if (value <= 0) {

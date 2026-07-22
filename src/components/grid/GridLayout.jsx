@@ -8,16 +8,72 @@ import { getChartData } from '@/lib/data';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-function createLayout(charts) {
-  return charts.map((chart, index) => ({
-    i: chart.id,
-    x: (index % 3) * 4,
-    y: Math.floor(index / 3) * 6,
-    w: 4,
-    h: 2,
+const chartLayoutDefaults = {
+  pie: {
+    w: 2,
+    h: 1,
     minW: 2,
     minH: 1,
-  }));
+  },
+
+  histogram: {
+    w: 4,
+    h: 1,
+    minW: 4,
+    minH: 1,
+  },
+
+  scatter: {
+    w: 4,
+    h: 2,
+    minW: 4,
+    minH: 2,
+  },
+
+  table: {
+    w: 4,
+    h: 2,
+    minW: 4,
+    minH: 2,
+  },
+};
+
+function getChartLayout(chart) {
+  const chartType = chart.types[0];
+
+  return (
+    chartLayoutDefaults[chartType] || {
+      w: 2,
+      h: 1,
+      minW: 2,
+      minH: 1,
+    }
+  );
+}
+
+function createLayout(charts) {
+  let x = 0;
+  let y = 0;
+
+  return charts.map((chart) => {
+    const size = getChartLayout(chart);
+
+    const item = {
+      i: chart.id,
+      x,
+      y,
+      ...size,
+    };
+
+    x += size.w;
+
+    if (x >= 12) {
+      x = 0;
+      y += 8;
+    }
+
+    return item;
+  });
 }
 
 export default function GridLayout({ dataSource, charts, initialData }) {
@@ -46,7 +102,6 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLayout(JSON.parse(saved));
     }
     loadedRef.current = true;
@@ -75,6 +130,22 @@ export default function GridLayout({ dataSource, charts, initialData }) {
       cancelled = true;
     };
   }, [dataSource, filters, hasActiveFilters, initialData]);
+
+  // Dynamically change widget size when charts change type
+  const handleChartTypeChange = (widgetKey, chartType) => {
+    const sizing = chartLayoutDefaults[chartType];
+
+    setLayout((prev) =>
+      prev.map((item) =>
+        item.i === widgetKey
+          ? {
+              ...item,
+              ...sizing,
+            }
+          : item,
+      ),
+    );
+  };
 
   // Add a filter value for a given chart
   const handleAddFilter = (chartId, value) => {
@@ -157,6 +228,9 @@ export default function GridLayout({ dataSource, charts, initialData }) {
                   title={item.title}
                   widgetKey={item.key}
                   chart={item}
+                  onChartTypeChange={(widgetKey, chartType) =>
+                    handleChartTypeChange(widgetKey, chartType)
+                  }
                   layout={getWidgetLayout(item.key)}
                   onRemove={() => handleRemoveItem(item.key)}
                   isFilterable={item.isFilterable}
