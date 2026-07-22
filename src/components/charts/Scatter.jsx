@@ -1,7 +1,10 @@
+import THEME from '@/lib/theme';
 import React from 'react';
-import { VictoryScatter, VictoryTheme, VictoryChart, VictoryTooltip } from 'victory';
+import { VictoryScatter, VictoryTheme, VictoryChart, VictoryTooltip, VictoryAxis, VictoryLabel } from 'victory';
 
 function Scatter({ data, width, height }) {
+
+
   return (
     <div className="c-chart__scatter">
       <VictoryChart
@@ -10,14 +13,15 @@ function Scatter({ data, width, height }) {
           theme={VictoryTheme.clean}
         >
           <VictoryScatter
-            size={7}
+            size={3}
             data={data.data}
-            labels={({ datum }) => datum.y}
-
+            labels={({ datum }) => `${data.labels.x} ${datum.x} \n ${data.labels.y} ${datum.y}`}
             labelComponent={
               <VictoryTooltip dy={-10} />
             }
           />
+          <VictoryAxis label={data.labels.y} axisLabelComponent={<VictoryLabel dy={-10} />} dependentAxis tickCount={10} />
+          <VictoryAxis label={data.labels.x} style={THEME.chart.ticks.style}/>
         </VictoryChart>
     </div>
   );
