@@ -1,6 +1,7 @@
 export const CONFIG = {
   id: 'aurora-us',
   table: 'aurora_us',
+  keyColumn: 'Sample ID',
   charts: [
     {
       id: 'cancer-type-detailed',

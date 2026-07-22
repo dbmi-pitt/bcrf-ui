@@ -7,7 +7,6 @@ import {
   VictoryTheme,
   VictoryTooltip,
 } from 'victory';
-import log from 'xac-loglevel';
 
 function findBin(x, bins) {
   let selected = bins[0];
@@ -64,8 +63,6 @@ function Histogram({ data, width, height }) {
     const rawData = data.data;
     return sortIntoBins(bins, rawData);
   }, [data]);
-
-  log.debug('Histogram', binnedData);
 
   const histogramData = binnedData.map(({ label, count }) => ({
     bin: label,

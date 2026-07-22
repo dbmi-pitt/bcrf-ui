@@ -1,6 +1,7 @@
 export const CONFIG = {
   id: 'aurora-eu',
   table: 'aurora_eu',
+  keyColumn: 'ssid',
   charts: [
     {
       id: 'type',
