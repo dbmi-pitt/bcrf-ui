@@ -119,7 +119,10 @@ function Histogram({ data, width, height }) {
                 : `(${data[index].bin}, ${inclusiveLabel}]`;
             return `Number of samples: ${datum.count}\nRange: ${range}`
           }}
-          labelComponent={<VictoryTooltip />}
+          labelComponent={<VictoryTooltip constrainToVisibleArea dx={(props) => {
+            if (props.index === 0 || props.index === binnedData.length - 1) return 0;
+            return 15
+          }} />}
         />
         <VictoryAxis label={data.labels.y} dependentAxis />
         <VictoryAxis
