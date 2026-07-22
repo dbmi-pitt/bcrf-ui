@@ -1,3 +1,4 @@
+import THEME from '@/lib/theme';
 import { useMemo } from 'react';
 import {
   Bar,
@@ -91,7 +92,10 @@ function Histogram({ data, width, height }) {
           labelComponent={<VictoryTooltip />}
         />
         <VictoryAxis label={data.labels.y} dependentAxis />
-        <VictoryAxis label={data.labels.x} />
+        <VictoryAxis
+          label={data.labels.x}
+          style={THEME.chart.ticks.style}
+        />
       </VictoryChart>
     </div>
   );
