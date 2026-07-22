@@ -73,7 +73,7 @@ function Histogram({ data, width, height }) {
     <div className="c-chart__histogram">
       <VictoryChart
         domainPadding={{ x: 50, y: 10 }}
-        padding={30}
+        padding={{ top: 10, bottom: 30, left: 30, right: 10 }}
         width={width}
         height={height}
         theme={VictoryTheme.clean}
@@ -84,7 +84,7 @@ function Histogram({ data, width, height }) {
           x="bin"
           y="count"
           labels={({ datum }) => datum.count}
-          labelComponent={<VictoryTooltip />}
+          labelComponent={<VictoryTooltip constrainToVisibleArea />}
         />
         <VictoryAxis dependentAxis />
         <VictoryAxis />

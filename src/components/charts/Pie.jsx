@@ -1,4 +1,4 @@
-import { VictoryPie, VictoryTheme, VictoryTooltip } from 'victory';
+import { Flyout, VictoryPie, VictoryPortal, VictoryTheme, VictoryTooltip } from 'victory';
 
 function Pie({
   data,
