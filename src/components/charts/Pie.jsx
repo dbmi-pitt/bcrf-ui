@@ -1,7 +1,25 @@
-import React from 'react';
 import { VictoryPie, VictoryTheme, VictoryTooltip } from 'victory';
 
-function Pie({ data, width, height }) {
+function Pie({
+  data,
+  width,
+  height,
+  isFilterable,
+  activeFilters,
+  onAddFilter,
+  onRemoveFilter,
+}) {
+  const checkboxFilter = (value) => {
+    if (!isFilterable) {
+      return;
+    }
+    if (activeFilters.includes(value)) {
+      onRemoveFilter(data.id, value);
+    } else {
+      onAddFilter(data.id, value);
+    }
+  };
+
   return (
     <div className="c-chart__pie">
       <VictoryPie
@@ -12,10 +30,28 @@ function Pie({ data, width, height }) {
         theme={VictoryTheme.clean}
         labels={({ datum }) => `${datum.x}: ${datum.y}`}
         labelComponent={<VictoryTooltip constrainToVisibleArea />}
+        style={{
+          data: {
+            cursor: isFilterable ? 'pointer' : 'default',
+            opacity: ({ datum }) =>
+              activeFilters.length === 0 || activeFilters.includes(datum.x)
+                ? 1
+                : 0.25,
+          },
+        }}
         events={[
           {
             target: 'data',
             eventHandlers: {
+              onClick: () => [
+                {
+                  target: 'data',
+                  mutation: (props) => {
+                    checkboxFilter(props.datum.x);
+                    return null;
+                  },
+                },
+              ],
               onMouseOver: () => [
                 {
                   target: 'labels',

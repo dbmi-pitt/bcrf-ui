@@ -1,6 +1,7 @@
 export const CONFIG = {
   id: 'aurora-us',
   table: 'aurora_us',
+  keyColumn: 'Sample ID',
   charts: [
     {
       id: 'cancer-type-detailed',
@@ -19,10 +20,11 @@ export const CONFIG = {
       ],
       query: (clause) => {
         const whereClause = clause ? `WHERE ${clause}` : '';
+        // Cast y to integer to avoid returning a string value for count
         return `
           SELECT 
             "Cancer Type Detailed" AS x,
-            COUNT(*) AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -900,7 +902,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Number of Samples Per Patient" AS x,
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -932,7 +934,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Clinical Stage" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -966,7 +968,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Pathologic Stage" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1553,7 +1555,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Progesterone Receptor Status" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1583,7 +1585,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Race" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1614,7 +1616,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Pathologic T" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1643,7 +1645,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Histologic Type" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1670,7 +1672,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Overall Survival Status" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1700,7 +1702,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Pathologic M" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1732,7 +1734,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Pathologic N" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1808,7 +1810,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Metastatic Site" AS x, 
-            COUNT(*) AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}
@@ -1836,7 +1838,7 @@ export const CONFIG = {
         return `
           SELECT 
             "Ethnicity" AS x, 
-            COUNT(DISTINCT "Patient ID") AS y,
+            CAST(COUNT(*) AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
           ${whereClause}

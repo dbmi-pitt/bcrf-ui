@@ -18,6 +18,7 @@ export default function GridWidget({
   title,
   widgetKey,
   chart,
+  onChartTypeChange,
   onRemove,
   isFilterable,
   activeFilters,
@@ -99,6 +100,7 @@ export default function GridWidget({
     if (key.startsWith('switchChart:')) {
       const newType = key.split(':')[1];
       setChartType(newType);
+      onChartTypeChange(widgetKey, newType);
     }
     if (key.eq('download:data')) {
       autoBlobDownloader(
@@ -167,7 +169,7 @@ export default function GridWidget({
 
       <Card.Body
         className="d-flex flex-column c-gridWidget__main"
-        style={{ height: 0, flex: 1 }}
+        style={{ height: 0, flex: 1, padding: 1 }}
         id={widgetBodyId}
       >
         <ChartProvider>
