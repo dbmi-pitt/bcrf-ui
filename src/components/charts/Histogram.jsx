@@ -7,7 +7,6 @@ import {
   VictoryTheme,
   VictoryTooltip,
 } from 'victory';
-import log from 'xac-loglevel';
 
 function findBin(x, bins) {
   let selected = bins[0];
@@ -45,7 +44,6 @@ const HistogramMinBar = (props) => {
 
   const value = props.datum.y;
   const actualHeight = Math.abs(props.y0 - props.y);
-  log.info(`value: ${value} actual: ${actualHeight}`);
 
   // Don't modify zero-value bars
   if (value <= 0) {
@@ -65,8 +63,6 @@ function Histogram({ data, width, height }) {
     const rawData = data.data;
     return sortIntoBins(bins, rawData);
   }, [data]);
-
-  log.debug('Histogram', binnedData);
 
   const histogramData = binnedData.map(({ label, count }) => ({
     bin: label,
