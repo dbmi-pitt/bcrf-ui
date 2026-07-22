@@ -5,6 +5,8 @@ import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 
 import GridWidget from '@/components/grid/GridWidget';
 import { getChartData } from '@/lib/data';
+import { CloseOutlined } from '@ant-design/icons';
+import { Button, Tag } from 'antd';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
@@ -37,6 +39,17 @@ const chartLayoutDefaults = {
     minH: 2,
   },
 };
+
+const TAG_COLOR_PALETTE = [
+  'blue',
+  'green',
+  'purple',
+  'orange',
+  'magenta',
+  'cyan',
+  'gold',
+  'volcano',
+];
 
 function getChartLayout(chart) {
   const chartType = chart.types[0];
@@ -98,6 +111,24 @@ export default function GridLayout({ dataSource, charts, initialData }) {
     key: chart.id,
     data: chartData[chart.id] ?? initialData[chart.id],
   }));
+
+  const filterTags = Object.entries(filters)
+    .flatMap(([chartId, values]) => {
+      const config = charts.find((chart) => chart.id === chartId);
+      if (!config) return null;
+      return values.map((value) => ({
+        chartId: chartId,
+        key: value,
+        title: config.title,
+        value: value,
+      }));
+    })
+    .filter(Boolean);
+
+  const chartIdColors = Object.keys(filters).reduce((acc, chartId, index) => {
+    acc[chartId] = TAG_COLOR_PALETTE[index % TAG_COLOR_PALETTE.length];
+    return acc;
+  }, {});
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -209,7 +240,42 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   };
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="pt-3">
+      <div
+        className="d-flex flex-wrap align-items-center gap-2 px-2"
+        style={{ minHeight: 40 }}
+      >
+        {filterTags.map((tag) => (
+          <Tag
+            key={tag.key}
+            variant="solid"
+            color={chartIdColors[tag.chartId]}
+            closable
+            closeIcon={
+              <CloseOutlined style={{ color: '#fff', fontSize: 12 }} />
+            }
+            onClose={() => handleRemoveFilter(tag.chartId, tag.value)}
+            style={{
+              paddingInline: 10,
+              paddingBlock: 4,
+              borderRadius: 6,
+              fontSize: 13,
+              lineHeight: '20px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+            }}
+          >
+            <b>{tag.title}</b>: {tag.value}
+          </Tag>
+        ))}
+        {hasActiveFilters && (
+          <Button variant="outline" size="sm" onClick={() => setFilters({})}>
+            Clear All Filters
+          </Button>
+        )}
+      </div>
+
       {mounted && (
         <ReactGridLayout
           dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
