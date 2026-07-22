@@ -13,7 +13,7 @@ function Scatter({ data, width, height }) {
             size={7}
             data={data.data}
             labels={({ datum }) => datum.y}
-            
+
             labelComponent={
               <VictoryTooltip dy={-10} />
             }
