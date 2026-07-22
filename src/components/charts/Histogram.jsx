@@ -94,6 +94,7 @@ function Histogram({ data, width, height }) {
         <VictoryAxis label={data.labels.y} dependentAxis />
         <VictoryAxis
           label={data.labels.x}
+          
           style={THEME.chart.ticks.style}
         />
       </VictoryChart>

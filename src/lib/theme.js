@@ -11,7 +11,7 @@ const THEME = {
     ticks: {
       style: {
         ticks: { stroke: '#757575', size: 5 },
-        tickLabels: { fontSize: 10, padding: 5 },
+        tickLabels: { fontSize: 10, padding: 5, angle: 50},
       },
     },
   },
