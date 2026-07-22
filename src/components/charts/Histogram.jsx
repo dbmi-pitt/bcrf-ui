@@ -88,7 +88,15 @@ function Histogram({ data, width, height }) {
           dataComponent={<HistogramMinBar />}
           x="bin"
           y="count"
-          labels={({ datum }) => datum.count}
+           labels={(props) => {
+            const {datum, data} = props
+            const index = props.index
+            const range =
+              index === 0 || index === data.length - 1
+                ? datum.bin
+                : `(${data[index].bin}, ${data[index + 1].bin}]`;
+            return `Number of samples: ${datum.count}\nRange: ${range}`
+          }}
           labelComponent={<VictoryTooltip />}
         />
         <VictoryAxis label={data.labels.y} dependentAxis />
