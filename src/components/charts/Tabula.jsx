@@ -34,7 +34,7 @@ function Tabula({
             : a[key] - b[key],
         key,
         render: (v, record) => {
-          if (key === 'y') {
+          if (key === 'y' && isFilterable) {
             return (
               <Checkbox
                 checked={activeFilters.includes(record.x)}
