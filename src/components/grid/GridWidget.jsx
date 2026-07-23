@@ -27,6 +27,8 @@ export default function GridWidget({
 }) {
   const [chartType, setChartType] = useState(chart.types[0]);
   const [modal, setModal] = useState({});
+  const [showActions, setShowActions] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const data = { ...chart };
 
@@ -131,6 +133,12 @@ export default function GridWidget({
   return (
     <Card
       className="c-gridWidget h-100"
+      onMouseEnter={() => setShowActions(true)}
+      onMouseLeave={() => {
+        if (!menuOpen) {
+          setShowActions(false);
+        }
+      }}
       key={widgetKey}
       style={{ overflow: 'hidden' }}
     >
@@ -142,12 +150,30 @@ export default function GridWidget({
           <span className={'card-title text-truncate mb-0'}>{title}</span>
         </Tooltip>
 
-        <div className="d-flex align-items-center gap-2">
+        <div
+          className="d-flex align-items-center gap-2"
+          style={{
+            opacity: showActions ? 1 : 0,
+            transition: 'opacity .15s ease',
+          }}
+        >
           <Tooltip title={'Test tooltip'}>
             <InfoCircleOutlined />
           </Tooltip>
 
-          <Dropdown menu={menuProps}>
+          <Dropdown
+            menu={menuProps}
+            open={menuOpen}
+            onOpenChange={(open) => {
+              setMenuOpen(open);
+
+              if (open) {
+                setShowActions(true);
+              } else {
+                setShowActions(false);
+              }
+            }}
+          >
             <a
               onClick={(e) => e.preventDefault()}
               style={{ textDecoration: 'none', color: 'inherit' }}

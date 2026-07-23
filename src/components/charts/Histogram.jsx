@@ -83,10 +83,10 @@ function Histogram({ data, width, height }) {
   }));
 
   const chartPaddings = {
-    left: 40,
-    right: 20,
+    left: 30,
+    right: 10,
     top: 10,
-    bottom: 40,
+    bottom: 35,
   };
 
   return (
