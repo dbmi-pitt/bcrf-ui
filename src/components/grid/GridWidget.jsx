@@ -135,12 +135,6 @@ export default function GridWidget({
   return (
     <Card
       className="c-gridWidget h-100"
-      onMouseEnter={() => setShowActions(true)}
-      onMouseLeave={() => {
-        if (!menuOpen) {
-          setShowActions(false);
-        }
-      }}
       key={widgetKey}
       style={{ overflow: 'hidden' }}
     >
@@ -153,7 +147,7 @@ export default function GridWidget({
           className="c-gridWidget__actionArea"
           onMouseEnter={() => setShowActions(true)}
           onMouseLeave={() => {
-            if (!menuOpen) {
+            if (!menuOpen && !tooltipOpen) {
               setShowActions(false);
             }
           }}
