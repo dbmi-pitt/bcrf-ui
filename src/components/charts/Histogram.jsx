@@ -51,7 +51,6 @@ const HistogramMinBar = (props) => {
 
   const value = props.datum.y;
   const actualHeight = Math.abs(props.y0 - props.y);
-  log.info(`value: ${value} actual: ${actualHeight}`);
   const margins = chartPaddings.left + chartPaddings.right
 
   if (index !== 0 && (index !== rawData.bins.length - 1)) {
