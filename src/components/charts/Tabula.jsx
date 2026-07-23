@@ -8,7 +8,7 @@ function Tabula({
   height,
 }) {
 
-  const { isFilterable, activeFilters, chartFilter } =
+  const {legendColors, isFilterable, activeFilters, chartFilter } =
     useContext(ChartContext);
 
   const checkboxFilter = (v, record) => {
@@ -29,7 +29,11 @@ function Tabula({
             : a[key] - b[key],
         key,
         render: (v, record) => {
-          if (key === 'y' && isFilterable) {
+          
+          if (key.eq('x')) {
+            return <span><span style={{ display: 'inline-block', backgroundColor: legendColors.current[v], width: '12px', height: '12px'}}></span> {v}</span>
+          }
+          if (key.eq('y') && isFilterable) {
             return (
               <Checkbox
                 checked={activeFilters.includes(record.x)}
