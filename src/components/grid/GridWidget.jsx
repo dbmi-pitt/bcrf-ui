@@ -10,7 +10,7 @@ import {
   TableOutlined,
 } from '@ant-design/icons';
 import { Dropdown, Tooltip } from 'antd';
-import { useState,  useRef } from 'react';
+import { useRef, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import WidgetPopover from '../WidgetPopover';
@@ -26,13 +26,14 @@ export default function GridWidget({
   onAddFilter,
   onRemoveFilter,
   legend,
-  setLegend
+  setLegend,
 }) {
   const [chartType, setChartType] = useState(chart.types[0]);
-  const [widgetPopover, setShowWidgetPopover] = useState(null)
-  const widgetRef = useRef(null)
+  const [widgetPopover, setShowWidgetPopover] = useState(null);
+  const widgetRef = useRef(null);
   const [showActions, setShowActions] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
 
   const data = { ...chart };
 
@@ -124,7 +125,6 @@ export default function GridWidget({
       svg = svg.replace('<svg', `<svg xmlns="http://www.w3.org/2000/svg"`);
       autoBlobDownloader([svg], 'image/svg+xml;charset=utf-8', `${title}.svg`);
     }
-   
   };
 
   const menuProps = {
@@ -144,54 +144,73 @@ export default function GridWidget({
       key={widgetKey}
       style={{ overflow: 'hidden' }}
     >
-      <Card.Header
-        className="d-flex justify-content-between align-items-center py-1 drag-header-handle"
-        style={{ cursor: 'move' }}
-      >
+      <Card.Header className="c-gridWidget__header py-1 drag-header-handle">
         <Tooltip title={title}>
-          <span className={'card-title text-truncate mb-0'}>{title}</span>
+          <span className="c-gridWidget__title"> {title}</span>
         </Tooltip>
 
         <div
-          className="d-flex align-items-center gap-2"
-          style={{
-            opacity: showActions ? 1 : 0,
-            transition: 'opacity .15s ease',
+          className="c-gridWidget__actionArea"
+          onMouseEnter={() => setShowActions(true)}
+          onMouseLeave={() => {
+            if (!menuOpen) {
+              setShowActions(false);
+            }
           }}
         >
-          <Tooltip title={'Test tooltip'}>
-            <InfoCircleOutlined />
-          </Tooltip>
-
-          <Dropdown
-            menu={menuProps}
-            open={menuOpen}
-            onOpenChange={(open) => {
-              setMenuOpen(open);
-
-              if (open) {
-                setShowActions(true);
-              } else {
-                setShowActions(false);
-              }
+          <div
+            className="c-gridWidget__actions d-flex align-items-center gap-2"
+            style={{
+              opacity: showActions ? 1 : 0,
+              transition: 'opacity .15s ease',
             }}
           >
-            <a
-              onClick={(e) => e.preventDefault()}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              <MenuOutlined />
-            </a>
-          </Dropdown>
+            <Tooltip
+              title="Test tooltip"
+              open={tooltipOpen}
+              onOpenChange={(open) => {
+                setTooltipOpen(open);
 
-          <Button
-            variant="link"
-            size="sm"
-            className="p-0 text-dark text-decoration-none"
-            onClick={onRemove}
-          >
-            ✕
-          </Button>
+                if (open) {
+                  setShowActions(true);
+                } else if (!menuOpen) {
+                  setShowActions(false);
+                }
+              }}
+            >
+              <InfoCircleOutlined />
+            </Tooltip>
+
+            <Dropdown
+              menu={menuProps}
+              open={menuOpen}
+              onOpenChange={(open) => {
+                setMenuOpen(open);
+
+                if (open) {
+                  setShowActions(true);
+                } else {
+                  setShowActions(false);
+                }
+              }}
+            >
+              <a
+                onClick={(e) => e.preventDefault()}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <MenuOutlined />
+              </a>
+            </Dropdown>
+
+            <Button
+              variant="link"
+              size="sm"
+              className="p-0 text-dark text-decoration-none"
+              onClick={onRemove}
+            >
+              ✕
+            </Button>
+          </div>
         </div>
       </Card.Header>
 
