@@ -1,6 +1,6 @@
 import ChartContext from '@/context/ChartContext';
 import { useContext } from 'react';
-import { VictoryPie, VictoryTheme, VictoryTooltip, Slice } from 'victory';
+import { Flyout, VictoryPie, VictoryPortal, VictoryTheme, VictoryTooltip, Slice } from 'victory';
 
 const TraceableSlice = (props) => {
   const pieProps = { ...props };
@@ -14,6 +14,7 @@ const TraceableSlice = (props) => {
 function Pie({ data, width, height }) {
   const { legendColors, isFilterable, activeFilters, chartFilter } =
     useContext(ChartContext);
+
 
   const checkboxFilter = (value) => {
     chartFilter(data, value);
