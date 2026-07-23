@@ -94,6 +94,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   const { width, containerRef, mounted } = useContainerWidth({
     measureBeforeMount: true,
   });
+  const [gridWidth, setGridWidth] = useState(0);
   const rowHeightPx = 30;
   const margin = [10, 10];
   const cols = 12;
@@ -112,6 +113,12 @@ export default function GridLayout({ dataSource, charts, initialData }) {
     key: chart.id,
     data: chartData[chart.id] ?? initialData[chart.id],
   }));
+
+  useEffect(() => {
+    if (mounted && width > 0) {
+      setGridWidth(width);
+    }
+  }, [width, mounted]);
 
   const filterTags = Object.entries(filters)
     .flatMap(([chartId, values]) => {
@@ -272,10 +279,10 @@ export default function GridLayout({ dataSource, charts, initialData }) {
         )}
       </div>
 
-      {mounted && (
+      {mounted && gridWidth > 0 && (
         <ReactGridLayout
           dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
-          width={width}
+          width={gridWidth}
           layout={visibleLayout}
           cols={12}
           margin={margin}
