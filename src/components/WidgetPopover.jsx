@@ -3,49 +3,38 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Popover from 'react-bootstrap/Popover';
 import Tabula from './charts/Tabula';
 
-const WidgetPopover = ({ event, data, chartType }) => {
+const WidgetPopover = ({ event, data, chartType, targetRef }) => {
   const [show, setShow] = useState(null);
 
   useEffect(() => {
-    const margin = 500;
-    const e = event;
+    const halfScreen = window.innerWidth / 2;
     setTimeout(() => {
-      const atLeft = e.clientX <= margin;
-      const atRight = e.clientX >= window.innerWidth - margin;
-      const atTop = e.clientY <= margin;
-      const atBottom = e.clientY >= window.innerHeight - margin;
-
-      if (atLeft || atRight || atTop || atBottom) {
-        console.log('Mouse is at the screen boundary!', atLeft, atRight);
-      }
-
+      const atLeft = event.clientX <= halfScreen;
       if (atLeft) {
-        setShow('bottom-end');
+        setShow('right');
       } else {
         setShow('left');
       }
     }, 500);
   }, []);
 
-
   return (
     <div className="c-widgetPopover">
       <OverlayTrigger
-        // target={event.target}
-        show={show != null}
+        target={event.target}
+        show={show !== null}
         placement={show}
         overlay={
           <Popover className="c-widgetPopover__main">
             <Popover.Header as="h3">{data.title}</Popover.Header>
             <Popover.Body>
-          
               <Tabula data={data} />
-              {/* TODO Other charts */}
             </Popover.Body>
           </Popover>
         }
       >
-        <span>&nbsp;</span>
+        {/* The component is rendered after a mouse event, so ignore linter on ref */}
+        <span style={{width: targetRef.current.offsetWidth, display: 'block', position: 'absolute'}}>&nbsp;</span>
       </OverlayTrigger>
     </div>
   );
