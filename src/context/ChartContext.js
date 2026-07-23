@@ -1,23 +1,51 @@
-import { createContext, useEffect, useState, useEffectEvent } from 'react';
-import API from '@/lib/api';
-import ENVS from '@/lib/envs';
-import URLS from '@/lib/urls';
-import log from 'xac-loglevel';
+import { createContext, useEffect, useRef } from 'react';
 
-const CharContext = createContext({});
+const ChartContext = createContext({});
 
-export const ChartProvider = ({ children }) => {
+export const ChartProvider = ({
+  children,
+  setLegend,
+  legend,
+  isFilterable,
+  activeFilters,
+  onAddFilter,
+  onRemoveFilter,
+}) => {
   useEffect(() => {}, []);
+  const legendColors = useRef(legend);
+
+  const updateLegend = (args) => {
+    setLegend({ ...legend, ...legendColors.current });
+  };
+
+  const chartFilter = (data, value) => {
+    if (!isFilterable) {
+      return;
+    }
+    if (activeFilters.includes(value)) {
+      onRemoveFilter(data.id, value);
+    } else {
+      onAddFilter(data.id, value);
+      updateLegend({ data, value });
+    }
+  };
 
   return (
-    <CharContext.Provider
+    <ChartContext.Provider
       value={{
-  
+        legendColors,
+        legend,
+        setLegend,
+        isFilterable,
+        activeFilters,
+        onAddFilter,
+        onRemoveFilter,
+        chartFilter,
       }}
     >
       {children}
-    </CharContext.Provider>
+    </ChartContext.Provider>
   );
 };
 
-export default CharContext;
+export default ChartContext;

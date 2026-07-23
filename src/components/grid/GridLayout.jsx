@@ -103,6 +103,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   const [filters, setFilters] = useState({});
   const [chartData, setChartData] = useState(initialData);
   const [layout, setLayout] = useState(() => createLayout(charts));
+  const [legend, setLegend] = useState({})
 
   const hasActiveFilters = Object.keys(filters).length > 0;
 
@@ -247,7 +248,8 @@ export default function GridLayout({ dataSource, charts, initialData }) {
       >
         {filterTags.map((tag) => (
           <Tag
-            key={tag.key}
+            className='c-tag--filter'
+            key={tag.chartId + tag.key}
             variant="solid"
             color={chartIdColors[tag.chartId]}
             closable
@@ -258,12 +260,6 @@ export default function GridLayout({ dataSource, charts, initialData }) {
             style={{
               paddingInline: 10,
               paddingBlock: 4,
-              borderRadius: 6,
-              fontSize: 13,
-              lineHeight: '20px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
             }}
           >
             <b>{tag.title}</b>: {tag.value}
@@ -303,6 +299,8 @@ export default function GridLayout({ dataSource, charts, initialData }) {
                   activeFilters={filters[item.key] ?? []}
                   onAddFilter={handleAddFilter}
                   onRemoveFilter={handleRemoveFilter}
+                  legend={legend}
+                  setLegend={setLegend}
                 />
               </div>
             ))}

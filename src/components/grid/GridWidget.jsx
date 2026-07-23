@@ -10,9 +10,10 @@ import {
   TableOutlined,
 } from '@ant-design/icons';
 import { Dropdown, Tooltip } from 'antd';
-import { useState } from 'react';
+import { useState,  useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import WidgetPopover from '../WidgetPopover';
 
 export default function GridWidget({
   title,
@@ -24,9 +25,12 @@ export default function GridWidget({
   activeFilters,
   onAddFilter,
   onRemoveFilter,
+  legend,
+  setLegend
 }) {
   const [chartType, setChartType] = useState(chart.types[0]);
-  const [modal, setModal] = useState({});
+  const [widgetPopover, setShowWidgetPopover] = useState(null)
+  const widgetRef = useRef(null)
   const [showActions, setShowActions] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -120,9 +124,7 @@ export default function GridWidget({
       svg = svg.replace('<svg', `<svg xmlns="http://www.w3.org/2000/svg"`);
       autoBlobDownloader([svg], 'image/svg+xml;charset=utf-8', `${title}.svg`);
     }
-    if (key.eq('customBins')) {
-      setModal({ ...modal, open: true });
-    }
+   
   };
 
   const menuProps = {
@@ -197,17 +199,25 @@ export default function GridWidget({
         className="d-flex flex-column c-gridWidget__main"
         style={{ height: 0, flex: 1, padding: 1 }}
         id={widgetBodyId}
+        ref={widgetRef}
+        onMouseOver={(e) => setShowWidgetPopover(e)}
+        onMouseOut={(e) => setShowWidgetPopover(null)}
       >
-        <ChartProvider>
-          {/* // TODO: build over over legend table for pie chart */}
-          <Chart
-            data={data}
-            chartType={chartType}
+        <ChartProvider 
             isFilterable={isFilterable}
             activeFilters={activeFilters}
             onAddFilter={onAddFilter}
-            onRemoveFilter={onRemoveFilter}
+            onRemoveFilter={onRemoveFilter} 
+            legend={legend} 
+            setLegend={setLegend}
+            >
+     
+          <Chart
+            data={data}
+            chartType={chartType}
           />
+          {widgetPopover && ['table', 'scatter'].indexOf(chartType) == -1 && <WidgetPopover event={widgetPopover} data={data} targetRef={widgetRef}
+            chartType={chartType}  />}
         </ChartProvider>
       </Card.Body>
     </Card>
