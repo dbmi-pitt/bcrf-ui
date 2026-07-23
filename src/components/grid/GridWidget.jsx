@@ -24,9 +24,10 @@ export default function GridWidget({
   activeFilters,
   onAddFilter,
   onRemoveFilter,
+  legend,
+  setLegend
 }) {
   const [chartType, setChartType] = useState(chart.types[0]);
-  const [modal, setModal] = useState({});
 
   const data = { ...chart };
 
@@ -118,9 +119,7 @@ export default function GridWidget({
       svg = svg.replace('<svg', `<svg xmlns="http://www.w3.org/2000/svg"`);
       autoBlobDownloader([svg], 'image/svg+xml;charset=utf-8', `${title}.svg`);
     }
-    if (key.eq('customBins')) {
-      setModal({ ...modal, open: true });
-    }
+   
   };
 
   const menuProps = {
@@ -172,15 +171,18 @@ export default function GridWidget({
         style={{ height: 0, flex: 1, padding: 1 }}
         id={widgetBodyId}
       >
-        <ChartProvider>
+        <ChartProvider 
+            isFilterable={isFilterable}
+            activeFilters={activeFilters}
+            onAddFilter={onAddFilter}
+            onRemoveFilter={onRemoveFilter} 
+            legend={legend} 
+            setLegend={setLegend}
+            >
           {/* // TODO: build over over legend table for pie chart */}
           <Chart
             data={data}
             chartType={chartType}
-            isFilterable={isFilterable}
-            activeFilters={activeFilters}
-            onAddFilter={onAddFilter}
-            onRemoveFilter={onRemoveFilter}
           />
         </ChartProvider>
       </Card.Body>

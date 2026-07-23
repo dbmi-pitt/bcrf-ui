@@ -1,23 +1,22 @@
-import { VictoryPie, VictoryTheme, VictoryTooltip } from 'victory';
+import ChartContext from '@/context/ChartContext';
+import { useContext } from 'react';
+import { VictoryPie, VictoryTheme, VictoryTooltip, Slice } from 'victory';
 
-function Pie({
-  data,
-  width,
-  height,
-  isFilterable,
-  activeFilters,
-  onAddFilter,
-  onRemoveFilter,
-}) {
+const TraceableSlice = (props) => {
+  const pieProps = { ...props };
+  const { datum, style, legendColors } = pieProps;
+  legendColors.current[datum.x] = style.fill;
+  
+
+  return <Slice {...pieProps} />;
+};
+
+function Pie({ data, width, height }) {
+  const { legendColors, isFilterable, activeFilters, chartFilter } =
+    useContext(ChartContext);
+
   const checkboxFilter = (value) => {
-    if (!isFilterable) {
-      return;
-    }
-    if (activeFilters.includes(value)) {
-      onRemoveFilter(data.id, value);
-    } else {
-      onAddFilter(data.id, value);
-    }
+    chartFilter(data, value);
   };
 
   return (
@@ -27,6 +26,7 @@ function Pie({
         width={width}
         height={height}
         data={data.data}
+        dataComponent={<TraceableSlice legendColors={legendColors} />}
         theme={VictoryTheme.clean}
         labels={({ datum }) => `${datum.x}: ${datum.y}`}
         labelComponent={<VictoryTooltip constrainToVisibleArea />}
