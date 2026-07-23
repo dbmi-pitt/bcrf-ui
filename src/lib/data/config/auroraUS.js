@@ -7,7 +7,10 @@ export const CONFIG = {
       id: 'cancer-type-detailed',
       title: 'Cancer Type Detailed',
       types: ['pie', 'table'],
-      filterColumn: 'Cancer Type Detailed',
+      filter: {
+        column: 'Cancer Type Detailed',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -37,7 +40,10 @@ export const CONFIG = {
       id: 'mutation-count',
       title: 'Mutation Count',
       types: ['histogram'],
-      filterColumn: 'Mutation Count',
+      filter: {
+        column: 'Mutation Count',
+        type: 'range',
+      },
       labels: {
         x: 'Mutation',
         y: 'Count',
@@ -915,7 +921,10 @@ export const CONFIG = {
       id: 'clinical-stage',
       title: 'Clinical Stage',
       types: ['pie', 'table'],
-      filterColumn: 'Clinical Stage',
+      filter: {
+        column: 'Clinical Stage',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -947,7 +956,10 @@ export const CONFIG = {
       id: 'pathologic-stage',
       title: 'Pathologic Stage',
       types: ['pie', 'table'],
-      filterColumn: 'Pathologic Stage',
+      filter: {
+        column: 'Pathologic Stage',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -981,7 +993,10 @@ export const CONFIG = {
       id: 'age-at-diagnosis',
       title: 'Age at Diagnosis',
       types: ['histogram'],
-      filterColumn: 'Age at Diagnosis',
+      filter: {
+        column: 'Age at Diagnosis',
+        type: 'range',
+      },
       labels: {
         x: 'Age at Diagnosis',
         y: 'Count',
@@ -1237,7 +1252,10 @@ export const CONFIG = {
     //   id: 'fraction-genome-altered',
     //   title: 'Fraction Genome Altered',
     //   types: ['histogram'],
-    //   filterColumn: 'Fraction Genome Altered',
+    //   filter: {
+    //     column: 'Fraction Genome Altered',
+    //     type: 'range'
+    //   },
     //   labels: {
     //     x: 'Fraction Genome Altered',
     //     y: 'Count',
@@ -1540,7 +1558,10 @@ export const CONFIG = {
       id: 'progesterone-receptor-status',
       title: 'Progesterone Receptor Status',
       types: ['pie', 'table'],
-      filterColumn: 'Progesterone Receptor Status',
+      filter: {
+        column: 'Progesterone Receptor Status',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1568,7 +1589,10 @@ export const CONFIG = {
       id: 'race',
       title: 'Race',
       types: ['pie', 'table'],
-      filterColumn: 'Race',
+      filter: {
+        column: 'Race',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1598,7 +1622,10 @@ export const CONFIG = {
       id: 'pathologic-t-stage',
       title: 'Pathologic T Stage',
       types: ['pie', 'table'],
-      filterColumn: 'Pathologic T',
+      filter: {
+        column: 'Pathologic T',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1629,7 +1656,10 @@ export const CONFIG = {
       id: 'histologic-type',
       title: 'Histologic Type',
       types: ['pie', 'table'],
-      filterColumn: 'Histologic Type',
+      filter: {
+        column: 'Histologic Type',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1658,7 +1688,10 @@ export const CONFIG = {
       id: 'overall-survival',
       title: 'Overall Survival',
       types: ['pie', 'table'],
-      filterColumn: 'Overall Survival Status',
+      filter: {
+        column: 'Overall Survival Status',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1685,7 +1718,10 @@ export const CONFIG = {
       id: 'pathologic-m-stage',
       title: 'Pathologic M Stage',
       types: ['pie', 'table'],
-      filterColumn: 'Pathologic M',
+      filter: {
+        column: 'Pathologic M',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1715,7 +1751,10 @@ export const CONFIG = {
       id: 'pathologic-n-stage',
       title: 'Pathologic N Stage',
       types: ['pie', 'table'],
-      filterColumn: 'Pathologic N',
+      filter: {
+        column: 'Pathologic N',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1747,7 +1786,10 @@ export const CONFIG = {
       id: 'metastatic-site',
       title: 'Metastatic Site',
       types: ['pie', 'table'],
-      filterColumn: 'Metastatic Site',
+      filter: {
+        column: 'Metastatic Site',
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -1823,7 +1865,10 @@ export const CONFIG = {
       id: 'ethnicity',
       title: 'Ethnicity',
       types: ['pie', 'table'],
-      filterColumn: 'Ethnicity', // column name in the tsv file
+      filter: {
+        column: 'Ethnicity', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
       labels: {
         y: 'Count', // label key maps to the data key in the data array
         freq: 'Frequency',

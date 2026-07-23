@@ -9,15 +9,13 @@ import {
   VictoryTooltip,
 } from 'victory';
 
-import log from 'xac-loglevel';
-
 function findBin(x, bins) {
   let selected = bins[0];
   for (const bin of bins) {
     if (x > bin.value) {
       selected = bin;
     } else {
-      return bin
+      return bin;
     }
   }
   return selected;
@@ -43,19 +41,19 @@ function sortIntoBins(bins, data) {
 }
 
 const HistogramMinBar = (props) => {
-  if (props.index === props.rawData.bins.length - 2) return <></>
-  const {rawData, chartPaddings, index} = props
+  if (props.index === props.rawData.bins.length - 2) return <></>;
+  const { rawData, chartPaddings, index } = props;
 
   const minHeight = 3;
-  const barProps = {...props}
+  const barProps = { ...props };
 
   const value = props.datum.y;
   const actualHeight = Math.abs(props.y0 - props.y);
   const margins = chartPaddings.left + chartPaddings.right
 
-  if (index !== 0 && (index !== rawData.bins.length - 1)) {
-    barProps.alignment = "start";
-    barProps.x += ((props.width - margins) / rawData.bins.length / 4)
+  if (index !== 0 && index !== rawData.bins.length - 1) {
+    barProps.alignment = 'start';
+    barProps.x += (props.width - margins) / rawData.bins.length / 4;
   }
 
   // Don't modify zero-value bars
@@ -66,7 +64,7 @@ const HistogramMinBar = (props) => {
   if (actualHeight < minHeight) {
     return <Bar {...barProps} y={props.y0 - minHeight} />;
   }
-  return <Bar  {...barProps} />;
+  return <Bar {...barProps} />;
 };
 
 function Histogram({ data, width, height }) {
@@ -99,7 +97,9 @@ function Histogram({ data, width, height }) {
       >
         <VictoryBar
           data={histogramData}
-          dataComponent={<HistogramMinBar rawData={data} chartPaddings={chartPaddings} />}
+          dataComponent={
+            <HistogramMinBar rawData={data} chartPaddings={chartPaddings} />
+          }
           x="bin"
           y="count"
           labels={(props) => {

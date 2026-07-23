@@ -7,7 +7,10 @@ export const CONFIG = {
       id: 'type',
       title: 'Type',
       types: ['pie', 'table'],
-      filterColumn: 'type', // column name in the tsv file
+      filter: {
+        column: 'type', // column name in the tsv file
+        type: 'term',
+      },
       labels: {
         y: 'Count', // label key maps to the data key in the data array
         freq: 'Frequency',
@@ -36,7 +39,10 @@ export const CONFIG = {
       id: 'pam50-primary',
       title: 'PAM50 Primary',
       types: ['pie', 'table'],
-      filterColumn: 'PAM50_primary',
+      filter: {
+        column: 'PAM50_primary', // column name in the tsv file
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',
@@ -67,7 +73,10 @@ export const CONFIG = {
       id: 'metastatic-biopsy-site',
       title: 'Metastatic Biopsy Site',
       types: ['pie', 'table'],
-      filterColumn: 'metastatic_biopsy_site',
+      filter: {
+        column: 'metastatic_biopsy_site', // column name in the tsv file
+        type: 'term',
+      },
       labels: {
         y: 'Count',
         freq: 'Frequency',

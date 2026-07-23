@@ -126,7 +126,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
       if (!config) return null;
       return values.map((value) => ({
         chartId: chartId,
-        key: value,
+        key: `${chartId}-${value}`,
         title: config.title,
         value: value,
       }));

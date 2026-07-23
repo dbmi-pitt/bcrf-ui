@@ -9,6 +9,31 @@ const instance = await DuckDBInstance.create(process.env.DUCK_DB_PATH, {
 });
 const connection = await instance.connect();
 
+let isShuttingDown = false;
+
+async function shutdown() {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+
+  try {
+    connection.closeSync();
+    instance.closeSync();
+    log.info('DuckDB connection closed cleanly.');
+  } catch (err) {
+    log.error('Error closing DuckDB connection:', err);
+  }
+}
+
+process.on('SIGINT', async () => {
+  await shutdown();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  await shutdown();
+  process.exit(0);
+});
+
 const sourceMap = {
   'aurora-us': (await import('./config/auroraUS.js')).CONFIG,
   'aurora-eu': (await import('./config/auroraEU.js')).CONFIG,
@@ -22,22 +47,24 @@ export const getChartConfig = async (sourceId) => {
 
   // return non-client, non-data fields from charts array in config
   return {
-    charts: config.charts.map(({ filterColumn, query, data, ...rest }) => ({
+    charts: config.charts.map(({ filter, query, data, ...rest }) => ({
       ...rest,
-      isFilterable: Boolean(filterColumn),
+      isFilterable: Boolean(filter),
     })),
   };
 };
 
-const exampleInputFilters = {
-  'cancer-type-detailed': ['Breast Invasive Ductal Carcinoma'],
-  'pathologic-stage': ['Stage IIA'],
-};
+// const exampleInputFilters = {
+//   'cancer-type-detailed': ['Breast Invasive Ductal Carcinoma'],
+//   'pathologic-stage': ['Stage IIA'],
+//   'age-at-diagnosis': [50, 60],
+// };
 
-const exampleMappedFilters = {
-  'Cancer Type Detailed': ['Breast Invasive Ductal Carcinoma'],
-  'Pathologic Stage': ['Stage IIA'],
-};
+// const exampleMappedFilters = {
+//   'Cancer Type Detailed': ['Breast Invasive Ductal Carcinoma'],
+//   'Pathologic Stage': ['Stage IIA'],
+//   'Age at Diagnosis': [50, 60],
+// };
 
 export const getChartData = async (sourceId, filters = {}) => {
   const config = sourceMap[sourceId];
@@ -49,7 +76,7 @@ export const getChartData = async (sourceId, filters = {}) => {
   const mappedFilters = {};
   for (const [key, value] of Object.entries(filters)) {
     // skip empty filters
-    if (!value || !value.length) {
+    if (!value || !value.length || !Array.isArray(value)) {
       continue;
     }
 
@@ -60,25 +87,41 @@ export const getChartData = async (sourceId, filters = {}) => {
     }
 
     // skip if the chart is not filterable
-    const column = chart.filterColumn;
+    const column = chart.filter?.column;
     if (!column) {
       continue;
     }
 
-    mappedFilters[column] = value;
-    cleanFilters[key] = value;
-  }
-
-  // if no valid mapped filters, return the chart data without filtering
-  if (!mappedFilters || !Object.keys(mappedFilters).length) {
-    const data = {};
-    for (const chart of config.charts) {
-      data[chart.id] = chart.data;
+    const filterType = chart.filter?.type;
+    if (!filterType) {
+      continue;
     }
-    return {
-      data: data,
-      filters: {},
+
+    let type = null;
+    switch (filterType) {
+      case 'term':
+        // check that the value is an array of strings
+        if (!value.every((v) => typeof v === 'string')) {
+          continue;
+        }
+        type = 'term';
+        break;
+      case 'range':
+        // check that the value is an array of two numbers
+        if (value.length !== 2 || !value.every((v) => typeof v === 'number')) {
+          continue;
+        }
+        type = 'range';
+        break;
+      default:
+        continue;
+    }
+
+    mappedFilters[column] = {
+      type: type,
+      values: value,
     };
+    cleanFilters[key] = value;
   }
 
   // build the filter clause and query the database for each chart
@@ -87,7 +130,7 @@ export const getChartData = async (sourceId, filters = {}) => {
     // skip filters that are for the current chart, since we don't want to
     // filter a chart by its own values
     const filtersForChart = { ...mappedFilters };
-    delete filtersForChart[chart.filterColumn];
+    delete filtersForChart[chart.filter?.column];
 
     const { clause, params } = buildFilterClause(filtersForChart);
     const query = chart.query(clause).replace(/\s+/g, ' ').trim();
