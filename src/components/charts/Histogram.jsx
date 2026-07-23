@@ -49,7 +49,7 @@ const HistogramMinBar = (props) => {
 
   const value = props.datum.y;
   const actualHeight = Math.abs(props.y0 - props.y);
-  const margins = chartPaddings.left + chartPaddings.right
+  const margins = chartPaddings.left + chartPaddings.right;
 
   if (index !== 0 && index !== rawData.bins.length - 1) {
     barProps.alignment = 'start';
@@ -128,9 +128,7 @@ function Histogram({ data, width, height }) {
           }
         />
         <VictoryAxis dependentAxis />
-        <VictoryAxis
-          style={THEME.chart.ticks.style}
-        />
+        <VictoryAxis style={THEME.chart.ticks.style} />
       </VictoryChart>
     </div>
   );
