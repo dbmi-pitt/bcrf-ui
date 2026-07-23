@@ -31,7 +31,7 @@ function Scatter({ data, width, height }) {
           labels={({ datum }) =>
             `${data.labels.x} ${datum.x} \n ${data.labels.y} ${datum.y}`
           }
-          labelComponent={<VictoryTooltip dy={-10} />}
+          labelComponent={<VictoryTooltip dy={-10} constrainToVisibleArea />}
         />
         <VictoryAxis
           label={data.labels.y}
