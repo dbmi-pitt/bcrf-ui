@@ -1,13 +1,16 @@
+import ChartContext from '@/context/ChartContext';
 import THEME from '@/lib/theme';
-import { useMemo } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import {
   Bar,
   VictoryAxis,
   VictoryBar,
+  VictoryBrushContainer,
   VictoryChart,
   VictoryTheme,
   VictoryTooltip,
 } from 'victory';
+import log from 'xac-loglevel';
 
 function findBin(x, bins) {
   let selected = bins[0];
@@ -68,16 +71,36 @@ const HistogramMinBar = (props) => {
 };
 
 function Histogram({ data, width, height }) {
+  const { isFilterable, activeFilters, onAddFilter, onRemoveFilter } =
+    useContext(ChartContext);
+
+  const [brushDomain, setBrushDomain] = useState({ x: [0, 0] });
+  const [highlightedBins, setHighlightedBins] = useState([]);
+
   const binnedData = useMemo(() => {
     const bins = data.bins;
     const rawData = data.data;
     return sortIntoBins(bins, rawData);
   }, [data]);
 
-  const histogramData = binnedData.map(({ label, count }) => ({
-    bin: label,
-    count: count,
-  }));
+  const histogramData = useMemo(() => {
+    return binnedData.map(({ label, count }) => ({
+      bin: label,
+      count: count,
+    }));
+  }, [binnedData]);
+
+  const binCoordinates = useMemo(() => {
+    return histogramData.map((d, i) => {
+      if (i === 0 || i === histogramData.length - 1) {
+        return [i + 1 - 0.25, i + 1 + 0.25];
+      } else {
+        return [i + 1.5 - 0.25, i + 1.5 + 0.25];
+      }
+    });
+  }, [histogramData]);
+
+  const binLabels = histogramData.map((d) => d.bin);
 
   const chartPaddings = {
     left: 30,
@@ -85,6 +108,52 @@ function Histogram({ data, width, height }) {
     top: 10,
     bottom: 35,
   };
+  const handleBrushDomainChange = useCallback(
+    (domain) => {
+      setBrushDomain(domain);
+
+      // determine which bins are highlighted based on the brush domain
+      const highlighted = [];
+      for (const [index, [x0, x1]] of binCoordinates.entries()) {
+        log.debug('Bin coordinates:', [x0, x1], 'Index:', index);
+        if (x1 < domain.x[0] || x0 > domain.x[1]) {
+          // bin is outside of the brush domain
+          continue;
+        } else {
+          // bin is inside of the brush domain
+          highlighted.push(binLabels[index]);
+        }
+      }
+      setHighlightedBins(highlighted);
+    },
+    [binCoordinates, binLabels],
+  );
+
+  const handleBrushDomainChangeEnd = useCallback(
+    (domain, props) => {
+      // log.debug('Brush domain changed:', domain, props);
+      // setBrushDomain({ x: [0, 0] });
+      log.debug('Highlighted bins:', highlightedBins);
+      onAddFilter(data.id, highlightedBins, 'range');
+    },
+    [data.id, highlightedBins, onAddFilter],
+  );
+
+  const handleBrushCleared = useCallback(() => {
+    setBrushDomain({ x: [0, 0] });
+    setHighlightedBins([]);
+  }, []);
+
+  const isBinHighlighted = useCallback(
+    (datum) => {
+      if (brushDomain.x[0] === 0 && brushDomain.x[1] === 0) {
+        return true;
+      }
+
+      return highlightedBins.includes(datum.bin);
+    },
+    [brushDomain.x, highlightedBins],
+  );
 
   return (
     <div className="c-chart__histogram">
@@ -94,6 +163,24 @@ function Histogram({ data, width, height }) {
         width={width}
         height={height}
         theme={VictoryTheme.clean}
+        containerComponent={
+          isFilterable ? (
+            <VictoryBrushContainer
+              brushDimension="x"
+              brushDomain={brushDomain}
+              defaultBrushArea="none"
+              disable={!isFilterable}
+              onBrushDomainChange={handleBrushDomainChange}
+              onBrushDomainChangeEnd={handleBrushDomainChangeEnd}
+              onBrushCleared={handleBrushCleared}
+              brushStyle={{
+                stroke: 'transparent',
+                fill: '#1677ff',
+                fillOpacity: 0.15,
+              }}
+            />
+          ) : undefined
+        }
       >
         <VictoryBar
           data={histogramData}
@@ -126,11 +213,14 @@ function Histogram({ data, width, height }) {
               }}
             />
           }
+          style={{
+            data: {
+              opacity: ({ datum }) => (isBinHighlighted(datum) ? 1 : 0.3),
+            },
+          }}
         />
         <VictoryAxis dependentAxis />
-        <VictoryAxis
-          style={THEME.chart.ticks.style}
-        />
+        <VictoryAxis style={THEME.chart.ticks.style} />
       </VictoryChart>
     </div>
   );

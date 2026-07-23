@@ -30,7 +30,9 @@ export function buildFilterClause(filters) {
         break;
 
       case 'range':
-        const [min, max] = values;
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+
         const minParamName = `param${paramIdx}`;
         params[minParamName] = min;
         paramIdx++;

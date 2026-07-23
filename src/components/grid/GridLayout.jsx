@@ -123,13 +123,32 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   const filterTags = Object.entries(filters)
     .flatMap(([chartId, values]) => {
       const config = charts.find((chart) => chart.id === chartId);
-      if (!config) return null;
-      return values.map((value) => ({
-        chartId: chartId,
-        key: `${chartId}-${value}`,
-        title: config.title,
-        value: value,
-      }));
+      if (!config || !config.filterType) return null;
+
+      if (config.filterType === 'term') {
+        return values.map((value) => ({
+          chartId: chartId,
+          key: `${chartId}-${value}`,
+          title: config.title,
+          value: value,
+        }));
+      } else if (config.filterType === 'range') {
+        if (values.length === 1) {
+          return {
+            chartId: chartId,
+            key: `${chartId}-${values[0]}`,
+            title: config.title,
+            value: values[0],
+          };
+        }
+        return {
+          chartId: chartId,
+          key: `${chartId}-${values[0]}-${values[1]}`,
+          title: config.title,
+          value: `${values[0]} - ${values[values.length - 1]}`,
+        }
+      }
+      return null;
     })
     .filter(Boolean);
 
@@ -187,27 +206,37 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   };
 
   // Add a filter value for a given chart
-  const handleAddFilter = (chartId, value) => {
+  const handleAddFilter = (chartId, value, type = 'term') => {
     setFilters((prev) => {
-      const existing = prev[chartId] ?? [];
-      if (existing.includes(value)) {
-        return prev;
+      if (type === 'term') {
+        const existing = prev[chartId] ?? [];
+        if (existing.includes(value)) {
+          return prev;
+        }
+        return { ...prev, [chartId]: [...existing, value] };
+      } else if (type === 'range') {
+        return { ...prev, [chartId]: value };
       }
-      return { ...prev, [chartId]: [...existing, value] };
     });
   };
 
   // Remove a filter value for a given chart
-  const handleRemoveFilter = (chartId, value) => {
+  const handleRemoveFilter = (chartId, value, type = 'term') => {
     setFilters((prev) => {
-      const existing = prev[chartId] ?? [];
-      const updated = existing.filter((v) => v !== value);
-      if (updated.length === 0) {
+      if (type === 'term') {
+        const existing = prev[chartId] ?? [];
+        const updated = existing.filter((v) => v !== value);
+        if (updated.length === 0) {
+          const rest = { ...prev };
+          delete rest[chartId];
+          return rest;
+        }
+        return { ...prev, [chartId]: updated };
+      } else if (type === 'range') {
         const rest = { ...prev };
         delete rest[chartId];
         return rest;
       }
-      return { ...prev, [chartId]: updated };
     });
   };
 
