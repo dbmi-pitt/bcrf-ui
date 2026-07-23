@@ -80,10 +80,10 @@ function Histogram({ data, width, height }) {
   }));
 
   const chartPaddings = {
-    left: 50,
-    right: 20,
+    left: 30,
+    right: 10,
     top: 10,
-    bottom: 60,
+    bottom: 35,
   };
 
   return (
@@ -127,10 +127,8 @@ function Histogram({ data, width, height }) {
             />
           }
         />
-        <VictoryAxis label={data.labels.y} dependentAxis />
+        <VictoryAxis dependentAxis />
         <VictoryAxis
-          label={data.labels.x}
-
           style={THEME.chart.ticks.style}
         />
       </VictoryChart>

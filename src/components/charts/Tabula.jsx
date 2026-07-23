@@ -1,24 +1,19 @@
+import ChartContext from '@/context/ChartContext';
+import { useContext } from 'react'
 import { Checkbox, Table } from 'antd';
 
 function Tabula({
   data,
   width,
   height,
-  isFilterable,
-  activeFilters,
-  onAddFilter,
-  onRemoveFilter,
 }) {
+
+  const {legendColors, isFilterable, activeFilters, chartFilter } =
+    useContext(ChartContext);
+
   const checkboxFilter = (v, record) => {
-    if (!isFilterable) {
-      return;
-    }
     const value = record.x;
-    if (activeFilters.includes(value)) {
-      onRemoveFilter(data.id, value);
-    } else {
-      onAddFilter(data.id, value);
-    }
+    chartFilter(data, value)
   };
 
   const getColumns = () => {
@@ -34,7 +29,11 @@ function Tabula({
             : a[key] - b[key],
         key,
         render: (v, record) => {
-          if (key === 'y' && isFilterable) {
+          
+          if (key.eq('x')) {
+            return <span><span style={{ display: 'inline-block', backgroundColor: legendColors.current[v], width: '12px', height: '12px'}}></span> {v}</span>
+          }
+          if (key.eq('y') && isFilterable) {
             return (
               <Checkbox
                 checked={activeFilters.includes(record.x)}
