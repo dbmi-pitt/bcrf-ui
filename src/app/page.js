@@ -28,7 +28,7 @@ export default function Home() {
       dict[role] = true;
     });
     // filter out the cards already included
-    const availableSources = content?.summary?.data_sources.filter((d) => dict[d.source] === undefined)
+    const availableSources = content?.summary?.data_sources.filter((d) => dict[d.source] === undefined) || []
     availableSources.map((data) => {
       data.tags.map((t) => {
         if (dict[data.source] === undefined && (t.name === tag.name && t.values.indexOf(value) !== -1)) {
@@ -41,9 +41,12 @@ export default function Home() {
   }
 
   const onCardTagClick = ({data, tag, value}) => {
-    const sources = filterCards(tag, value)
-    setCards(sources)
-    setTags([...tags, {name: tag.name, value, id: data.source}])
+    const found = tags.map((t) => t.value == value && t.name === tag.name && t.id === data.source)
+    if (found.length <= 0) {
+      const sources = filterCards(tag, value)
+      setCards(sources)
+      setTags([...tags, {name: tag.name, value, id: data.source}])
+    }
   }
 
   const getHeaderTags = () => {
@@ -51,10 +54,14 @@ export default function Home() {
     for (const t of tags) {
       list.push(
         <Tag
-          className="c-tag"
+          className="c-tag c-tag--filter"
           key={`${t.name}-${t.value}`}
           closable
           onClose={() => onHeaderTagClick(t)}
+          style={{
+              paddingInline: 10,
+              paddingBlock: 4,
+            }}
         >
           <strong>{t.name}</strong>: {t.value}
         </Tag>,

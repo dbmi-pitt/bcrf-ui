@@ -126,10 +126,6 @@ export default function GridLayout({ dataSource, charts, initialData }) {
     })
     .filter(Boolean);
 
-  const getTagColor = (tag) => {
-    return legend[tag.value] || chartIdColors[tag.chartId]
-  }
-
   const chartIdColors = Object.keys(filters).reduce((acc, chartId, index) => {
     acc[chartId] = TAG_COLOR_PALETTE[index % TAG_COLOR_PALETTE.length];
     return acc;
@@ -252,9 +248,10 @@ export default function GridLayout({ dataSource, charts, initialData }) {
       >
         {filterTags.map((tag) => (
           <Tag
-            key={tag.key}
+            className='c-tag--filter'
+            key={tag.chartId + tag.key}
             variant="solid"
-            color={getTagColor(tag)}
+            color={chartIdColors[tag.chartId]}
             closable
             closeIcon={
               <CloseOutlined style={{ color: '#fff', fontSize: 12 }} />
@@ -263,12 +260,6 @@ export default function GridLayout({ dataSource, charts, initialData }) {
             style={{
               paddingInline: 10,
               paddingBlock: 4,
-              borderRadius: 6,
-              fontSize: 13,
-              lineHeight: '20px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
             }}
           >
             <b>{tag.title}</b>: {tag.value}
