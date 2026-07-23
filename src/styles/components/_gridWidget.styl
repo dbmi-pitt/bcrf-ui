@@ -1,3 +1,35 @@
 .c-gridWidget
   &__main
     overflow-y auto
+
+.c-gridWidget__header
+  position relative
+  display flex
+  align-items center
+  cursor move
+
+.c-gridWidget__title
+  display block
+  width 100%
+  overflow hidden
+  white-space nowrap
+  text-overflow ellipsis
+
+.c-gridWidget__actionArea
+  position absolute
+  top 0
+  right 0
+  width 120px
+  height 100%
+
+  display flex
+  justify-content flex-end
+  align-items center
+
+.c-gridWidget__actions
+  padding-right 8px
+  background #f8f8f8
+  cursor pointer
+
+  display flex
+  align-items center
