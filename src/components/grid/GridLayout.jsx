@@ -103,7 +103,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   const [filters, setFilters] = useState({});
   const [chartData, setChartData] = useState(initialData);
   const [layout, setLayout] = useState(() => createLayout(charts));
-  const [legend, setLegend] = useState({})
+  const [legend, setLegend] = useState({});
 
   const hasActiveFilters = Object.keys(filters).length > 0;
 
@@ -119,7 +119,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
       if (!config) return null;
       return values.map((value) => ({
         chartId: chartId,
-        key: value,
+        key: `${chartId}-${value}`,
         title: config.title,
         value: value,
       }));
@@ -248,7 +248,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
       >
         {filterTags.map((tag) => (
           <Tag
-            className='c-tag--filter'
+            className="c-tag--filter"
             key={tag.chartId + tag.key}
             variant="solid"
             color={chartIdColors[tag.chartId]}
