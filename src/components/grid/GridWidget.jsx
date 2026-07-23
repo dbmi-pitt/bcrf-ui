@@ -216,7 +216,7 @@ export default function GridWidget({
             data={data}
             chartType={chartType}
           />
-          {widgetPopover && ['table', 'scatter'].indexOf(chartType) == -1 && <WidgetPopover event={widgetPopover} data={data} targetRef={widgetRef}
+          {widgetPopover && chartType.eq('pie') && <WidgetPopover event={widgetPopover} data={data} targetRef={widgetRef}
             chartType={chartType}  />}
         </ChartProvider>
       </Card.Body>
