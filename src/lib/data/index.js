@@ -116,20 +116,64 @@ export const getChartData = async (sourceId, filters = {}) => {
         continue;
       }
 
-      // convert labels to numeric values
-      const numericValues = validValues
-        .map((v) => labelMap[v])
+      // special case: if only one bin is selected, we need to convert it to a range filter
+      if (validValues.length === 1) {
+        const binIdx = chart.bins.findIndex(
+          (bin) => bin.label === validValues[0],
+        );
+        if (binIdx === chart.bins.length - 1) {
+          mappedFilters[column] = {
+            type: 'range',
+            values: {
+              min: chart.bins[binIdx].value,
+            },
+          };
+        } else if (binIdx === 0) {
+          mappedFilters[column] = {
+            type: 'range',
+            values: {
+              max: chart.bins[binIdx].value,
+            },
+          };
+        } else {
+          const lower = chart.bins[binIdx].value;
+          const upper = chart.bins[binIdx + 1].value;
+          mappedFilters[column] = {
+            type: 'range',
+            values: {
+              min: lower,
+              max: upper,
+            },
+          };
+        }
+        continue;
+      }
+
+      // More than one bin selected
+
+      // convert labels to the index values for the bins
+      const binIdxs = validValues
+        .map((v) => chart.bins.findIndex((bin) => bin.label === v))
         .sort((a, b) => a - b);
 
-      const max = numericValues[numericValues.length - 1];
-      const idxOfMax = chart.bins.findIndex((bin) => bin.value === max);
-      if (idxOfMax !== chart.bins.length - 1) {
-        numericValues.push(chart.bins[idxOfMax + 1].value);
-      }
+      const lowerBin = chart.bins[binIdxs[0]];
+      const upperBin = chart.bins[binIdxs[binIdxs.length - 1]];
+
+      const lower =
+        lowerBin.label.includes('>') || lowerBin.label.includes('<')
+          ? undefined
+          : lowerBin.value;
+      const upper =
+        upperBin.label.includes('>') || upperBin.label.includes('<')
+          ? undefined
+          : upperBin.value;
 
       mappedFilters[column] = {
         type: filterType,
-        values: numericValues,
+        values: {
+          min: lower,
+          max: upper,
+        },
       };
       cleanFilters[key] = validValues;
     }

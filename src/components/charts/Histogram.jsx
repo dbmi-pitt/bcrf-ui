@@ -144,7 +144,7 @@ function Histogram({ data, width, height }) {
     (domain, props) => {
       // setBrushDomain({ x: [0, 0] });
       log.debug('Highlighted bins:', highlightedBins);
-      // onAddFilter(data.id, highlightedBins, 'range');
+      onAddFilter(data.id, highlightedBins, 'range');
     },
     [data.id, highlightedBins, onAddFilter],
   );
