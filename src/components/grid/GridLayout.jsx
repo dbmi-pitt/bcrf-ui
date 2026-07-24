@@ -209,7 +209,10 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   };
 
   // Add a filter value for a given chart
-  const handleAddFilter = (chartId, value, type = 'term') => {
+  const handleAddFilter = (chartId, value) => {
+    const type = charts.find((chart) => chart.id === chartId)?.filterType
+    if (!type) return;
+
     setFilters((prev) => {
       if (type === 'term') {
         const existing = prev[chartId] ?? [];
@@ -224,7 +227,10 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   };
 
   // Remove a filter value for a given chart
-  const handleRemoveFilter = (chartId, value, type = 'term') => {
+  const handleRemoveFilter = (chartId, value) => {
+    const type = charts.find((chart) => chart.id === chartId)?.filterType
+    if (!type) return;
+
     setFilters((prev) => {
       if (type === 'term') {
         const existing = prev[chartId] ?? [];
