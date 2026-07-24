@@ -150,11 +150,14 @@ function Histogram({ data, width, height }) {
 
   const handleBrushDomainChangeEnd = useCallback(
     (domain, props) => {
-      // setBrushDomain({ x: [0, 0] });
       log.debug('Highlighted bins:', highlightedBins);
-      onAddFilter(data.id, highlightedBins);
+      if (highlightedBins.length === data.bins.length) {
+        onRemoveFilter(data.id, highlightedBins);
+      } else {
+        onAddFilter(data.id, highlightedBins);
+      }
     },
-    [data.id, highlightedBins, onAddFilter],
+    [highlightedBins, data.bins.length, data.id, onRemoveFilter, onAddFilter],
   );
 
   const handleBrushCleared = useCallback(() => {
