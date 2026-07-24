@@ -213,24 +213,26 @@ export default function GridWidget({
         style={{ height: 0, flex: 1, padding: 1 }}
         id={widgetBodyId}
         ref={widgetRef}
-        onMouseOver={(e) => setShowWidgetPopover(e)}
-        onMouseOut={(e) => setShowWidgetPopover(null)}
+        // onMouseOver={(e) => setShowWidgetPopover(e)}
+        // onMouseOut={(e) => setShowWidgetPopover(null)}
       >
-        <ChartProvider 
-            isFilterable={isFilterable}
-            activeFilters={activeFilters}
-            onAddFilter={onAddFilter}
-            onRemoveFilter={onRemoveFilter} 
-            legend={legend} 
-            setLegend={setLegend}
-            >
-     
-          <Chart
-            data={data}
-            chartType={chartType}
-          />
-          {widgetPopover && chartType.eq('pie') && <WidgetPopover event={widgetPopover} data={data} targetRef={widgetRef}
-            chartType={chartType}  />}
+        <ChartProvider
+          isFilterable={isFilterable}
+          activeFilters={activeFilters}
+          onAddFilter={onAddFilter}
+          onRemoveFilter={onRemoveFilter}
+          legend={legend}
+          setLegend={setLegend}
+        >
+          <Chart data={data} chartType={chartType} />
+          {widgetPopover && chartType.eq('pie') && (
+            <WidgetPopover
+              event={widgetPopover}
+              data={data}
+              targetRef={widgetRef}
+              chartType={chartType}
+            />
+          )}
         </ChartProvider>
       </Card.Body>
     </Card>

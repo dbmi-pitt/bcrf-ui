@@ -50,6 +50,7 @@ export const getChartConfig = async (sourceId) => {
     charts: config.charts.map(({ filter, query, data, ...rest }) => ({
       ...rest,
       isFilterable: Boolean(filter),
+      filterType: filter?.type ?? null,
     })),
   };
 };
@@ -57,7 +58,7 @@ export const getChartConfig = async (sourceId) => {
 // const exampleInputFilters = {
 //   'cancer-type-detailed': ['Breast Invasive Ductal Carcinoma'],
 //   'pathologic-stage': ['Stage IIA'],
-//   'age-at-diagnosis': [50, 60],
+//   'age-at-diagnosis': ['50', '60'],
 // };
 
 // const exampleMappedFilters = {
@@ -97,31 +98,85 @@ export const getChartData = async (sourceId, filters = {}) => {
       continue;
     }
 
-    let type = null;
-    switch (filterType) {
-      case 'term':
-        // check that the value is an array of strings
-        if (!value.every((v) => typeof v === 'string')) {
-          continue;
-        }
-        type = 'term';
-        break;
-      case 'range':
-        // check that the value is an array of two numbers
-        if (value.length !== 2 || !value.every((v) => typeof v === 'number')) {
-          continue;
-        }
-        type = 'range';
-        break;
-      default:
-        continue;
-    }
+    if (filterType === 'term') {
+      mappedFilters[column] = {
+        type: filterType,
+        values: value,
+      };
+      cleanFilters[key] = value;
+    } else if (filterType === 'range') {
+      const labelMap = chart.bins.reduce((acc, bin) => {
+        acc[bin.label] = bin.value;
+        return acc;
+      }, {});
 
-    mappedFilters[column] = {
-      type: type,
-      values: value,
-    };
-    cleanFilters[key] = value;
+      // check that all values are valid labels for this chart
+      const validValues = value.filter((v) => labelMap[v] !== undefined);
+      if (validValues.length === 0) {
+        continue;
+      }
+
+      // special case: if only one bin is selected, we need to convert it to a range filter
+      if (validValues.length === 1) {
+        const binIdx = chart.bins.findIndex(
+          (bin) => bin.label === validValues[0],
+        );
+        if (binIdx === chart.bins.length - 1) {
+          mappedFilters[column] = {
+            type: 'range',
+            values: {
+              min: chart.bins[binIdx].value,
+            },
+          };
+        } else if (binIdx === 0) {
+          mappedFilters[column] = {
+            type: 'range',
+            values: {
+              max: chart.bins[binIdx].value,
+            },
+          };
+        } else {
+          const lower = chart.bins[binIdx].value;
+          const upper = chart.bins[binIdx + 1].value;
+          mappedFilters[column] = {
+            type: 'range',
+            values: {
+              min: lower,
+              max: upper,
+            },
+          };
+        }
+        continue;
+      }
+
+      // More than one bin selected
+
+      // convert labels to the index values for the bins
+      const binIdxs = validValues
+        .map((v) => chart.bins.findIndex((bin) => bin.label === v))
+        .sort((a, b) => a - b);
+
+      const lowerBin = chart.bins[binIdxs[0]];
+      const upperBin = chart.bins[binIdxs[binIdxs.length - 1]];
+
+      const lower =
+        lowerBin.label.includes('>') || lowerBin.label.includes('<')
+          ? undefined
+          : lowerBin.value;
+      const upper =
+        upperBin.label.includes('>') || upperBin.label.includes('<')
+          ? undefined
+          : upperBin.value;
+
+      mappedFilters[column] = {
+        type: filterType,
+        values: {
+          min: lower,
+          max: upper,
+        },
+      };
+      cleanFilters[key] = validValues;
+    }
   }
 
   // build the filter clause and query the database for each chart
@@ -134,6 +189,7 @@ export const getChartData = async (sourceId, filters = {}) => {
 
     const { clause, params } = buildFilterClause(filtersForChart);
     const query = chart.query(clause).replace(/\s+/g, ' ').trim();
+    log.debug(`Querying chart ${chart.id}:`, query, params);
     try {
       const result = await connection.run(query, params);
       const rows = await result.getRowObjectsJson();

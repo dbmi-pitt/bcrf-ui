@@ -10,12 +10,12 @@ export function buildFilterClause(filters) {
 
   let paramIdx = 0;
   for (const [column, { type, values }] of Object.entries(filters)) {
-    if (!values || !values.length) {
-      continue;
-    }
-
     switch (type) {
       case 'term':
+        if (!values || !values.length) {
+          continue;
+        }
+
         const valueList = [];
         for (const value of values) {
           const paramName = `param${paramIdx}`;
@@ -30,19 +30,36 @@ export function buildFilterClause(filters) {
         break;
 
       case 'range':
-        const [min, max] = values;
-        const minParamName = `param${paramIdx}`;
-        params[minParamName] = min;
-        paramIdx++;
+        const min = values.min;
+        const max = values.max;
 
-        const maxParamName = `param${paramIdx}`;
-        params[maxParamName] = max;
-        paramIdx++;
+        if (min !== undefined && max !== undefined) {
+          const minParamName = `param${paramIdx}`;
+          params[minParamName] = min;
+          paramIdx++;
 
-        clauses.push(
-          `("${column}" > $${minParamName} AND "${column}" <= $${maxParamName})`,
-        );
-        break;
+          const maxParamName = `param${paramIdx}`;
+          params[maxParamName] = max;
+          paramIdx++;
+
+          clauses.push(
+            `("${column}" > $${minParamName} AND "${column}" <= $${maxParamName})`,
+          );
+        } else if (min !== undefined && max === undefined) {
+          const minParamName = `param${paramIdx}`;
+          params[minParamName] = min;
+          paramIdx++;
+
+          clauses.push(`("${column}" > $${minParamName})`);
+        } else if (min === undefined && max !== undefined) {
+          const maxParamName = `param${paramIdx}`;
+          params[maxParamName] = max;
+          paramIdx++;
+
+          clauses.push(`("${column}" <= $${maxParamName})`);
+        } else {
+          continue; // skip if both min and max are undefined
+        }
     }
   }
 
