@@ -18,7 +18,7 @@ function findBin(x, bins) {
     if (x > bin.value) {
       selected = bin;
     } else {
-      return bin;
+      break;
     }
   }
   return selected;
