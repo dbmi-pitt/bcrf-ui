@@ -122,33 +122,46 @@ export default function GridLayout({ dataSource, charts, initialData }) {
 
   const filterTags = Object.entries(filters)
     .flatMap(([chartId, values]) => {
-      const config = charts.find((chart) => chart.id === chartId);
-      if (!config || !config.filterType) return null;
+      const chart = charts.find((chart) => chart.id === chartId);
+      if (!chart || !chart.filterType) return null;
 
-      if (config.filterType === 'term') {
+      if (chart.filterType === 'term') {
         return values.map((value) => ({
-          chartId: chartId,
-          key: `${chartId}-${value}`,
-          title: config.title,
+          chartId: chart.id,
+          key: `${chart.id}-${value}`,
+          title: chart.title,
           value: value,
-          type: 'term',
         }));
-      } else if (config.filterType === 'range') {
-        if (values.length === 1) {
-          return {
-            chartId: chartId,
-            key: `${chartId}-${values[0]}`,
-            title: config.title,
-            value: values[0],
-            type: 'range',
-          };
+      } else if (chart.filterType === 'range') {
+        const indices = values
+          .map((v) => chart.bins.findIndex((b) => b.label === v))
+          .filter((i) => i !== -1)
+          .sort((a, b) => a - b);
+        const length = indices.length;
+        if (length === 0) return null;
+
+        let label = '';
+        if (indices.includes(0)) {
+          const lastIndex = indices[length - 1];
+          label =
+            length > 1
+              ? `x <= ${chart.bins[lastIndex + 1].value}`
+              : `x <= ${chart.bins[indices[0] + 1].value}`;
+        } else if (indices.includes(chart.bins.length - 1)) {
+          label = `x > ${chart.bins[indices[0]].value}`;
+        } else {
+          const lastIndex = indices[length - 1];
+          label =
+            length > 1
+              ? `${chart.bins[indices[0]].value} < x <= ${chart.bins[lastIndex + 1].value}`
+              : `${chart.bins[indices[0]].value} < x <= ${chart.bins[indices[0] + 1].value}`;
         }
+
         return {
-          chartId: chartId,
-          key: `${chartId}-${values[0]}-${values[1]}`,
-          title: config.title,
-          value: `${values[0]} - ${values[values.length - 1]}`,
-          type: 'range',
+          chartId: chart.id,
+          key: `${chart.id}-${label}`,
+          title: chart.title,
+          value: label,
         };
       }
       return null;
@@ -210,7 +223,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
 
   // Add a filter value for a given chart
   const handleAddFilter = (chartId, value) => {
-    const type = charts.find((chart) => chart.id === chartId)?.filterType
+    const type = charts.find((chart) => chart.id === chartId)?.filterType;
     if (!type) return;
 
     setFilters((prev) => {
@@ -228,7 +241,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
 
   // Remove a filter value for a given chart
   const handleRemoveFilter = (chartId, value) => {
-    const type = charts.find((chart) => chart.id === chartId)?.filterType
+    const type = charts.find((chart) => chart.id === chartId)?.filterType;
     if (!type) return;
 
     setFilters((prev) => {
