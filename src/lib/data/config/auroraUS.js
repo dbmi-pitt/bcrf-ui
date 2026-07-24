@@ -65,8 +65,7 @@ export const CONFIG = {
         { value: 650, label: '650' },
         { value: 700, label: '700' },
         { value: 750, label: '750' },
-        { value: 800, label: '800' },
-        { value: 10000, label: '>800' },
+        { value: 800, label: '>800' },
       ],
       data: [
         {
@@ -1006,12 +1005,15 @@ export const CONFIG = {
       bins: [
         { value: 0, label: '<=30' },
         { value: 30, label: '30' },
+        { value: 35, label: '35' },
         { value: 40, label: '40' },
+        { value: 45, label: '45' },
         { value: 50, label: '50' },
+        { value: 55, label: '55' },
         { value: 60, label: '60' },
+        { value: 65, label: '65' },
         { value: 70, label: '70' },
-        { value: 80, label: '80' },
-        { value: 200, label: '>80' },
+        { value: 75, label: '>75' },
       ],
       data: [
         {

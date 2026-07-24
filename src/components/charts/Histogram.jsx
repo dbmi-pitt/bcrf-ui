@@ -26,7 +26,6 @@ function findBin(x, bins) {
 
 function sortIntoBins(bins, data) {
   const buckets = bins.map((bin) => ({
-    bin,
     label: bin.label,
     items: [],
     count: 0,
@@ -44,8 +43,8 @@ function sortIntoBins(bins, data) {
 }
 
 const HistogramMinBar = (props) => {
-  if (props.index === props.rawData.bins.length - 2) return <></>;
-  const { rawData, chartPaddings, index } = props;
+  if (props.index === props.numBins - 2) return <></>; // Don't render the dummy bin
+  const { numBins, chartPaddings, index } = props;
 
   const minHeight = 3;
   const barProps = { ...props };
@@ -54,9 +53,9 @@ const HistogramMinBar = (props) => {
   const actualHeight = Math.abs(props.y0 - props.y);
   const margins = chartPaddings.left + chartPaddings.right;
 
-  if (index !== 0 && index !== rawData.bins.length - 1) {
+  if (index !== 0 && index !== numBins - 1) {
     barProps.alignment = 'start';
-    barProps.x += (props.width - margins) / rawData.bins.length / 4;
+    barProps.x += (props.width - margins) / numBins / 4;
   }
 
   // Don't modify zero-value bars
@@ -84,10 +83,18 @@ function Histogram({ data, width, height }) {
   }, [data]);
 
   const histogramData = useMemo(() => {
-    return binnedData.map(({ label, count }) => ({
+    const histogramData = binnedData.map(({ label, count }) => ({
       bin: label,
       count: count,
     }));
+    const lastBin = binnedData[binnedData.length - 1];
+    // Add a dummy bin with that won't be rendered
+    const newBin = {
+      bin: lastBin.label.replace('>', ''),
+      count: 0,
+    };
+    histogramData.splice(histogramData.length - 1, 0, newBin);
+    return histogramData;
   }, [binnedData]);
 
   const binCoordinates = useMemo(() => {
@@ -115,7 +122,11 @@ function Histogram({ data, width, height }) {
       // determine which bins are highlighted based on the brush domain
       const highlighted = [];
       for (const [index, [x0, x1]] of binCoordinates.entries()) {
-        log.debug('Bin coordinates:', [x0, x1], 'Index:', index);
+        if (index === binCoordinates.length - 2) {
+          // this is the dummy bin, skip it
+          continue;
+        }
+
         if (x1 < domain.x[0] || x0 > domain.x[1]) {
           // bin is outside of the brush domain
           continue;
@@ -131,10 +142,9 @@ function Histogram({ data, width, height }) {
 
   const handleBrushDomainChangeEnd = useCallback(
     (domain, props) => {
-      // log.debug('Brush domain changed:', domain, props);
       // setBrushDomain({ x: [0, 0] });
       log.debug('Highlighted bins:', highlightedBins);
-      onAddFilter(data.id, highlightedBins, 'range');
+      // onAddFilter(data.id, highlightedBins, 'range');
     },
     [data.id, highlightedBins, onAddFilter],
   );
@@ -185,7 +195,10 @@ function Histogram({ data, width, height }) {
         <VictoryBar
           data={histogramData}
           dataComponent={
-            <HistogramMinBar rawData={data} chartPaddings={chartPaddings} />
+            <HistogramMinBar
+              numBins={histogramData.length}
+              chartPaddings={chartPaddings}
+            />
           }
           x="bin"
           y="count"
