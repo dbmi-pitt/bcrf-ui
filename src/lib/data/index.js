@@ -132,7 +132,7 @@ export const getChartData = async (sourceId, filters = {}) => {
           mappedFilters[column] = {
             type: 'range',
             values: {
-              max: chart.bins[binIdx].value,
+              max: chart.bins[binIdx + 1].value,
             },
           };
         } else {
@@ -157,7 +157,11 @@ export const getChartData = async (sourceId, filters = {}) => {
         .sort((a, b) => a - b);
 
       const lowerBin = chart.bins[binIdxs[0]];
-      const upperBin = chart.bins[binIdxs[binIdxs.length - 1]];
+
+      const lastIndex = binIdxs[binIdxs.length - 1]
+      const upperBin = lastIndex === chart.bins.length - 1
+        ? chart.bins[lastIndex]
+        : chart.bins[lastIndex + 1];
 
       const lower =
         lowerBin.label.includes('>') || lowerBin.label.includes('<')
