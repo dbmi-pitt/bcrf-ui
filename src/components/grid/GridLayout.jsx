@@ -131,6 +131,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
           key: `${chartId}-${value}`,
           title: config.title,
           value: value,
+          type: 'term',
         }));
       } else if (config.filterType === 'range') {
         if (values.length === 1) {
@@ -139,6 +140,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
             key: `${chartId}-${values[0]}`,
             title: config.title,
             value: values[0],
+            type: 'range',
           };
         }
         return {
@@ -146,7 +148,8 @@ export default function GridLayout({ dataSource, charts, initialData }) {
           key: `${chartId}-${values[0]}-${values[1]}`,
           title: config.title,
           value: `${values[0]} - ${values[values.length - 1]}`,
-        }
+          type: 'range',
+        };
       }
       return null;
     })
@@ -292,7 +295,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
             closeIcon={
               <CloseOutlined style={{ color: '#fff', fontSize: 12 }} />
             }
-            onClose={() => handleRemoveFilter(tag.chartId, tag.value)}
+            onClose={() => handleRemoveFilter(tag.chartId, tag.value, tag.type)}
             style={{
               paddingInline: 10,
               paddingBlock: 4,

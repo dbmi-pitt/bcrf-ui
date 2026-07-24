@@ -1,6 +1,13 @@
 import ChartContext from '@/context/ChartContext';
 import THEME from '@/lib/theme';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   Bar,
   VictoryAxis,
@@ -73,6 +80,7 @@ function Histogram({ data, width, height }) {
   const { isFilterable, activeFilters, onAddFilter, onRemoveFilter } =
     useContext(ChartContext);
 
+  const [brushResetKey, setBrushResetKey] = useState(0);
   const [brushDomain, setBrushDomain] = useState({ x: [0, 0] });
   const [highlightedBins, setHighlightedBins] = useState([]);
 
@@ -165,9 +173,19 @@ function Histogram({ data, width, height }) {
     [brushDomain.x, highlightedBins],
   );
 
+  useEffect(() => {
+    log.debug('Active filters changed for chart', data.id, activeFilters);
+    if (activeFilters.length === 0) {
+      setBrushDomain({ x: [0, 0] });
+      setHighlightedBins([]);
+      setBrushResetKey((prev) => prev + 1);
+    }
+  }, [activeFilters, data.id]);
+
   return (
     <div className="c-chart__histogram">
       <VictoryChart
+        key={brushResetKey}
         domainPadding={{ x: 50, y: 10 }}
         padding={chartPaddings}
         width={width}
