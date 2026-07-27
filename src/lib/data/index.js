@@ -75,6 +75,7 @@ export const getChartData = async (sourceId, filters = {}) => {
 
   const cleanFilters = {};
   const mappedFilters = {};
+  const tags = {};
   for (const [key, value] of Object.entries(filters)) {
     // skip empty filters
     if (!value || !value.length || !Array.isArray(value)) {
@@ -104,6 +105,7 @@ export const getChartData = async (sourceId, filters = {}) => {
         values: value,
       };
       cleanFilters[key] = value;
+      tags[key] = value;
     } else if (filterType === 'range') {
       const labelMap = chart.bins.reduce((acc, bin) => {
         acc[bin.label] = bin.value;
@@ -121,31 +123,25 @@ export const getChartData = async (sourceId, filters = {}) => {
         const binIdx = chart.bins.findIndex(
           (bin) => bin.label === validValues[0],
         );
+        let values = {};
+        let tagValue = '';
         if (binIdx === chart.bins.length - 1) {
-          mappedFilters[column] = {
-            type: 'range',
-            values: {
-              min: chart.bins[binIdx].value,
-            },
-          };
+          values.min = chart.bins[binIdx].value;
+          tagValue = `x > ${values.min}`;
         } else if (binIdx === 0) {
-          mappedFilters[column] = {
-            type: 'range',
-            values: {
-              max: chart.bins[binIdx + 1].value,
-            },
-          };
+          values.max = chart.bins[binIdx + 1].value;
+          tagValue = `x <= ${values.max}`;
         } else {
-          const lower = chart.bins[binIdx].value;
-          const upper = chart.bins[binIdx + 1].value;
-          mappedFilters[column] = {
-            type: 'range',
-            values: {
-              min: lower,
-              max: upper,
-            },
-          };
+          values.min = chart.bins[binIdx].value;
+          values.max = chart.bins[binIdx + 1].value;
+          tagValue = `${values.min} < x ≤ ${values.max}`;
         }
+        mappedFilters[column] = {
+          type: 'range',
+          values: values,
+        };
+        cleanFilters[key] = validValues;
+        tags[key] = [tagValue];
         continue;
       }
 
@@ -158,10 +154,11 @@ export const getChartData = async (sourceId, filters = {}) => {
 
       const lowerBin = chart.bins[binIdxs[0]];
 
-      const lastIndex = binIdxs[binIdxs.length - 1]
-      const upperBin = lastIndex === chart.bins.length - 1
-        ? chart.bins[lastIndex]
-        : chart.bins[lastIndex + 1];
+      const lastIndex = binIdxs[binIdxs.length - 1];
+      const upperBin =
+        lastIndex === chart.bins.length - 1
+          ? chart.bins[lastIndex]
+          : chart.bins[lastIndex + 1];
 
       const lower =
         lowerBin.label.includes('>') || lowerBin.label.includes('<')
@@ -173,13 +170,23 @@ export const getChartData = async (sourceId, filters = {}) => {
           : upperBin.value;
 
       mappedFilters[column] = {
-        type: filterType,
+        type: 'range',
         values: {
           min: lower,
           max: upper,
         },
       };
       cleanFilters[key] = validValues;
+
+      let tagValue = '';
+      if (lower !== undefined && upper !== undefined) {
+        tagValue = `${lower} < x ≤ ${upper}`;
+      } else if (lower !== undefined && upper === undefined) {
+        tagValue = `x > ${lower}`;
+      } else if (lower === undefined && upper !== undefined) {
+        tagValue = `x ≤ ${upper}`;
+      }
+      tags[key] = [tagValue];
     }
   }
 
@@ -205,9 +212,11 @@ export const getChartData = async (sourceId, filters = {}) => {
     }
   }
 
+  log.debug('Tags:', tags);
   return {
     data: data,
     filters: cleanFilters,
+    tags: tags,
   };
 };
 
