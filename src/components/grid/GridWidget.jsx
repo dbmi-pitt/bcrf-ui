@@ -132,6 +132,8 @@ export default function GridWidget({
     onClick: handleMenuClick,
   };
 
+  const isPie = chartType.eq('pie')
+
   return (
     <Card
       className="c-gridWidget h-100"
@@ -213,8 +215,8 @@ export default function GridWidget({
         style={{ height: 0, flex: 1, padding: 1 }}
         id={widgetBodyId}
         ref={widgetRef}
-        // onMouseOver={(e) => setShowWidgetPopover(e)}
-        // onMouseOut={(e) => setShowWidgetPopover(null)}
+        onMouseOver={isPie ? (e) => setShowWidgetPopover(e) : undefined}
+        onMouseOut={isPie ? (e) => setShowWidgetPopover(null) : undefined}
       >
         <ChartProvider
           isFilterable={isFilterable}
@@ -225,7 +227,7 @@ export default function GridWidget({
           setLegend={setLegend}
         >
           <Chart data={data} chartType={chartType} />
-          {widgetPopover && chartType.eq('pie') && (
+          {widgetPopover && isPie && (
             <WidgetPopover
               event={widgetPopover}
               data={data}
