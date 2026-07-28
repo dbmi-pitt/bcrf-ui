@@ -105,6 +105,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
   const [chartData, setChartData] = useState(initialData);
   const [layout, setLayout] = useState(() => createLayout(charts));
   const [legend, setLegend] = useState({});
+  const [tags, setTags] = useState([]);
 
   const hasActiveFilters = Object.keys(filters).length > 0;
 
@@ -120,53 +121,14 @@ export default function GridLayout({ dataSource, charts, initialData }) {
     }
   }, [width, mounted]);
 
-  const filterTags = Object.entries(filters)
-    .flatMap(([chartId, values]) => {
-      const chart = charts.find((chart) => chart.id === chartId);
-      if (!chart || !chart.filterType) return null;
-
-      if (chart.filterType === 'term') {
-        return values.map((value) => ({
-          chartId: chart.id,
-          key: `${chart.id}-${value}`,
-          title: chart.title,
-          value: value,
-        }));
-      } else if (chart.filterType === 'range') {
-        const indices = values
-          .map((v) => chart.bins.findIndex((b) => b.label === v))
-          .filter((i) => i !== -1)
-          .sort((a, b) => a - b);
-        const length = indices.length;
-        if (length === 0) return null;
-
-        let label = '';
-        if (indices.includes(0)) {
-          const lastIndex = indices[length - 1];
-          label =
-            length > 1
-              ? `x <= ${chart.bins[lastIndex + 1].value}`
-              : `x <= ${chart.bins[indices[0] + 1].value}`;
-        } else if (indices.includes(chart.bins.length - 1)) {
-          label = `x > ${chart.bins[indices[0]].value}`;
-        } else {
-          const lastIndex = indices[length - 1];
-          label =
-            length > 1
-              ? `${chart.bins[indices[0]].value} < x <= ${chart.bins[lastIndex + 1].value}`
-              : `${chart.bins[indices[0]].value} < x <= ${chart.bins[indices[0] + 1].value}`;
-        }
-
-        return {
-          chartId: chart.id,
-          key: `${chart.id}-${label}`,
-          title: chart.title,
-          value: label,
-        };
-      }
-      return null;
-    })
-    .filter(Boolean);
+  const filterTags = Object.entries(tags).flatMap(([chartId, values]) => {
+    return values.map((value) => ({
+      chartId: chartId,
+      key: `${chartId}-${value}`,
+      title: charts.find((chart) => chart.id === chartId)?.title ?? chartId,
+      value: value,
+    }));
+  });
 
   const chartIdColors = Object.keys(filters).reduce((acc, chartId, index) => {
     acc[chartId] = TAG_COLOR_PALETTE[index % TAG_COLOR_PALETTE.length];
@@ -185,6 +147,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
     if (!hasActiveFilters) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setChartData(initialData);
+      setTags([]);
       return;
     }
 
@@ -196,6 +159,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
         return;
       }
       setChartData(result.data);
+      setTags(result.tags);
     }
 
     loadData();
