@@ -13,7 +13,6 @@ FROM base AS deps
 
 # Copy workspace manifests and lockfile
 COPY pnpm-workspace.yaml package.json ./
-COPY src/search-ui/package.json ./src/search-ui/
 
 RUN pnpm install
 
@@ -21,17 +20,19 @@ RUN pnpm install
 FROM base AS builder
 
 COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=deps /usr/src/app/src/search-ui/node_modules ./src/search-ui/node_modules
 
 COPY next.config.mjs jsconfig.json package.json pnpm-workspace.yaml ./
 COPY .env.docker .env.production
 COPY public ./public
 COPY src ./src
+COPY duckdb.db ./duckdb.db
 
 # Compile stylus css
 RUN pnpm exec stylus --include-css --compress src/styles/main.styl -o src/app/main.css
 
 ENV NODE_ENV=production
+ARG DUCK_DB_PATH
+ENV DUCK_DB_PATH=$DUCK_DB_PATH
 RUN pnpm build
 
 # Final

@@ -7,6 +7,7 @@ services:
         HOST_UID: ${HOST_UID:-1002}
         HOST_GID: ${HOST_GID:-1002}
         PORT_MAPPING: ${PORT_MAPPING:-3002}
+        DUCK_DB_PATH: ${DUCK_DB_PATH}
     container_name: bcrf-ui-test
     hostname: bcrf-ui-test
     image: dbmi/bcrf-ui-test:${VERSION}
