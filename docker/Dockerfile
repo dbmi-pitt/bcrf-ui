@@ -55,6 +55,7 @@ RUN addgroup --system --gid $HOST_GID codcc \
     && adduser --system --uid $HOST_UID --ingroup codcc codcc
 
 # Standalone output bundles only what is needed at runtime
+COPY --from=builder --chown=codcc:codcc /usr/src/app/duckdb.db ./duckdb.db
 COPY --from=builder --chown=codcc:codcc /usr/src/app/public ./public
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/standalone ./
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/static ./.next/static
