@@ -13,7 +13,6 @@ FROM base AS deps
 
 # Copy workspace manifests and lockfile
 COPY pnpm-workspace.yaml package.json ./
-COPY src/search-ui/package.json ./src/search-ui/
 
 RUN pnpm install
 
@@ -21,17 +20,23 @@ RUN pnpm install
 FROM base AS builder
 
 COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=deps /usr/src/app/src/search-ui/node_modules ./src/search-ui/node_modules
 
 COPY next.config.mjs jsconfig.json package.json pnpm-workspace.yaml ./
-COPY .env.docker .env.production
+COPY .env .env.production
 COPY public ./public
 COPY src ./src
+COPY scripts ./scripts
+
+# Build the duckdb database
+RUN node scripts/importData.js scripts duckdb.db && \
+    rm -rf scripts
 
 # Compile stylus css
 RUN pnpm exec stylus --include-css --compress src/styles/main.styl -o src/app/main.css
 
 ENV NODE_ENV=production
+ARG DUCK_DB_PATH
+ENV DUCK_DB_PATH=$DUCK_DB_PATH
 RUN pnpm build
 
 # Final
@@ -54,6 +59,7 @@ RUN addgroup --system --gid $HOST_GID codcc \
     && adduser --system --uid $HOST_UID --ingroup codcc codcc
 
 # Standalone output bundles only what is needed at runtime
+COPY --from=builder --chown=codcc:codcc /usr/src/app/duckdb.db ./duckdb.db
 COPY --from=builder --chown=codcc:codcc /usr/src/app/public ./public
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/standalone ./
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/static ./.next/static
