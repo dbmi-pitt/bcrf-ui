@@ -1,8 +1,7 @@
 import duckdb from '@duckdb/node-api';
-import fs from 'fs';
 import path from 'path';
 
-// Usage: node load-tsvs.js [directory] [db-path]
+// Usage: node importData.js [directory] [db-path]
 const DATA_DIR = process.argv[2] || './data';
 const DB_PATH = process.argv[3] || 'duckdb.db';
 
