@@ -22,10 +22,14 @@ FROM base AS builder
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 
 COPY next.config.mjs jsconfig.json package.json pnpm-workspace.yaml ./
-COPY .env.docker .env.production
+COPY .env .env.production
 COPY public ./public
 COPY src ./src
-COPY duckdb.db ./duckdb.db
+COPY scripts ./scripts
+
+# Build the duckdb database
+RUN node scripts/importData.js scripts duckdb.db && \
+    rm -rf scripts
 
 # Compile stylus css
 RUN pnpm exec stylus --include-css --compress src/styles/main.styl -o src/app/main.css
