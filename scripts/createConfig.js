@@ -167,6 +167,16 @@ function chartToSource(chart) {
             }`;
   }
 
+  const labelLines = [
+    `                x: '${labels.x.replace(/'/g, "\\'")}',`,
+    `                y: '${labels.y.replace(/'/g, "\\'")}',`,
+  ];
+  if (__kind === 'pie') {
+    labelLines.push(
+      `                freq: '${labels.freq.replace(/'/g, "\\'")}',`,
+    );
+  }
+
   return `        {
             id: '${id}',
             title: '${title.replace(/'/g, "\\'")}',
@@ -176,9 +186,7 @@ function chartToSource(chart) {
                 type: '${filter.type}'
             },
             labels: {
-                x: '${labels.x.replace(/'/g, "\\'")}',
-                y: '${labels.y.replace(/'/g, "\\'")}',
-                freq: '${labels.freq.replace(/'/g, "\\'")}',
+${labelLines.join('\n')}
             },
             query: ${querySource},
         }`;
