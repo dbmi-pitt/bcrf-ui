@@ -13,8 +13,8 @@ export const AppProvider = ({ children }) => {
 
   const fetchLocale = async () => {
     let path =  location.pathname
-    path = path === '/' ? 'index' : path
-    const url = URLS.api.local(`content/locale?p=/en/${path}.json`);
+    path = path === '/' ? '/index' : path
+    const url = URLS.api.local(`content/locale?p=/en${path}.json`);
     const results = await API.fetch({ url, method: 'GET' });
     if (Object.values(results).length) {
       setContent({...content, locale: results});

@@ -1,7 +1,10 @@
 import React, { useEffect, useMemo } from 'react'
-import Hero from './Hero'
-import MiniHero from './MiniHero'
-import SiblingsContent from './SiblingsContent'
+import Hero from '@/components/Hero'
+import BasicHero from '@/components/BasicHero'
+import MiniHero from '@/components/MiniHero'
+import SiblingsContent from '@/components/SiblingsContent'
+import BasicContent from '@/components/BasicContent'
+import ContentBoxWrap from '@/components/ContentBoxWrap'
 
 const ContentGenerator = ({ content }) => {
   const [sections, setSections] = React.useState([]);
@@ -9,19 +12,22 @@ const ContentGenerator = ({ content }) => {
   const useMemoizedContent = useMemo(() => {
     return {
       'Hero': Hero,
+      'BasicHero': BasicHero,
       'MiniHero': MiniHero,
       'SiblingsContent': SiblingsContent,
+      'BasicContent': BasicContent,
+      'ContentBoxWrap': ContentBoxWrap,
     };
   }, []);
 
   useEffect(() => {
     if (content && content.sections) {
       const newSections = [];
-      content.sections.forEach((section) => {
-        const Component = useMemoizedContent[section.component];
+      content.sections.forEach((section, index) => {
+        const Component = useMemoizedContent[section.component] || BasicContent; // Default to BasicContent if component not found
         if (Component) {
           // Render the component with the provided content
-          newSections.push(<Component key={section.component} content={section} />);
+          newSections.push(<Component key={`section-${index}`} content={section} />);
         }
       });
       setSections(newSections);
