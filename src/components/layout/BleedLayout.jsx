@@ -8,7 +8,7 @@ const BleedLayout = ({ children, classNameMain = '' }) => {
   return (
     <div className="body__wrapper bg--dirtyWhite">
       <AppNavBar />
-        <main className={`c-main ${classNameMain}`}>
+        <main className={`c-main m-0 ${classNameMain}`}>
           {children}
         </main>
       <AppFooter />

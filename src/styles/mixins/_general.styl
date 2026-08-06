@@ -42,3 +42,14 @@ bx-shadow()
 formInvalid()
   border solid 1px red !important
   box-shadow 0 0 0 .25rem #fd0d0d40 !important
+
+font-hurme($mod = 'Hurme Regular', $spacing = normal)
+  font-family $mod, Georgia, monospace
+  letter-spacing $spacing
+
+font-hurmeSemiBold()
+  font-hurme('Hurme SemiBold', 2px)
+
+headings()
+  h1, h2, h3, h4, h5, h6
+    font-hurmeSemiBold()
