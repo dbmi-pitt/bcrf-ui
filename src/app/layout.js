@@ -1,8 +1,8 @@
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 
-import './main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import './main.css';
 import MountedWrapper from '@/components/MountedWrapper';
 import ENVS from '@/lib/envs';
 import { headers } from 'next/headers';

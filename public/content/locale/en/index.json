@@ -1,0 +1,48 @@
+{
+  "sections": [
+    {
+      "image": "/imgs/section-1-bg.png",
+      "component": "Hero",
+      "title": "WHAT IS THE DATA HUB?",
+      "body": "The BCRF Global Data Hub is a centralized research portal of breast cancer studies with molecular and clinical data to foster data sharing, analysis, new studies and collaboration.",
+      "btns": [
+         {
+        "text": "Sign Up",
+        "href": "/register"
+      },  {
+        "text": "Explore Data Hub",
+        "href": "/projects/search"
+      }
+      ]
+    },
+    {
+      "component": "MiniHero",
+      "image": "/imgs/stay-tuned-bg.png",
+      "title": "WE'RE OPEN",
+      "body": "The Hub is open to BCRF investigators, amassing all relevant datasets from BCRF-supported studies around the world. Data will be invited from and made available to the wider breast cancer community—to ultimately impact all breast cancer research—in 2025 and beyond."
+    },
+    {
+      "component": "SiblingsContent",
+      "columns": [
+        {
+          "title": "ABOUT THE DATA HUB",
+          "image": "/imgs/left-scientists.jpg",
+          "body": "A first-of-its-kind data sharing network dedicated to breast cancer, poised to radically transform how scientists access and share research findings.",
+          "btn": {
+            "text": "Learn More",
+            "href": "/about/hub"
+          }
+        },
+        {
+          "title": "ABOUT THE PARTNERSHIP",
+          "image": "/imgs/right-scientists.jpg",
+          "body": "Together, BCRF's unparalleled global network of leading researchers and the University of Pittsburgh School of Medicine, a leader in biomedical informatics, provide a revolutionary combination of expertise.",
+          "btn": {
+            "text": "Learn More",
+            "href": "/about/partnership"
+          }
+        }
+      ]
+    }
+  ]
+}
