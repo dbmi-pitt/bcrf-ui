@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const PUBLIC_PATHS = ['/', '/login'];
+const PUBLIC_PATHS = ['/', '/login', '/api/auth/callback'];
 
 export function proxy(request) {
   const requestHeaders = new Headers(request.headers);
@@ -19,5 +19,5 @@ export function proxy(request) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|imgs|content).*)'],
 };

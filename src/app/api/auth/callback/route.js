@@ -1,6 +1,5 @@
-import { globusConfig } from '@/lib/globus/config';
 import { safeCompare } from '@/lib/globus/pkce';
-import { createSessionCookie } from '@/lib/globus/session';
+import { createSession } from '@/lib/globus/session';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
@@ -63,7 +62,7 @@ export async function GET(req) {
   const tokenData = await tokenRes.json();
 
   const { payload: idClaims } = await jwtVerify(tokenData.id_token, JWKS, {
-    issuer: globusConfig.issuer,
+    issuer: 'https://auth.globus.org',
     audience: clientId,
   });
 
@@ -72,7 +71,7 @@ export async function GET(req) {
     otherTokens[t.resource_server] = t;
   }
 
-  await createSessionCookie({
+  await createSession({
     sub: idClaims.sub,
     username: idClaims.preferred_username,
     name: idClaims.name,
