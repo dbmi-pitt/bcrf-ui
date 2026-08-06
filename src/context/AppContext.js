@@ -17,7 +17,7 @@ export const AppProvider = ({ children }) => {
     const url = URLS.api.local(`content/locale?p=/en${path}.json`);
     const results = await API.fetch({ url, method: 'GET' });
     if (Object.values(results).length) {
-      setContent({...content, locale: results});
+      return {key: 'locale', value: results}
     }
   };
 
@@ -25,7 +25,7 @@ export const AppProvider = ({ children }) => {
     const url = URLS.api.local('content/banner');
     const results = await API.fetch({ url, method: 'GET' });
     if (Object.values(results).length) {
-      setContent({...content, banner: results});
+      return {key: 'banner', value: results}
     }
   };
 
@@ -33,8 +33,25 @@ export const AppProvider = ({ children }) => {
     const url = URLS.api.local('content/summary');
     const results = await API.fetch({ url, method: 'GET' });
     if (Object.values(results).length) {
-      setContent({...content, summary: results});
+      return {key: 'summary', value: results}
+      
     }
+  };
+
+  const fetchAllContent = async () => {
+    const results = await Promise.all([
+      fetchLocale(),
+      fetchBannerContent(),
+      fetchSummaryDataSources()
+    ]);
+    const contentObject = results.reduce((acc, curr) => {
+      if (curr) {
+        acc[curr.key] = curr.value;
+      }
+      return acc;
+    }, {});
+    setContent(contentObject);
+    return results;
   };
 
   const setLoglevel = async () => {
@@ -45,9 +62,7 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     const loadData = async () => {
-      fetchLocale();
-      fetchBannerContent();
-      fetchSummaryDataSources();
+      await fetchAllContent();
     }
     loadData();
     setLoglevel();
