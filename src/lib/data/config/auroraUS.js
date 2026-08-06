@@ -16,6 +16,7 @@ export const CONFIG = {
         y: 'Count',
         freq: 'Frequency',
       },
+      tooltip: "Cancer Type Detailed Tooltip Text",
       query: (clause) => {
         const whereClause = clause ? `WHERE ${clause}` : '';
         // Cast y to integer to avoid returning a string value for count
