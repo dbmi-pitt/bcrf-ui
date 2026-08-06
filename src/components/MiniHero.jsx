@@ -10,7 +10,7 @@ const MiniHero = ({content}) => {
         height: "100%",
         backgroundSize: "cover",
       }}
-      aria-label="Stay Tuned"
+      aria-label={content.title}
     >
       <div className="c-box--surrounded">
         <h2 className="fs-2">{content.title}</h2>

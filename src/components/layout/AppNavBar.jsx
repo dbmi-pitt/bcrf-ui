@@ -4,7 +4,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Link from 'next/link';
 import Image from 'next/image';
-import ENVS from '@/lib/envs';
 import AppContext from '@/context/AppContext';
 import RegisterIcon from "@/components/icons/RegisterIcon";
 import SignInIcon from "@/components/icons/SignInIcon";
@@ -16,7 +15,7 @@ function AppNavBar() {
   return (
     <Navbar sticky={"top"} variant={"light"} expand="lg" className="c-navbar">
       <Container fluid>
-        <Link href="/" className={"ms-3 align-items-center d-flex gap-3"}>
+        <a href="/" className={"ms-3 align-items-center d-flex gap-3"}>
           <Image
             src={"/imgs/brand-logo-cropped.png"}
             className="c-navbar__logo w-fixed"
@@ -28,7 +27,7 @@ function AppNavBar() {
             A partnership between BCRF <br />
             and the University of Pittsburgh
           </span>
-        </Link>
+        </a>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end c-navbar__menu">
           {isAuthenticated && (
