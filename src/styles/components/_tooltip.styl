@@ -1,0 +1,20 @@
+.c-tooltip
+  pos-rel()
+  display inline-block
+
+  .c-tooltip__text
+    pos-abs()
+    visibility hidden
+    width 120px
+    background-color black
+    color white
+    text-align center
+    padding 5px 0
+    border-radius 6px
+    z-index 1
+    top -5px
+    left 105%
+
+  &:hover
+    .c-tooltip__text
+      visibility visible

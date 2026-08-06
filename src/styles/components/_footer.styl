@@ -1,25 +1,45 @@
 .c-footer
-  background-color $col-bcrf-blue
-  margin-top auto
-  width 100%
-  z-index 1
+  background $col-bcrf-blue
   color white
-  li
-    list-style none
-  .navbar-brand
-    pos-rel()
-    &-name
-      p3()
-      pos-abs()
-      top 10px
-      left 60px
-  .col
+  position inherit
+
+  &__logos
+    display flex
     +md-max()
-      &--main
-        width 100% 
-        .col-sm-2 
-          width 33.3%
-      &--logos
-        width 100%
-      &--placeholder
+      flex none
+      display block
+
+  hr
+    hide()
+    +md-max()
+      display block
+
+  &__nav
+    color white
+
+    a
+      color white
+
+  &__meta
+    font-hurme('Hurme Thin')
+
+  &__tagline
+    span
+      +md-max()
+        display block
+
+  .col
+    &--filler
+      +xlg-max()
+        flex-grow 0
+      +lg-max()
         hide()
+
+    img
+      max-width 408px
+      +md-max()
+        max-width 230px
+    +md-max()
+      width 100%
+      flex none
+      text-align center

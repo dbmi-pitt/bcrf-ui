@@ -9,6 +9,7 @@ const AppContext = createContext({});
 export const AppProvider = ({ children }) => {
 
   const [content, setContent] = useState({});
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const fetchBannerContent = async () => {
     const url = URLS.api.local('content/banner');
@@ -41,11 +42,17 @@ export const AppProvider = ({ children }) => {
     setLoglevel();
   }, []);
 
+  const signOut = () => {
+    // TODO: Implement sign out logic here, such as clearing tokens or session data
+    setIsAuthenticated(false);
+  };
 
   return (
     <AppContext.Provider
       value={{
         content,
+        isAuthenticated,
+        signOut
       }}
     >
       {children}

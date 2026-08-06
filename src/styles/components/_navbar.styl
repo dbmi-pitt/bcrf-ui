@@ -1,0 +1,35 @@
+.c-navbar
+  background-color white
+
+  &.navbar-light
+    a
+      font-hurme()
+      p4()
+      color $col-bcrf-blue
+      text-decoration none
+      &.navbar-brand
+        text-decoration none
+        &:hover
+          color $col-bcrf-blue
+
+  &__tagline
+    +md-max()
+      hide()
+
+  &__menu
+    color $col-bcrf-blue
+    margin-right $mgn
+    .navbar-nav
+      svg
+        pos-rel()
+        top 2px
+      a, .nav-link
+        color $col-bcrf-blue
+        line-height inherit
+
+        &:hover
+          span
+            color $col-primary-pink
+            transition all 1s ease
+            border-bottom solid 1px $col-bcrf-blue
+
