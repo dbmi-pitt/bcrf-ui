@@ -26,7 +26,7 @@ const SiblingsContent = ({content}) => {
             <div className="d-grid gap-4 d-sm-flex">
               <LinkButton
                 href={section.btn.href}
-                className="btn-secondary text-white"
+                className="btn-secondary btn-lg hurmeFontHeading text-white"
               >
                 {section.btn.text}
               </LinkButton>
