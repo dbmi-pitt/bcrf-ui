@@ -11,8 +11,8 @@ export default function AppPage() {
   return (
     <div>
       <BleedLayout>
-        {content && <ContentGenerator content={content.locale} />}
-        {!content && <AppSpinner />}
+        {content && content.locale && <ContentGenerator content={content.locale} />}
+        {!content && !content.locale && <AppSpinner />}
       </BleedLayout>
     </div>
   );

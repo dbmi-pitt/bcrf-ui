@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Hero from '@/components/Hero'
 import BasicHero from '@/components/BasicHero'
 import MiniHero from '@/components/MiniHero'
@@ -7,7 +7,7 @@ import BasicContent from '@/components/BasicContent'
 import ContentBoxWrap from '@/components/ContentBoxWrap'
 
 const ContentGenerator = ({ content }) => {
-  const [sections, setSections] = React.useState([]);
+  const [sections, setSections] = useState([]);
 
   const useMemoizedContent = useMemo(() => {
     return {
