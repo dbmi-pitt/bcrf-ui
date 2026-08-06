@@ -5,11 +5,24 @@ import {
   createState,
   createVerifier,
 } from '@/lib/globus/pkce';
-import { clearSession, getSession } from '@/lib/globus/session';
+import { deleteSession, getSession } from '@/lib/globus/session';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-export async function signInWithGlobus() {
+export async function getCurrentUser() {
+  const session = await getSession();
+  if (!session) {
+    return null;
+  }
+  return {
+    sub: session.sub,
+    username: session.username,
+    name: session.name,
+    email: session.email,
+  };
+}
+
+export async function logInWithGlobus() {
   const verifier = createVerifier();
   const challenge = createChallenge(verifier);
   const state = createState();
@@ -42,7 +55,7 @@ export async function signInWithGlobus() {
   redirect(url.toString());
 }
 
-export async function signOutOfGlobus() {
+export async function logOutOfGlobus() {
   const session = await getSession();
   if (session?.accessToken) {
     const clientId = process.env.GLOBUS_CLIENT_ID;
@@ -60,6 +73,6 @@ export async function signOutOfGlobus() {
       body: new URLSearchParams({ token: session.accessToken }),
     }).catch(() => {});
   }
-  await clearSession();
+  await deleteSession();
   redirect('/');
 }

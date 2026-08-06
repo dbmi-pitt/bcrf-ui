@@ -9,7 +9,7 @@ const sessionKey = createHash('sha256')
 
 const COOKIE_NAME = 'globus_session';
 
-export async function createSessionCookie(session) {
+export async function createSession(session) {
   const jwe = await new EncryptJWT({ ...session })
     .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
     .setIssuedAt()
@@ -26,7 +26,7 @@ export async function createSessionCookie(session) {
   });
 }
 
-export async function deleteSessionCookie() {
+export async function deleteSession() {
   const store = await cookies();
   store.delete(COOKIE_NAME);
 }
