@@ -1,0 +1,17 @@
+{
+  "sections": [
+    {
+      "component": "MiniHero",
+      "title": "ABOUT",
+      "body": "The BCRF Global Data Hub is a first-of-its-kind data sharing network dedicated to breast cancer, poised to radically transform how scientists access and share research findings."
+    },
+    {
+      "title": "HUB DATA AND ARCHITECTURE:",
+      "body": "This modern, cloud-based research portal provides a centralized hub for laboratory and patient-derived data in the field—coalescing major electronic medical record data (including discrete, text, and imaging data) and biological data (including multi-omic, single-cell, and imaging data). This will include one of BCRF’s biggest datasets to date: the world’s largest repository of matched primary and metastatic tumor data, collected through the AURORA projects to illuminate the metastatic process in breast cancer."
+    },
+    {
+      "title": "WHY DOES BREAST CANCER NEED A DATA HUB?",
+      "body": "No single data point, or even database, will be the end of breast cancer. The power of data is in the aggregate—when results from several genetic, molecular, and clinical studies are combined to make scientific conclusions. Yet, research often yields mountains of data that are underutilized, and discoveries are hiding in this untapped information. In the current environment, breast cancer data is accessed by navigating disparate databases. Genetic analyses, images, electronic health records, and molecular data are all spread across multiple sites. Data access and sharing methodologies for breast cancer research are in desperate need of a user experience upgrade to maximize their true potential."
+    }
+  ]
+}

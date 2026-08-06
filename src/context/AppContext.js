@@ -11,6 +11,16 @@ export const AppProvider = ({ children }) => {
   const [content, setContent] = useState({});
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const fetchLocale = async () => {
+    let path =  location.pathname
+    path = path === '/' ? 'index' : path
+    const url = URLS.api.local(`content/locale?p=/en/${path}.json`);
+    const results = await API.fetch({ url, method: 'GET' });
+    if (Object.values(results).length) {
+      setContent({...content, locale: results});
+    }
+  };
+
   const fetchBannerContent = async () => {
     const url = URLS.api.local('content/banner');
     const results = await API.fetch({ url, method: 'GET' });
@@ -35,6 +45,7 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     const loadData = async () => {
+      fetchLocale();
       fetchBannerContent();
       fetchSummaryDataSources();
     }
