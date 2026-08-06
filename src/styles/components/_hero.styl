@@ -1,0 +1,32 @@
+.c-hero
+  width 100%
+  height 100%
+  background-size cover
+  +md-max()
+    background-position right 0
+
+  &__wrap
+    font-hurmeSemiBold()
+    margin auto $mgn
+    +xlg()
+      margin-left 6rem
+    +xxlg()
+      margin-left 12rem
+
+  &__row
+    width 100%
+    +xlg()
+      width 70%
+    +xxlg()
+      width 50%
+
+  &__heading
+    padding-bottom 1rem
+
+    h1
+      p4()
+      margin-top 12rem
+
+  &__footer
+    .col
+      margin-bottom 12rem

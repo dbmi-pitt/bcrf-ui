@@ -1,0 +1,43 @@
+.c-card
+  border-radius 15px
+  margin .5rem
+  padding .01rem
+  text-align left
+  color inherit
+  font-size 1.0rem
+  text-decoration none
+  transition color 0.15s ease, border-color 0.15s ease
+
+  h2
+    margin 0 0 1rem 0
+    font-size .5rem
+
+  &:hover,
+  &:focus,
+  &:active
+    cursor pointer
+    border-color $col-primary-pink
+
+  &__desc, &__head
+    color gray
+
+  &__head
+    +md-max()
+      p6()
+
+    span
+      +md-max()
+        width 100%
+        display block
+
+    .col
+      display flex
+      +md-max()
+        display block
+
+  &__desc
+    font-family 'georgia', monospace
+
+  &__title
+    color $col-bcrf-blue
+    text-decoration none
