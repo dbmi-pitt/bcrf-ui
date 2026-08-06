@@ -268,6 +268,7 @@ export default function GridLayout({ dataSource, charts, initialData }) {
         className="d-flex flex-wrap align-items-center gap-2 px-2"
         style={{ minHeight: 40 }}
       >
+        <h1>{dataSource}</h1>
         {filterTags.map((tag) => (
           <Tag
             className="c-tag--filter"
