@@ -10,7 +10,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 
 function AppNavBar() {
-  const { isAuthenticated, logIn, logOut } = useContext(AuthContext);
+  const { isAuthenticated, logOut } = useContext(AuthContext);
+
   return (
     <Navbar sticky={'top'} variant={'light'} expand="lg" className="c-navbar">
       <Container fluid>
@@ -44,28 +45,22 @@ function AppNavBar() {
                 </Link>
               </Nav>
               <Nav className={'me-0'}>
-                <a
-                  href="#"
-                  onClick={async (e) => {
-                    e.preventDefault();
+                <button
+                  type="button"
+                  className="c-navbar__link-button"
+                  onClick={async () => {
                     await logOut();
                   }}
                 >
                   <span className="me-1">LOG OUT</span>
                   <SignOutIcon className="align-baseline" />
-                </a>
+                </button>
               </Nav>
             </>
           )}
           {!isAuthenticated && (
             <Nav className={'me-0'}>
-              <a
-                href="#"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  await logIn();
-                }}
-              >
+              <a href="/login">
                 <span className="me-1">LOG IN</span>
                 <SignInIcon className="align-baseline" />
               </a>

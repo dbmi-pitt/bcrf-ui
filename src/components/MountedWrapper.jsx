@@ -11,9 +11,9 @@ function MountedWrapper({ gtmId, children }) {
 
   return (
     <App>
-      <AppProvider>
-        <AuthProvider>{children}</AuthProvider>
-      </AppProvider>
+      <AuthProvider>
+        <AppProvider>{children}</AppProvider>
+      </AuthProvider>
     </App>
   );
 }

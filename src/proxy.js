@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const PUBLIC_PATHS = ['/', '/login', '/api/auth/callback'];
+const PUBLIC_PATHS = ['/', '/login'];
 
 export function proxy(request) {
   const requestHeaders = new Headers(request.headers);
@@ -15,7 +15,14 @@ export function proxy(request) {
     return NextResponse.redirect(url);
   }
 
-  return NextResponse.next({ request: { headers: requestHeaders } });
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
+
+  if (isProtected) {
+    // Prevent caching of protected pages
+    response.headers.set('Cache-Control', 'no-store');
+  }
+
+  return response;
 }
 
 export const config = {

@@ -22,13 +22,29 @@ export const AuthProvider = ({ children }) => {
     loadData();
   }, []);
 
+  useEffect(() => {
+    // Refresh the page when the user navigates back to prevent stale
+    // authentication state due to caching.
+    const handlePageShow = (event) => {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    };
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
+
   const logIn = async () => {
     await logInWithGlobus();
   };
 
   const logOut = async () => {
-    await logOutOfGlobus();
-    setUser(null);
+    try {
+      await logOutOfGlobus();
+    } finally {
+      setUser(null);
+      window.location.href = '/';
+    }
   };
 
   return (
