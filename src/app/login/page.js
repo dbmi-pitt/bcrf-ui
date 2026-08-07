@@ -10,7 +10,7 @@ export default function LogIn() {
         <Alert variant='light'>
           <div className="alert-heading h4">{ENVS.app.name}</div>
           <p>
-            User authentication is required to search the dataset catalog.
+            User authentication is required to search the data hub.
             Please click the button below and you will be redirected to a Globus
             page to select your institution. After selecting your institution,
             you will be redirected to your institutional login page to enter
