@@ -6,12 +6,17 @@
       "title": "WHAT IS THE DATA HUB?",
       "body": "The BCRF Global Data Hub is a centralized research portal of breast cancer studies with molecular and clinical data to foster data sharing, analysis, new studies and collaboration.",
       "btns": [
-         {
-        "text": "Sign Up"
-      },  {
-        "text": "Explore Data Hub",
-        "href": "/sources"
-      }
+        {
+          "text": "Sign Up",
+          "modal": {
+            "title": "Sign Up!",
+            "body": "Thank you for your interest! Please contact us via <a href=\"mailto:BCRFGDH@pitt.edu\">BCRFGDH@pitt.edu</a>."
+          }
+        },
+        {
+          "text": "Explore Data Hub",
+          "href": "/sources"
+        }
       ]
     },
     {
