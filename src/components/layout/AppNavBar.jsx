@@ -1,6 +1,6 @@
 import RegisterIcon from '@/components/icons/RegisterIcon';
-import SignInIcon from '@/components/icons/SignInIcon';
-import SignOutIcon from '@/components/icons/SignOutIcon';
+import LogInIcon from '@/components/icons/LogInIcon';
+import LogOutIcon from '@/components/icons/LogOutIcon';
 import AuthContext from '@/context/AuthContext';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -53,7 +53,7 @@ function AppNavBar() {
                   }}
                 >
                   <span className="me-1">LOG OUT</span>
-                  <SignOutIcon className="align-baseline" />
+                  <LogOutIcon className="align-baseline" />
                 </button>
               </Nav>
             </>
@@ -62,7 +62,7 @@ function AppNavBar() {
             <Nav className={'me-0'}>
               <a href="/login">
                 <span className="me-1">LOG IN</span>
-                <SignInIcon className="align-baseline" />
+                <LogInIcon className="align-baseline" />
               </a>
             </Nav>
           )}
