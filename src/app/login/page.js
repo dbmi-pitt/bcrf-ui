@@ -1,9 +1,27 @@
+import BasicLayout from '@/components/layout/BasicLayout';
 import { logInWithGlobus } from '@/lib/actions/auth';
+import ENVS from '@/lib/envs';
+import { Alert, Button, Container } from 'react-bootstrap';
 
 export default function LogIn() {
   return (
-    <form action={logInWithGlobus}>
-      <button type="submit">Log in with Globus</button>
-    </form>
+    <BasicLayout>
+      <Container className='container--alert'>
+        <Alert variant='light'>
+          <div className="alert-heading h4">{ENVS.app.name}</div>
+          <p>
+            User authentication is required to search the data hub.
+            Please click the button below and you will be redirected to a Globus
+            page to select your institution. After selecting your institution,
+            you will be redirected to your institutional login page to enter
+            your credentials.
+          </p>
+          <hr />
+          <form action={logInWithGlobus}>
+            <Button type="submit">Log in with Globus</Button>
+          </form>
+        </Alert>
+      </Container>
+    </BasicLayout>
   );
 }

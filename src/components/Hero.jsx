@@ -3,14 +3,20 @@
 import React, { useContext, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import LinkButton from '@/components/LinkButton';
-import AppContext from '@/context/AppContext';
 import AppModal from './AppModal';
+import AuthContext from '@/context/AuthContext';
 
 const Hero = ({ content }) => {
-  const { isAuthenticated } = useContext(AppContext);
+  const { isAuthenticated } = useContext(AuthContext);
   const [modal, setModal] = useState(false);
 
-  const handleShow = () => setModal({...modal, open: true, cancelCSS: 'none', className: 'ant-modal--hero' });
+  const handleShow = () =>
+    setModal({
+      ...modal,
+      open: true,
+      cancelCSS: 'none',
+      className: 'ant-modal--hero',
+    });
 
   return (
     <section
@@ -30,17 +36,28 @@ const Hero = ({ content }) => {
             <Col>
               {!isAuthenticated && content.btns[0] && (
                 <>
-                  <LinkButton className=" text-white mt-4" onClick={content.btns[0].modal ? handleShow : undefined}>
+                  <LinkButton
+                    className=" text-white mt-4"
+                    onClick={content.btns[0].modal ? handleShow : undefined}
+                  >
                     {content.btns[0].text}
                   </LinkButton>
 
                   {content.btns[0].modal && (
-                    <AppModal 
-                      modal={{...content.btns[0].modal, ...modal, 
-                      body: <div dangerouslySetInnerHTML={{ __html: content.btns[0].modal.body }} />, 
-                      }} 
-                      setModal={setModal}  
-                      />
+                    <AppModal
+                      modal={{
+                        ...content.btns[0].modal,
+                        ...modal,
+                        body: (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: content.btns[0].modal.body,
+                            }}
+                          />
+                        ),
+                      }}
+                      setModal={setModal}
+                    />
                   )}
                 </>
               )}
