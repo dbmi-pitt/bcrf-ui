@@ -9,11 +9,16 @@ import { headers } from 'next/headers';
 
 export async function generateMetadata({ params }) {
   const _headers = await headers();
-  const url = new URL(_headers.get('x-url'));
+  const rawUrl = _headers.get('x-url');
   const baseTitle = ENVS.app.name;
+
+  if (!rawUrl) {
+    return { title: baseTitle };
+  }
+
+  const url = new URL(rawUrl);
   const pageParts = url.pathname.split('/');
   let pageTitle = pageParts[1]?.toTitleCase();
- 
   pageTitle = pageTitle ? `${pageTitle} | ${baseTitle}` : baseTitle;
 
   return {

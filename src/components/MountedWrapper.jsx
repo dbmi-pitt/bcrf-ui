@@ -1,5 +1,7 @@
 'use client';
+
 import { AppProvider } from '@/context/AppContext';
+import { AuthProvider } from '@/context/AuthContext';
 import useGoogleTagManager from '@/hooks/useGoogleTagManager';
 import '@/lib/general';
 import { App } from 'antd';
@@ -9,7 +11,9 @@ function MountedWrapper({ gtmId, children }) {
 
   return (
     <App>
-      <AppProvider>{children}</AppProvider>
+      <AuthProvider>
+        <AppProvider>{children}</AppProvider>
+      </AuthProvider>
     </App>
   );
 }
