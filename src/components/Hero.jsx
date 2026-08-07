@@ -10,7 +10,7 @@ const Hero = ({ content }) => {
   const { isAuthenticated } = useContext(AppContext);
   const [modal, setModal] = useState(false);
 
-  const handleShow = () => setModal({...modal, open: true, cancelCSS: 'none'});
+  const handleShow = () => setModal({...modal, open: true, cancelCSS: 'none', className: 'ant-modal--hero' });
 
   return (
     <section
