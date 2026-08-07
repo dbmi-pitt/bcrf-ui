@@ -162,7 +162,7 @@ export default function GridWidget({
             }}
           >
             <Tooltip
-              title="Test tooltip"
+              title={chart.tooltip ? chart.tooltip : title }
               open={tooltipOpen}
               onOpenChange={(open) => {
                 setTooltipOpen(open);

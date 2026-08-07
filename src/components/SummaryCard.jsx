@@ -47,7 +47,7 @@ function SummaryCard({ data, onTagClick }) {
   const goToSource = (e, d) => {
     e.preventDefault();
     e.stopPropagation();
-    window.location = `/source/${d.source}`;
+    window.location = `/sources/${d.source}`;
   };
 
   const handleHeaderAreaClick = (e) => {

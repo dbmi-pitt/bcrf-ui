@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useContext } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
-
+import AppContext from '@/context/AppContext';
 import GridWidget from '@/components/grid/GridWidget';
 import { getChartData } from '@/lib/data';
 import { CloseOutlined } from '@ant-design/icons';
@@ -90,6 +90,8 @@ function createLayout(charts) {
 }
 
 export default function GridLayout({ dataSource, charts, initialData }) {
+  const {content} = useContext(AppContext);
+  const [dataSourceSummary, setDataSourceSummary] = useState({name: dataSource});
   const STORAGE_KEY = `grid-layout-${dataSource}`;
   const { width, containerRef, mounted } = useContainerWidth({
     measureBeforeMount: true,
@@ -134,6 +136,15 @@ export default function GridLayout({ dataSource, charts, initialData }) {
     acc[chartId] = TAG_COLOR_PALETTE[index % TAG_COLOR_PALETTE.length];
     return acc;
   }, {});
+
+  useEffect(() => {
+    if (content && content.summary) {
+      const summary =content.summary.data_sources.filter((ds) => ds.source === dataSource);
+      if (summary.length > 0) { 
+        setDataSourceSummary(summary[0]);
+      }      
+    }
+  }, [dataSource, content]);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -264,10 +275,15 @@ export default function GridLayout({ dataSource, charts, initialData }) {
 
   return (
     <div ref={containerRef} className="pt-3">
+      <div className="card px-4 pt-3 mb-2">
+        <h1 className="fs-4">{dataSourceSummary?.name}</h1>
+        <p>{dataSourceSummary?.description}</p>
+      </div>
       <div
         className="d-flex flex-wrap align-items-center gap-2 px-2"
         style={{ minHeight: 40 }}
       >
+        
         {filterTags.map((tag) => (
           <Tag
             className="c-tag--filter"

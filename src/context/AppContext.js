@@ -9,12 +9,23 @@ const AppContext = createContext({});
 export const AppProvider = ({ children }) => {
 
   const [content, setContent] = useState({});
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const fetchLocale = async () => {
+    let path =  location.pathname
+    path = path === '/' ? '/index' : path
+    const url = URLS.api.local(`content/locale?p=/en${path}.json`);
+    const results = await API.fetch({ url, method: 'GET' });
+    if (Object.values(results).length) {
+      return {key: 'locale', value: results}
+    }
+  };
 
   const fetchBannerContent = async () => {
     const url = URLS.api.local('content/banner');
     const results = await API.fetch({ url, method: 'GET' });
     if (Object.values(results).length) {
-      setContent({...content, banner: results});
+      return {key: 'banner', value: results}
     }
   };
 
@@ -22,8 +33,25 @@ export const AppProvider = ({ children }) => {
     const url = URLS.api.local('content/summary');
     const results = await API.fetch({ url, method: 'GET' });
     if (Object.values(results).length) {
-      setContent({...content, summary: results});
+      return {key: 'summary', value: results}
+      
     }
+  };
+
+  const fetchAllContent = async () => {
+    const results = await Promise.all([
+      fetchLocale(),
+      fetchBannerContent(),
+      fetchSummaryDataSources()
+    ]);
+    const contentObject = results.reduce((acc, curr) => {
+      if (curr) {
+        acc[curr.key] = curr.value;
+      }
+      return acc;
+    }, {});
+    setContent(contentObject);
+    return results;
   };
 
   const setLoglevel = async () => {
@@ -34,18 +62,23 @@ export const AppProvider = ({ children }) => {
 
   useEffect(() => {
     const loadData = async () => {
-      fetchBannerContent();
-      fetchSummaryDataSources();
+      await fetchAllContent();
     }
     loadData();
     setLoglevel();
   }, []);
 
+  const signOut = () => {
+    // TODO: Implement sign out logic here, such as clearing tokens or session data
+    setIsAuthenticated(false);
+  };
 
   return (
     <AppContext.Provider
       value={{
         content,
+        isAuthenticated,
+        signOut
       }}
     >
       {children}
