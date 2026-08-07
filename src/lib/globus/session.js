@@ -7,7 +7,7 @@ const sessionKey = createHash('sha256')
   .update(process.env.SESSION_SECRET)
   .digest();
 
-const COOKIE_NAME = 'globus_session';
+export const COOKIE_NAME = 'globus_session';
 
 export async function createSession(session) {
   const jwe = await new EncryptJWT({ ...session })
@@ -31,9 +31,7 @@ export async function deleteSession() {
   store.delete(COOKIE_NAME);
 }
 
-export async function getSession() {
-  const store = await cookies();
-  const raw = store.get(COOKIE_NAME)?.value;
+export async function decryptSessionToken(raw) {
   if (!raw) {
     return null;
   }
@@ -43,4 +41,10 @@ export async function getSession() {
   } catch {
     return null;
   }
+}
+
+export async function getSession() {
+  const store = await cookies();
+  const raw = store.get(COOKIE_NAME)?.value;
+  return decryptSessionToken(raw);
 }

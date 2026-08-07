@@ -6,8 +6,9 @@ import './main.css';
 import MountedWrapper from '@/components/MountedWrapper';
 import ENVS from '@/lib/envs';
 import { headers } from 'next/headers';
+import { getCurrentUser } from '@/lib/actions/auth';
 
-export async function generateMetadata({ params }) {
+export async function generateMetadata() {
   const _headers = await headers();
   const rawUrl = _headers.get('x-url');
   const baseTitle = ENVS.app.name;
@@ -29,12 +30,16 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const currentUser = await getCurrentUser();
+
   return (
     <html lang="en">
       <body>
         <AntdRegistry>
-          <MountedWrapper gtmId={ENVS.gtm}>{children}</MountedWrapper>
+          <MountedWrapper gtmId={ENVS.gtm} user={currentUser}>
+            {children}
+          </MountedWrapper>
         </AntdRegistry>
       </body>
     </html>

@@ -1,18 +1,23 @@
+import { COOKIE_NAME, decryptSessionToken } from '@/lib/globus/session';
 import { NextResponse } from 'next/server';
 
 const PUBLIC_PATHS = ['/', '/login'];
 
-export function proxy(request) {
+export async function proxy(request) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-url', request.url);
 
-  // A very simple check to see if the user has a cookie. Get user session
-  // on the client.
   const isProtected = !PUBLIC_PATHS.includes(request.nextUrl.pathname);
-  if (isProtected && !request.cookies.has('globus_session')) {
-    const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
-    url.searchParams.set('from', request.nextUrl.pathname);
-    return NextResponse.redirect(url);
+
+  if (isProtected) {
+    const rawSession = request.cookies.get(COOKIE_NAME)?.value;
+    const session = await decryptSessionToken(rawSession);
+
+    if (!session) {
+      const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
+      url.searchParams.set('from', request.nextUrl.pathname);
+      return NextResponse.redirect(url);
+    }
   }
 
   const response = NextResponse.next({ request: { headers: requestHeaders } });
