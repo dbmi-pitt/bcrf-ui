@@ -1,13 +1,19 @@
 import { COOKIE_NAME, decryptSessionToken } from '@/lib/globus/session';
 import { NextResponse } from 'next/server';
 
-const PUBLIC_PATHS = ['/', '/login'];
+const PUBLIC_PATHS = ['/', '/login', '/about'];
 
 export async function proxy(request) {
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-url', request.url);
+  const pathname = request.nextUrl.pathname;
 
-  const isProtected = !PUBLIC_PATHS.includes(request.nextUrl.pathname);
+  const isProtected = !PUBLIC_PATHS.some((path) => {
+    if (path === '/') {
+      return pathname === '/';
+    }
+    return pathname === path || pathname.startsWith(`${path}/`);
+  });
 
   if (isProtected) {
     const rawSession = request.cookies.get(COOKIE_NAME)?.value;
