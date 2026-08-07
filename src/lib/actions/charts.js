@@ -1,45 +1,18 @@
 'use server';
 
-import { DuckDBInstance } from '@duckdb/node-api';
+import { connection } from '@/lib/data/database.js';
+import { buildFilterClause } from '@/lib/data/filter.js';
 import log from 'xac-loglevel';
-import { buildFilterClause } from './filter.js';
-
-const instance = await DuckDBInstance.create(process.env.DUCK_DB_PATH, {
-  access_mode: 'READ_ONLY',
-});
-const connection = await instance.connect();
-
-let isShuttingDown = false;
-
-async function shutdown() {
-  if (isShuttingDown) return;
-  isShuttingDown = true;
-
-  try {
-    connection.closeSync();
-    instance.closeSync();
-    log.info('DuckDB connection closed cleanly.');
-  } catch (err) {
-    log.error('Error closing DuckDB connection:', err);
-  }
-}
-
-process.on('SIGINT', async () => {
-  await shutdown();
-  process.exit(0);
-});
-
-process.on('SIGTERM', async () => {
-  await shutdown();
-  process.exit(0);
-});
+import { requireSession } from './index.js';
 
 const sourceMap = {
-  'aurora-us': (await import('./config/auroraUS.js')).CONFIG,
-  'aurora-eu': (await import('./config/auroraEU.js')).CONFIG,
+  'aurora-us': (await import('@/lib/data/config/auroraUS.js')).CONFIG,
+  'aurora-eu': (await import('@/lib/data/config/auroraEU.js')).CONFIG,
 };
 
 export const getChartConfig = async (sourceId) => {
+  await requireSession();
+
   const config = sourceMap[sourceId];
   if (!config) {
     return { notFound: true };
@@ -68,6 +41,8 @@ export const getChartConfig = async (sourceId) => {
 // };
 
 export const getChartData = async (sourceId, filters = {}) => {
+  await requireSession();
+
   const config = sourceMap[sourceId];
   if (!config) {
     return { notFound: true };
@@ -217,6 +192,8 @@ export const getChartData = async (sourceId, filters = {}) => {
 };
 
 export const getAllClinicalData = async (sourceId) => {
+  await requireSession();
+
   const config = sourceMap[sourceId];
   if (!config) {
     return { notFound: true };

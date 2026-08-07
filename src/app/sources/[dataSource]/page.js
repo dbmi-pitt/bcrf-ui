@@ -1,6 +1,10 @@
 import DataSourceTabs from '@/components/DataSourceTabs';
 import BasicLayout from '@/components/layout/BasicLayout';
-import { getAllClinicalData, getChartConfig, getChartData } from '@/lib/data';
+import {
+  getAllClinicalData,
+  getChartConfig,
+  getChartData,
+} from '@/lib/actions/charts.js';
 import { notFound } from 'next/navigation';
 
 export default async function Page({ params }) {

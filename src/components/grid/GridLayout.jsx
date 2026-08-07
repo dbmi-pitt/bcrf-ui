@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useContext } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 import AppContext from '@/context/AppContext';
 import GridWidget from '@/components/grid/GridWidget';
-import { getChartData } from '@/lib/data';
+import { getChartData } from '@/lib/actions/charts.js';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
 import 'react-grid-layout/css/styles.css';
