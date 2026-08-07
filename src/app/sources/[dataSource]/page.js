@@ -7,6 +7,12 @@ import {
 } from '@/lib/actions/charts.js';
 import { notFound } from 'next/navigation';
 
+export async function generateMetadata({ params }) {
+  const { dataSource } = await params;
+  const config = await getChartConfig(dataSource);
+  return { title: config.title || 'Data Source' };
+}
+
 export default async function Page({ params }) {
   const { dataSource } = await params;
   const config = await getChartConfig(dataSource);
