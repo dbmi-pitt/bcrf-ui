@@ -7,7 +7,7 @@ export default function LogIn() {
   return (
     <BasicLayout>
       <Container className='container--alert'>
-        <Alert>
+        <Alert variant='light'>
           <div className="alert-heading h4">{ENVS.app.name}</div>
           <p>
             User authentication is required to search the dataset catalog.
