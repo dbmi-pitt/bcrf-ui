@@ -1,26 +1,12 @@
 'use client';
 
-import {
-  getCurrentUser,
-  logInWithGlobus,
-  logOutOfGlobus,
-} from '@/lib/actions/auth';
-import { createContext, useEffect, useState } from 'react';
+import { logInWithGlobus, logOutOfGlobus } from '@/lib/actions/auth';
+import { createContext, useEffect } from 'react';
 
 const AuthContext = createContext({});
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
+export const AuthProvider = ({ user, children }) => {
   const isAuthenticated = user !== null;
-
-  useEffect(() => {
-    const loadData = async () => {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-    };
-    loadData();
-  }, []);
 
   useEffect(() => {
     // Refresh the page when the user navigates back to prevent stale
@@ -42,9 +28,12 @@ export const AuthProvider = ({ children }) => {
     try {
       await logOutOfGlobus();
     } finally {
-      setUser(null);
       window.location.href = '/';
     }
+  };
+
+  const redirectToLogin = () => {
+    window.location.href = '/login';
   };
 
   return (
@@ -54,6 +43,7 @@ export const AuthProvider = ({ children }) => {
         user,
         logIn,
         logOut,
+        redirectToLogin,
       }}
     >
       {children}
