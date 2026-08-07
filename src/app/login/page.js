@@ -6,7 +6,7 @@ import { Alert, Button, Container } from 'react-bootstrap';
 export default function LogIn() {
   return (
     <BasicLayout>
-      <Container className='vertically-centered'>
+      <Container className='container--alert'>
         <Alert>
           <div className="alert-heading h4">{ENVS.app.name}</div>
           <p>
