@@ -6,9 +6,11 @@ import Modal from 'react-bootstrap/Modal';
 import LinkButton from '@/components/LinkButton';
 import AppContext from '@/context/AppContext';
 import Button from 'react-bootstrap/Button';
+import AuthContext from '@/context/AuthContext';
 
 const Hero = ({ content }) => {
-  const { isAuthenticated } = useContext(AppContext);
+  const { isAuthenticated } = useContext(AuthContext);
+
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);

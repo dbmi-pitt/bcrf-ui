@@ -15,7 +15,7 @@ function AppNavBar() {
   return (
     <Navbar sticky={'top'} variant={'light'} expand="lg" className="c-navbar">
       <Container fluid>
-        <a href="/" className={'ms-3 align-items-center d-flex gap-3'}>
+        <Link href="/" className={'ms-3 align-items-center d-flex gap-3'}>
           <Image
             src={'/imgs/brand-logo-cropped.png'}
             className="c-navbar__logo w-fixed"
@@ -27,13 +27,13 @@ function AppNavBar() {
             A partnership between BCRF <br />
             and the University of Pittsburgh
           </span>
-        </a>
+        </Link>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end c-navbar__menu">
           {isAuthenticated && (
             <>
               <Nav className={'me-4'}>
-                <Link href={'/projects/search'}>
+                <Link href={'/sources'}>
                   <span className="me-1">EXPLORE</span>
                   <i className="bi bi-search"></i>
                 </Link>
