@@ -2,24 +2,12 @@
 import AppSpinner from '@/components/AppSpinner';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SummaryCard from '@/components/SummaryCard';
-import AppContext from '@/context/AppContext';
 import { Masonry, Tag } from 'antd';
-import { useContext, useEffect, useEffectEvent, useState } from 'react';
+import { useState } from 'react';
 
-export default function Sources() {
-  const { content } = useContext(AppContext);
+export default function Sources({ summary }) {
   const [tags, setTags] = useState([]);
-  const [cards, setCards] = useState(content?.summary?.data_sources || []);
-
-  const setDataSources = useEffectEvent(() => {
-    setCards(content?.summary?.data_sources);
-  }, []);
-
-  useEffect(() => {
-    if (content.summary) {
-      setDataSources();
-    }
-  }, [content.summary]);
+  const [cards, setCards] = useState(summary.data_sources);
 
   const filterCards = (tag, value, sources = []) => {
     const sourceIds = sources.map((d) => d.source);
@@ -27,11 +15,10 @@ export default function Sources() {
     sourceIds.forEach((role) => {
       dict[role] = true;
     });
+
     // filter out the cards already included
     const availableSources =
-      content?.summary?.data_sources.filter(
-        (d) => dict[d.source] === undefined,
-      ) || [];
+      summary.data_sources.filter((d) => dict[d.source] === undefined) || [];
     availableSources.map((data) => {
       data.tags.map((t) => {
         if (
@@ -87,7 +74,7 @@ export default function Sources() {
     for (const t of newTags) {
       sources = filterCards(t, t.value, sources);
     }
-    setCards(sources.length ? sources : content?.summary?.data_sources);
+    setCards(sources.length ? sources : summary.data_sources);
     setTags(newTags);
   };
 

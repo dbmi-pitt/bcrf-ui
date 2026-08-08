@@ -5,7 +5,9 @@ import {
   getChartConfig,
   getChartData,
 } from '@/lib/actions/charts.js';
+import { getSummaryDataSource } from '@/lib/actions/content';
 import { notFound } from 'next/navigation';
+import log from 'xac-loglevel';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -21,14 +23,18 @@ export default async function Page({ params }) {
     notFound();
   }
 
+  const summaryDataSource = await getSummaryDataSource(dataSource);
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);
+
+  log.debug('Summary Data Source:', summaryDataSource);
 
   return (
     <BasicLayout fluid={true}>
       <DataSourceTabs
         dataSource={dataSource}
         charts={config.charts}
+        summaryDataSource={summaryDataSource}
         initialData={chartData.data}
         clinicalData={clinicalData}
       />
