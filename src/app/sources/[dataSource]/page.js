@@ -11,8 +11,8 @@ import log from 'xac-loglevel';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
-  const config = await getChartConfig(dataSource);
-  return { title: config.title || 'Data Source' };
+  const config = await getSummaryDataSource(dataSource);
+  return { title: config.name || 'Data Source' };
 }
 
 export default async function Page({ params }) {

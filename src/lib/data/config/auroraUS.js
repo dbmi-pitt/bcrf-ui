@@ -1,6 +1,5 @@
 export const CONFIG = {
   id: 'aurora-us',
-  title: 'Aurora US',
   table: 'aurora_us',
   keyColumn: 'Sample ID',
   charts: [
