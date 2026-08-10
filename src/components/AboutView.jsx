@@ -1,17 +1,16 @@
-import { Render } from "@puckeditor/core";
-import { Puck } from "@puckeditor/core";
-import Markdown from "react-markdown";
+import { Render } from '@puckeditor/core';
+import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 // Create Puck component config
 const config = {
   categories: {
-    typography: { 
-      components: ["HeadingBlock", "Heading", "Text", "Markdown"],
-      title: "Text",
+    typography: {
+      components: ['HeadingBlock', 'Heading', 'Text', 'Markdown'],
+      title: 'Text',
     },
     layout: {
-      components: ["Space", "FlexContainer"],
+      components: ['Space', 'FlexContainer'],
     },
   },
   components: {
@@ -81,14 +80,14 @@ const config = {
     Heading: {
       fields: {
         title: {
-          type: "text",
+          type: 'text',
         },
         level: {
-          type: "number",
-        }
+          type: 'number',
+        },
       },
-      defaultProps:{
-        title: "heading",
+      defaultProps: {
+        title: 'heading',
         level: 1,
       },
       render: ({ title, level }) => {
@@ -109,16 +108,15 @@ const config = {
             return <h1>{title}</h1>;
             break;
         }
-        
       },
     },
     Text: {
       fields: {
         content: {
-          type: "richtext",
+          type: 'richtext',
         },
       },
-      defaultProps:{
+      defaultProps: {
         content: "i'm <u>richtext</u>",
       },
       render: ({ content }) => {
@@ -128,36 +126,36 @@ const config = {
     Markdown: {
       fields: {
         content: {
-          type: "textarea",
-        }
+          type: 'textarea',
+        },
       },
-      defaultProps : {
-        content: "Insert **markdown**.",
+      defaultProps: {
+        content: 'Insert **markdown**.',
       },
-      render: ({ content })=>{
-        return <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+      render: ({ content }) => {
+        return <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>;
       },
     },
     FlexContainer: {
       fields: {
         direction: {
-          type: "select",
+          type: 'select',
           options: [
-            { label: "Row", value: "row" },
-            { label: "Column", value: "column" },
+            { label: 'Row', value: 'row' },
+            { label: 'Column', value: 'column' },
           ],
         },
         items: {
-          type: "slot",
+          type: 'slot',
         },
       },
-      render: ({ direction = "row", items: Items }) => {
+      render: ({ direction = 'row', items: Items }) => {
         return (
           <Items
             zone="flex-zone"
             style={{
-              display: "flex",
-              flexWrap: "wrap",
+              display: 'flex',
+              flexWrap: 'wrap',
               flexDirection: direction,
             }}
           />
@@ -168,11 +166,8 @@ const config = {
 };
 
 const AboutView = ({ data }) => {
-
-  const dataO=JSON.parse(data)
-  return (
-    <Render config={config} data={dataO?dataO:{}} />
-  );
+  const dataO = JSON.parse(data);
+  return <Render config={config} data={dataO ? dataO : {}} />;
 };
 
 export default AboutView;

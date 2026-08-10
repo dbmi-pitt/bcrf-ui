@@ -3,11 +3,10 @@
 import GridLayout from '@/components/grid/GridLayout';
 import { autoBlobDownloader } from '@/lib/general';
 import { Button, Flex, Tabs, Tooltip } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
 import AboutEdit from './AboutEdit';
 import AboutView from './AboutView';
 import ClinicalData from './ClinicalData';
-
-import { usePathname, useRouter } from 'next/navigation';
 
 function DataSourceTabs({
   dataSource,
@@ -71,14 +70,22 @@ function DataSourceTabs({
     {
       label: 'About',
       key: 'about',
-      children: aboutContent ? <AboutView dataSourceId={dataSource} data={aboutContent.data} /> : <div />,
+      children: aboutContent ? (
+        <AboutView dataSourceId={dataSource} data={aboutContent.data} />
+      ) : (
+        <div />
+      ),
     },
   ];
   if (editPagePerms) {
     items.push({
       label: 'Edit',
       key: 'edit',
-      children: aboutContent ? <AboutEdit dataSourceId={dataSource} data={aboutContent.data} /> : <div />,
+      children: aboutContent ? (
+        <AboutEdit dataSourceId={dataSource} data={aboutContent.data} />
+      ) : (
+        <div />
+      ),
     });
   }
   console.log('editPagePerms:', editPagePerms);

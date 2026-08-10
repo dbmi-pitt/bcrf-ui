@@ -1,15 +1,14 @@
 import DataSourceTabs from '@/components/DataSourceTabs';
 import BasicLayout from '@/components/layout/BasicLayout';
+import { getCurrentUser } from '@/lib/actions/auth';
 import {
   getAllClinicalData,
   getChartConfig,
   getChartData,
 } from '@/lib/actions/charts.js';
 import { getSummaryDataSource } from '@/lib/actions/content';
-import { notFound } from 'next/navigation';
-import log from 'xac-loglevel';
-import { getCurrentUser } from '@/lib/actions/auth';
 import { getPerms } from '@/lib/actions/perms';
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -26,13 +25,12 @@ export default async function Page({ params }) {
   }
 
   const summaryDataSource = await getSummaryDataSource(dataSource);
+
   const user = await getCurrentUser();
-  const permission_set = (await getPerms(dataSource, user.username)).data;
+  const permissionSet = (await getPerms(dataSource, user.username)).data;
 
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);
-
-  log.debug('Summary Data Source:', summaryDataSource);
 
   return (
     <BasicLayout fluid={true}>
@@ -43,8 +41,8 @@ export default async function Page({ params }) {
         initialData={chartData.data}
         clinicalData={clinicalData}
         editPagePerms={
-          permission_set.includes('ADMIN') ||
-          permission_set.includes('ABOUT-EDIT')
+          permissionSet.includes('ADMIN') ||
+          permissionSet.includes('ABOUT-EDIT')
         }
       />
     </BasicLayout>

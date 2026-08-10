@@ -5,6 +5,7 @@ import {
   getChartConfig,
   getChartData,
 } from '@/lib/actions/charts.js';
+import { getSummaryDataSource } from '@/lib/actions/content';
 import { notFound } from 'next/navigation';
 import { getPuckData } from '@/lib/actions/puck';
 
@@ -21,6 +22,7 @@ export default async function Page({ params }) {
 
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);
+  const summaryDataSource = await getSummaryDataSource(dataSource);
 
   const aboutContent = await getPuckData(dataSource);
   
@@ -33,6 +35,7 @@ export default async function Page({ params }) {
         dataSource={dataSource}
         charts={config.charts}
         initialData={chartData.data}
+        summaryDataSource={summaryDataSource}
         clinicalData={clinicalData}
         aboutContent={aboutContent}
         editPagePerms={permission_set.includes("ADMIN") || permission_set.includes("ABOUT-EDIT")}
