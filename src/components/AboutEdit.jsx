@@ -1,4 +1,3 @@
-import { Render } from "@puckeditor/core";
 import { Puck } from "@puckeditor/core";
 import Markdown from "react-markdown";
 import remarkGfm from 'remark-gfm';
@@ -167,12 +166,15 @@ const config = {
   },
 };
 
-const AboutView = ({ data }) => {
+const AboutEdit = ({ data }) => {
 
   const dataO=JSON.parse(data)
   return (
-    <Render config={config} data={dataO?dataO:{}} />
+     <Puck height="100%" config={config} data={dataO} onPublish={(data)=>{
+          console.log(JSON.stringify(data))
+        }}
+        
+        />
   );
 };
-
-export default AboutView;
+export default AboutEdit;

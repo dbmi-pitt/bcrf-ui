@@ -14,12 +14,17 @@ import { useParams, usePathname, useRouter } from 'next/navigation';
 function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutContent }) {
   const router = useRouter();
   const pathname= usePathname();
-  const isAbout = pathname.endsWith('/about');
+  const isAbout = pathname.contains('/about');
+  const isAboutEdit = pathname.contains('/about/edit');
   
+  const defaultActiveKey = isAbout?isAboutEdit?'edit':'about':'summary';
   
   const handleChange = (key)=> {
     if (key==='about'){
       router.push(`/sources/${dataSource}/about`);
+      return
+    }else if(key==='edit') {
+      router.push(`/sources/${dataSource}/about/edit`);
       return
     }else if(isAbout) {
       router.push(`/sources/${dataSource}`);
@@ -57,16 +62,17 @@ function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutCo
       key: 'about',
       children: aboutContent?<AboutView data={aboutContent.data}/>:<div/>,
     },
-    // {
-    //   label: 'Edit',
-    //   key: 'edit',
-    // },
+    {
+      label: 'Edit',
+      key: 'edit',
+      children: aboutContent?<AboutEdit data={aboutContent.data}/>:<div/>,
+    },
   ];
 
   return (
     <div>
       <Tabs
-        defaultActiveKey={isAbout?'about':'summary'}
+        defaultActiveKey={defaultActiveKey}
         onChange={handleChange}
         tabBarExtraContent={
           <Flex wrap gap="small">

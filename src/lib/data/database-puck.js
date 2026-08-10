@@ -1,8 +1,18 @@
 import { DuckDBInstance } from '@duckdb/node-api';
 import log from 'xac-loglevel';
 
-const instance = await DuckDBInstance.create(process.env.DUCK_DB_PUCK_PERMS_PATH);
-export const ppConn = await instance.connect();
+let connectionPromise;
+
+export async function getConnection() {
+  if (!connectionPromise) {
+    connectionPromise = DuckDBInstance.fromCache(process.env.DUCK_DB_PUCK_PERMS_PATH).then((instance) =>
+      instance.connect()
+    );
+  }
+  return connectionPromise;
+}
+
+// export const ppConn = await getConnection();
 
 let isShuttingDown = false;
 
