@@ -7,30 +7,40 @@ import ClinicalData from './ClinicalData';
 import AboutView from './AboutView';
 import AboutEdit from './AboutEdit';
 
-
 import { useParams, usePathname, useRouter } from 'next/navigation';
 
-
-function DataSourceTabs({ dataSource, charts, summaryDataSource, initialData, clinicalData, aboutContent }) {
+function DataSourceTabs({
+  dataSource,
+  charts,
+  summaryDataSource,
+  initialData,
+  clinicalData,
+  aboutContent,
+  editPagePerms,
+}) {
   const router = useRouter();
-  const pathname= usePathname();
+  const pathname = usePathname();
   const isAbout = pathname.contains('/about');
   const isAboutEdit = pathname.contains('/about/edit');
-  
-  const defaultActiveKey = isAbout?isAboutEdit?'edit':'about':'summary';
-  
-  const handleChange = (key)=> {
-    if (key==='about'){
+
+  const defaultActiveKey = isAbout
+    ? isAboutEdit
+      ? 'edit'
+      : 'about'
+    : 'summary';
+
+  const handleChange = (key) => {
+    if (key === 'about') {
       router.push(`/sources/${dataSource}/about`);
-      return
-    }else if(key==='edit') {
+      return;
+    } else if (key === 'edit') {
       router.push(`/sources/${dataSource}/about/edit`);
-      return
-    }else if(isAbout) {
+      return;
+    } else if (isAbout) {
       router.push(`/sources/${dataSource}`);
-      return
+      return;
     }
-  }
+  };
 
   const downloadData = () => {
     const allClinicalData = clinicalData.data;
@@ -61,14 +71,17 @@ function DataSourceTabs({ dataSource, charts, summaryDataSource, initialData, cl
     {
       label: 'About',
       key: 'about',
-      children: aboutContent?<AboutView data={aboutContent.data}/>:<div/>,
-    },
-    {
-      label: 'Edit',
-      key: 'edit',
-      children: aboutContent?<AboutEdit data={aboutContent.data}/>:<div/>,
+      children: aboutContent ? <AboutView data={aboutContent.data} /> : <div />,
     },
   ];
+  if (editPagePerms) {
+    items.push({
+      label: 'Edit',
+      key: 'edit',
+      children: aboutContent ? <AboutEdit data={aboutContent.data} /> : <div />,
+    });
+  }
+  console.log('editPagePerms:', editPagePerms);
 
   return (
     <div>
