@@ -12,8 +12,6 @@ export async function getConnection() {
   return connectionPromise;
 }
 
-// export const ppConn = await getConnection();
-
 let isShuttingDown = false;
 
 async function shutdown() {

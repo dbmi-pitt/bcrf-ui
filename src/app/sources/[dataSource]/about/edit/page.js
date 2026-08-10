@@ -7,6 +7,10 @@ import {
 } from '@/lib/actions/charts.js';
 import { notFound } from 'next/navigation';
 import { getPuckData } from '@/lib/actions/puck';
+import { getCurrentUser } from '@/lib/actions/auth';
+import { getPerms } from '@/lib/actions/perms';
+
+
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
@@ -16,6 +20,15 @@ export default async function Page({ params }) {
     notFound();
   }
 
+  const user = await getCurrentUser();
+  
+  const permission_set = (await getPerms(dataSource,user.username)).data;
+  if (!permission_set.includes("ADMIN") && !permission_set.includes("ABOUT-EDIT")){
+    // person is not authorized
+    return <div>Not Authorized.</div>;
+  }
+
+  
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);
 
@@ -28,6 +41,7 @@ export default async function Page({ params }) {
         initialData={chartData.data}
         clinicalData={clinicalData}
         aboutContent={aboutContent}
+        editPagePerms={permission_set.includes("ADMIN") || permission_set.includes("ABOUT-EDIT")}
 
       />
     </BasicLayout>

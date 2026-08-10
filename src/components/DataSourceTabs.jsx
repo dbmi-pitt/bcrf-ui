@@ -11,7 +11,7 @@ import AboutEdit from './AboutEdit';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 
 
-function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutContent }) {
+function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutContent, editPagePerms }) {
   const router = useRouter();
   const pathname= usePathname();
   const isAbout = pathname.contains('/about');
@@ -31,6 +31,7 @@ function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutCo
       return
     }
   }
+
 
   const downloadData = () => {
     const allClinicalData = clinicalData.data;
@@ -62,12 +63,15 @@ function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutCo
       key: 'about',
       children: aboutContent?<AboutView data={aboutContent.data}/>:<div/>,
     },
-    {
+  ];
+  if(editPagePerms){
+    items.push({
       label: 'Edit',
       key: 'edit',
       children: aboutContent?<AboutEdit data={aboutContent.data}/>:<div/>,
-    },
-  ];
+    })
+  }
+  console.log("editPagePerms:",editPagePerms)
 
   return (
     <div>
