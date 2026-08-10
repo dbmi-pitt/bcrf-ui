@@ -1,16 +1,18 @@
-import { Puck } from "@puckeditor/core";
-import Markdown from "react-markdown";
+import { savePuckData } from '@/lib/actions/puck';
+import { Puck } from '@puckeditor/core';
+import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import log from 'xac-loglevel';
 
 // Create Puck component config
 const config = {
   categories: {
-    typography: { 
-      components: ["HeadingBlock", "Heading", "Text", "Markdown"],
-      title: "Text",
+    typography: {
+      components: ['HeadingBlock', 'Heading', 'Text', 'Markdown'],
+      title: 'Text',
     },
     layout: {
-      components: ["Space", "FlexContainer"],
+      components: ['Space', 'FlexContainer'],
     },
   },
   components: {
@@ -80,44 +82,38 @@ const config = {
     Heading: {
       fields: {
         title: {
-          type: "text",
+          type: 'text',
         },
         level: {
-          type: "number",
-        }
+          type: 'number',
+        },
       },
-      defaultProps:{
-        title: "heading",
+      defaultProps: {
+        title: 'heading',
         level: 1,
       },
       render: ({ title, level }) => {
         switch (level) {
           case 1:
             return <h1>{title}</h1>;
-            break;
           case 2:
             return <h2>{title}</h2>;
-            break;
           case 3:
             return <h3>{title}</h3>;
-            break;
           case 4:
             return <h4>{title}</h4>;
-            break;
           default:
             return <h1>{title}</h1>;
-            break;
         }
-        
       },
     },
     Text: {
       fields: {
         content: {
-          type: "richtext",
+          type: 'richtext',
         },
       },
-      defaultProps:{
+      defaultProps: {
         content: "i'm <u>richtext</u>",
       },
       render: ({ content }) => {
@@ -127,36 +123,36 @@ const config = {
     Markdown: {
       fields: {
         content: {
-          type: "textarea",
-        }
+          type: 'textarea',
+        },
       },
-      defaultProps : {
-        content: "Insert **markdown**.",
+      defaultProps: {
+        content: 'Insert **markdown**.',
       },
-      render: ({ content })=>{
-        return <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+      render: ({ content }) => {
+        return <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>;
       },
     },
     FlexContainer: {
       fields: {
         direction: {
-          type: "select",
+          type: 'select',
           options: [
-            { label: "Row", value: "row" },
-            { label: "Column", value: "column" },
+            { label: 'Row', value: 'row' },
+            { label: 'Column', value: 'column' },
           ],
         },
         items: {
-          type: "slot",
+          type: 'slot',
         },
       },
-      render: ({ direction = "row", items: Items }) => {
+      render: ({ direction = 'row', items: Items }) => {
         return (
           <Items
             zone="flex-zone"
             style={{
-              display: "flex",
-              flexWrap: "wrap",
+              display: 'flex',
+              flexWrap: 'wrap',
               flexDirection: direction,
             }}
           />
@@ -166,15 +162,19 @@ const config = {
   },
 };
 
-const AboutEdit = ({ data }) => {
-
-  const dataO=JSON.parse(data)
+const AboutEdit = ({ dataSourceId, data }) => {
+  const dataO = JSON.parse(data);
   return (
-     <Puck height="100%" config={config} data={dataO} onPublish={(data)=>{
-          console.log(JSON.stringify(data))
-        }}
-        
-        />
+    <Puck
+      height="100%"
+      config={config}
+      data={dataO}
+      onPublish={(data) => {
+        log.debug(JSON.stringify(data));
+        savePuckData(dataSourceId, data);
+      }}
+    />
   );
 };
+
 export default AboutEdit;
