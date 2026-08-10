@@ -5,7 +5,13 @@ import { autoBlobDownloader } from '@/lib/general';
 import { Button, Flex, Tabs, Tooltip } from 'antd';
 import ClinicalData from './ClinicalData';
 
-function DataSourceTabs({ dataSource, charts, initialData, clinicalData }) {
+function DataSourceTabs({
+  dataSource,
+  charts,
+  summaryDataSource,
+  initialData,
+  clinicalData,
+}) {
   const downloadData = () => {
     const allClinicalData = clinicalData.data;
     autoBlobDownloader(
@@ -23,6 +29,7 @@ function DataSourceTabs({ dataSource, charts, initialData, clinicalData }) {
           dataSource={dataSource}
           charts={charts}
           initialData={initialData}
+          summaryDataSource={summaryDataSource}
         />
       ),
     },
