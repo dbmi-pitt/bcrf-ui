@@ -132,7 +132,7 @@ export default function GridWidget({
     onClick: handleMenuClick,
   };
 
-  const isPie = chartType.eq('pie')
+  const isPie = chartType.eq('pie');
 
   return (
     <Card
@@ -162,7 +162,7 @@ export default function GridWidget({
             }}
           >
             <Tooltip
-              title={chart.tooltip ? chart.tooltip : title }
+              title={chart.tooltip ? chart.tooltip : title}
               open={tooltipOpen}
               onOpenChange={(open) => {
                 setTooltipOpen(open);
