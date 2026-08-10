@@ -11,7 +11,7 @@ import AboutEdit from './AboutEdit';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 
 
-function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutContent, editPagePerms }) {
+function DataSourceTabs({ dataSource, charts, summaryDataSource, initialData, clinicalData, aboutContent, editPagePerms }) {
   const router = useRouter();
   const pathname= usePathname();
   const isAbout = pathname.contains('/about');
@@ -32,7 +32,6 @@ function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutCo
     }
   }
 
-
   const downloadData = () => {
     const allClinicalData = clinicalData.data;
     autoBlobDownloader(
@@ -50,6 +49,7 @@ function DataSourceTabs({ dataSource, charts, initialData, clinicalData, aboutCo
           dataSource={dataSource}
           charts={charts}
           initialData={initialData}
+          summaryDataSource={summaryDataSource}
         />
       ),
     },
