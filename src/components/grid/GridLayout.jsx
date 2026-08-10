@@ -295,7 +295,7 @@ export default function GridLayout({
             <b>{tag.title}</b>: {tag.value}
           </Tag>
         ))}
-        {hasActiveFilters && (
+        {filterTags.length > 0 && (
           <Button variant="outline" size="sm" onClick={() => setFilters({})}>
             Clear All Filters
           </Button>
