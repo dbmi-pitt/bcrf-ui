@@ -4,8 +4,6 @@ import { NextResponse } from 'next/server';
 const PUBLIC_PATHS = ['/', '/login', '/about'];
 
 export async function proxy(request) {
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-url', request.url);
   const pathname = request.nextUrl.pathname;
 
   const isProtected = !PUBLIC_PATHS.some((path) => {
@@ -26,7 +24,7 @@ export async function proxy(request) {
     }
   }
 
-  const response = NextResponse.next({ request: { headers: requestHeaders } });
+  const response = NextResponse.next();
 
   if (isProtected) {
     // Prevent caching of protected pages

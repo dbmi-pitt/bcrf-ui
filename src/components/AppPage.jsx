@@ -1,18 +1,14 @@
-'use client';
-import React, {useContext} from 'react';
-import BleedLayout from '@/components/layout/BleedLayout';
-import AppSpinner from '@/components/AppSpinner';
-import AppContext from '@/context/AppContext';
 import ContentGenerator from '@/components/ContentGenerator';
+import BleedLayout from '@/components/layout/BleedLayout';
+import { getLocale } from '@/lib/actions/content.js';
 
-export default function AppPage() {
-  const { content } = useContext(AppContext)
+export default async function AppPage({ path }) {
+  const content = await getLocale(path);
 
   return (
     <div>
       <BleedLayout>
-        {content && content.locale && <ContentGenerator content={content.locale} />}
-        {!content || !content.locale && <AppSpinner />}
+        <ContentGenerator content={content} />
       </BleedLayout>
     </div>
   );
