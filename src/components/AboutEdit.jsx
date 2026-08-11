@@ -1,3 +1,5 @@
+'use client';
+
 import { savePuckData } from '@/lib/actions/puck';
 import { Puck } from '@puckeditor/core';
 import Markdown from 'react-markdown';
