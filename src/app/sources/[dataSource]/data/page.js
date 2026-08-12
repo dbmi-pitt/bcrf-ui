@@ -2,8 +2,6 @@ import BasicLayout from '@/components/layout/BasicLayout';
 import { getCurrentUser } from '@/lib/actions/auth';
 import { getPerms } from '@/lib/actions/perms';
 import Navbar from '@/components/Navbar';
-import AboutView from '@/components/AboutView';
-import { getPuckData } from '@/lib/actions/puck';
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
@@ -20,12 +18,11 @@ export default async function Page({ params }) {
   }
   links.push({ label: 'Globus', path: `/sources/${dataSource}/data` });
 
-  const aboutContent = await getPuckData(dataSource);
-
   return (
     <BasicLayout fluid={true}>
       <Navbar links={links} />
-      <AboutView dataSourceId={dataSource} data={aboutContent.data} />
+      <h3>Globus File Manager</h3>
+      <p>This is a placeholder for Globus.</p>
     </BasicLayout>
   );
 }
