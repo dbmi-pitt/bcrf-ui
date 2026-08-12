@@ -2,6 +2,8 @@
 
 import { savePuckData } from '@/lib/actions/puck';
 import { Puck } from '@puckeditor/core';
+import { Alert } from 'antd';
+import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import log from 'xac-loglevel';
@@ -166,16 +168,58 @@ const config = {
 
 const AboutEdit = ({ dataSourceId, data }) => {
   const dataO = JSON.parse(data);
+  const [saveStatus, setSaveStatus] = useState(null);
+
+  const handlePublish = async (publishedData) => {
+    log.debug(JSON.stringify(publishedData));
+
+    const result = await savePuckData(dataSourceId, publishedData);
+
+    if (result.success) {
+      setSaveStatus({ type: 'success', message: 'Saved successfully.' });
+    } else {
+      setSaveStatus({
+        type: 'error',
+        message: result.error || 'Failed to save.',
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (!saveStatus) return;
+
+    const timer = setTimeout(() => {
+      setSaveStatus(null);
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [saveStatus]);
+
   return (
-    <Puck
-      height="100%"
-      config={config}
-      data={dataO}
-      onPublish={(data) => {
-        log.debug(JSON.stringify(data));
-        savePuckData(dataSourceId, data);
-      }}
-    />
+    <div style={{ position: 'relative', height: '100%' }}>
+      {saveStatus && (
+        <Alert
+          type={saveStatus.type}
+          title={saveStatus.message}
+          showIcon
+          closable
+          onClose={() => setSaveStatus(null)}
+          style={{
+            position: 'absolute',
+            top: 16,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 10000,
+          }}
+        />
+      )}
+      <Puck
+        height="100%"
+        config={config}
+        data={dataO}
+        onPublish={handlePublish}
+      />
+    </div>
   );
 };
 
