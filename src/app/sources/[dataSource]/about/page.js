@@ -1,46 +1,29 @@
-import DataSourceTabs from '@/components/DataSourceTabs';
 import BasicLayout from '@/components/layout/BasicLayout';
-import {
-  getAllClinicalData,
-  getChartConfig,
-  getChartData,
-} from '@/lib/actions/charts.js';
-import { getSummaryDataSource } from '@/lib/actions/content';
-import { notFound } from 'next/navigation';
-import { getPuckData } from '@/lib/actions/puck';
-
 import { getCurrentUser } from '@/lib/actions/auth';
 import { getPerms } from '@/lib/actions/perms';
+import Navbar from '@/components/Navbar';
+import AboutView from '@/components/AboutView';
+import { getPuckData } from '@/lib/actions/puck';
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
-  const config = await getChartConfig(dataSource);
-
-  if (config.notFound) {
-    notFound();
-  }
-
-  const chartData = await getChartData(dataSource);
-  const clinicalData = await getAllClinicalData(dataSource);
-  const summaryDataSource = await getSummaryDataSource(dataSource);
-
-  const aboutContent = await getPuckData(dataSource);
-  
   const user = await getCurrentUser();
-  const permission_set = (await getPerms(dataSource,user.username)).data;
-  
+  const permissionSet = (await getPerms(dataSource, user.username)).data;
+
+  const links = [
+    { label: 'Overview', path: `/sources/${dataSource}` },
+    { label: 'About', path: `/sources/${dataSource}/about` },
+  ];
+
+  if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
+    links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
+  }
+  const aboutContent = await getPuckData(dataSource);
+
   return (
     <BasicLayout fluid={true}>
-      <DataSourceTabs
-        dataSource={dataSource}
-        charts={config.charts}
-        initialData={chartData.data}
-        summaryDataSource={summaryDataSource}
-        clinicalData={clinicalData}
-        aboutContent={aboutContent}
-        editPagePerms={permission_set.includes("ADMIN") || permission_set.includes("ABOUT-EDIT")}
-
-      />
+      <Navbar links={links} />
+      <AboutView dataSourceId={dataSource} data={aboutContent.data} />
     </BasicLayout>
   );
 }
