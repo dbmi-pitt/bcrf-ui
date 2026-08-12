@@ -34,7 +34,8 @@ export function FileEmbedRender({ file, displayAs = "auto", alt, linkText }) {
   const fileName = file.path.split("/").pop();
 
   if (showAsImage) {
-    return <img src={file.url} alt={alt || fileName} className="max-w-full h-auto" style={{ maxWidth: "100%", height: "auto" }} />;
+    // return <img src={file.url} alt={alt || fileName} className="max-w-full h-auto" style={{ maxWidth: "100%", height: "auto" }} />;
+    return <img src={file.url} alt={alt || fileName} className="w-fixed"  />;
   }
 
   return (
