@@ -18,7 +18,7 @@ export default async function UploadPage({ params }) {
 
   return (
     <div className="max-w-xl mx-auto py-10 px-4">
-      <h1 className="text-lg font-semibold mb-1">Upload files</h1>
+      <h1 className="text-lg font-semibold mb-1">Upload assets</h1>
       <p className="text-sm text-gray-500 mb-6">
         Drag files onto the box below, or click to choose files. You can select or drop
         multiple files at once — they'll upload in parallel.

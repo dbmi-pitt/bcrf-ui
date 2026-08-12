@@ -2,8 +2,9 @@ import BasicLayout from '@/components/layout/BasicLayout';
 import { getPuckData } from '@/lib/actions/puck';
 import { getCurrentUser } from '@/lib/actions/auth';
 import { getPerms } from '@/lib/actions/perms';
-import Navbar from '@/components/Navbar';
 import AboutEdit from '@/components/AboutEdit';
+import SourceNavbar from '@/components/SourceNavbar';
+
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
@@ -16,18 +17,13 @@ export default async function Page({ params }) {
     // person is not authorized
     return <div>Not Authorized.</div>;
   }
-  const links = [
-    { label: 'Overview', path: `/sources/${dataSource}` },
-    { label: 'About', path: `/sources/${dataSource}/about` },
-  ];
-  if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
-    links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
-  }
-  links.push({ label: 'Globus', path: `/sources/${dataSource}/data` });
+  
   const aboutContent = await getPuckData(dataSource);
+  
   return (
     <BasicLayout fluid={true}>
-      <Navbar links={links} />
+      
+      <SourceNavbar dataSource={dataSource}/>
       <AboutEdit dataSourceId={dataSource} data={aboutContent.data} />
     </BasicLayout>
   );

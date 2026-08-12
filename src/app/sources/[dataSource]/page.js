@@ -1,15 +1,13 @@
 import DataSourceTabs from '@/components/DataSourceTabs';
 import BasicLayout from '@/components/layout/BasicLayout';
-import { getCurrentUser } from '@/lib/actions/auth';
 import {
   getAllClinicalData,
   getChartConfig,
   getChartData,
 } from '@/lib/actions/charts.js';
 import { getSummaryDataSource } from '@/lib/actions/content';
-import { getPerms } from '@/lib/actions/perms';
 import { notFound } from 'next/navigation';
-import Navbar from '@/components/Navbar';
+import SourceNavbar from '@/components/SourceNavbar';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -26,26 +24,12 @@ export default async function Page({ params }) {
   }
 
   const summaryDataSource = await getSummaryDataSource(dataSource);
-
-  const user = await getCurrentUser();
-  const permissionSet = (await getPerms(dataSource, user.username)).data;
-
-  const links = [
-    { label: 'Overview', path: `/sources/${dataSource}` },
-    { label: 'About', path: `/sources/${dataSource}/about` },
-  ];
-
-  if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
-    links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
-  }
-  links.push({ label: 'Globus', path: `/sources/${dataSource}/data` });
-
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);
 
   return (
     <BasicLayout fluid={true}>
-      <Navbar links={links} />
+      <SourceNavbar dataSource={dataSource}/>
       <DataSourceTabs
         dataSource={dataSource}
         charts={config.charts}
