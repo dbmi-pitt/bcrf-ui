@@ -1,3 +1,5 @@
+'use client';
+
 import { Render } from '@puckeditor/core';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
