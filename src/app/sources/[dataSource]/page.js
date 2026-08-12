@@ -38,6 +38,7 @@ export default async function Page({ params }) {
   if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
     links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
   }
+  links.push({ label: 'Globus', path: `/sources/${dataSource}/data` });
 
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);

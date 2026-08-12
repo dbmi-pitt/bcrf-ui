@@ -20,10 +20,10 @@ export default async function Page({ params }) {
     { label: 'Overview', path: `/sources/${dataSource}` },
     { label: 'About', path: `/sources/${dataSource}/about` },
   ];
-
   if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
     links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
   }
+  links.push({ label: 'Globus', path: `/sources/${dataSource}/data` });
   const aboutContent = await getPuckData(dataSource);
   return (
     <BasicLayout fluid={true}>
