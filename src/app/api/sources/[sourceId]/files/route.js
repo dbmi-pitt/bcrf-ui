@@ -4,7 +4,7 @@ import { randomUUID, createHash } from "crypto";
 import { fileTypeFromBuffer } from "file-type";
 import { getUserSourcePerms, userCanUploadTo } from "@/lib/assetmanager/auth";
 import { normalizeVirtualPath } from "@/lib/assetmanager/path-utils";
-import { findFileByPath, createFileRecord } from "@/lib/assetmanager/files";
+import { findFileByPath, createFileRecord, searchFiles } from "@/lib/assetmanager/files";
 import { putObject } from "@/lib/assetmanager/storage";
 
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB
@@ -94,4 +94,54 @@ export async function POST(req, { params }) {
     path: virtualPath,
     url: `/sources/${sourceId}/about/files/${virtualPath}`,
   });
+}
+
+
+
+
+function toPickerShape(sourceId, record) {
+  return {
+    id: record.id,
+    path: record.path,
+    mimeType: record.mime_type,
+    size: record.size,
+    url: `/sources/${sourceId}/about/files/${record.path}`,
+  };
+}
+
+/**
+ * Backs the Puck file-picker component: either a fuzzy search
+ * (?q=partial-name) or an exact resolve (?path=images/photo.png) used
+ * when someone pastes a link rather than browsing.
+ *
+ * Gated behind the same permission as upload (not the per-file
+ * is_public visibility check the download route uses) since this
+ * endpoint enumerates files rather than serving one already-known file
+ * — it's meant for the content-editor picker, not general visitors.
+ *
+ * @param {Request} req
+ * @param {{ params: { sourceId: string } }} context
+ */
+export async function GET(req, { params }) {
+  const {sourceId} = await params;
+  const usp = await getUserSourcePerms(sourceId);
+  if (!usp || !userCanUploadTo(usp)) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  const { searchParams } = new URL(req.url);
+  const exactPath = searchParams.get("path");
+
+  if (exactPath !== null) {
+    const virtualPath = normalizeVirtualPath(exactPath);
+    if (!virtualPath) {
+      return NextResponse.json({ file: null });
+    }
+    const record = await findFileByPath(sourceId, virtualPath);
+    return NextResponse.json({ file: record ? toPickerShape(sourceId, record) : null });
+  }
+
+  const q = searchParams.get("q") || "";
+  const records = await searchFiles(sourceId, q, 50);
+  return NextResponse.json({ files: records.map((r) => toPickerShape(sourceId, r)) });
 }

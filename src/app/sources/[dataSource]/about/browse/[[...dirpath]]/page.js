@@ -14,7 +14,6 @@ export default async function BrowsePage({ params }) {
   const usp = await getUserSourcePerms(dataSource);
   const listing = await getDirectoryListing(dataSource, currentPath, usp.id ?? null);
   
-  
   // Deliberately 404 rather than 403 for unauthorized/nonexistent sources,
   // so we don't confirm existence of private sources to anonymous users.
   if (!listing) notFound();

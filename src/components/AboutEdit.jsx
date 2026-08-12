@@ -3,6 +3,8 @@ import { Puck } from '@puckeditor/core';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import log from 'xac-loglevel';
+import { createFileEmbedConfig } from './puck/file-embed/file-embed-config';
+
 
 // Create Puck component config
 const config = {
@@ -159,11 +161,15 @@ const config = {
         );
       },
     },
+    
   },
 };
 
 const AboutEdit = ({ dataSourceId, data }) => {
   const dataO = JSON.parse(data);
+  const fec = createFileEmbedConfig(dataSourceId);
+  config.components['FileChooser']=fec;
+
   return (
     <Puck
       height="100%"

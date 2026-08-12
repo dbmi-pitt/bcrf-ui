@@ -6,6 +6,7 @@ import { requireSession } from './index.js';
 
 export const getPerms = async (sourceId, username) => {
   await requireSession();
+
   try {
     const conn = await getConnection();
 

@@ -1,6 +1,7 @@
 import { Render } from '@puckeditor/core';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { createFileEmbedConfig } from './puck/file-embed/file-embed-config';
 
 // Create Puck component config
 const config = {
@@ -165,8 +166,10 @@ const config = {
   },
 };
 
-const AboutView = ({ data }) => {
+const AboutView = ({ dataSourceId, data }) => {
   const dataO = JSON.parse(data);
+   const fec = createFileEmbedConfig(dataSourceId);
+  config.components['FileChooser']=fec;
   return <Render config={config} data={dataO ? dataO : {}} />;
 };
 

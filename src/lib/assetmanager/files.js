@@ -115,6 +115,33 @@ export async function createFileRecord(input) {
   return id;
 }
 
+
+
+/**
+ * Simple substring search over a source's files, used by the Puck file
+ * picker. Deliberately flat (ignores folder structure) since the picker
+ * is a search-first UI, not a browser.
+ *
+ * @param {string} sourceId
+ * @param {string} query
+ * @param {number} limit
+ * @returns {Promise<SourceFileRecord[]>}
+ */
+export async function searchFiles(sourceId, query, limit = 50) {
+  await initDb();
+  const q = (query || "").trim().toLowerCase();
+  if (!q) {
+    return all(`SELECT * FROM source_files WHERE source_id = ? ORDER BY path LIMIT ?`, [
+      sourceId,
+      limit,
+    ]);
+  }
+  return all(
+    `SELECT * FROM source_files WHERE source_id = ? AND path_lower LIKE ? ESCAPE '\\' ORDER BY path LIMIT ?`,
+    [sourceId, `%${escapeLike(q)}%`, limit]
+  );
+}
+
 /**
  * Computes a directory listing for the FTP-style browser. Applies
  * visibility rules PER FILE before grouping, so a private file never

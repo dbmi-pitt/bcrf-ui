@@ -5,10 +5,6 @@ import { getCurrentUser } from '../actions/auth';
 import { getPerms } from '../actions/perms';
 
 
-// /** @param {import("next/server").NextRequest} [_req] */
-
-
-// dfsdf
 export async function getUserSourcePerms(sourceId) {
   const currentUser = await getCurrentUser();
   const permSet = await getPerms(sourceId, currentUser.username);
