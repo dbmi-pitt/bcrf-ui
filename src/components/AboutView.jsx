@@ -169,10 +169,9 @@ const config = {
 };
 
 const AboutView = ({ dataSourceId, data }) => {
-  const dataO = JSON.parse(data);
-   const fec = createFileEmbedConfig(dataSourceId);
-  config.components['FileChooser']=fec;
-  return <Render config={config} data={dataO ? dataO : {}} />;
+  const fec = createFileEmbedConfig(dataSourceId);
+  config.components['FileChooser'] = fec;
+  return <Render config={config} data={data ?? {}} />;
 };
 
 export default AboutView;

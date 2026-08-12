@@ -9,7 +9,6 @@ import remarkGfm from 'remark-gfm';
 import log from 'xac-loglevel';
 import { createFileEmbedConfig } from './puck/file-embed/file-embed-config';
 
-
 // Create Puck component config
 const config = {
   categories: {
@@ -165,12 +164,10 @@ const config = {
         );
       },
     },
-
   },
 };
 
 const AboutEdit = ({ dataSourceId, data }) => {
-  const dataO = JSON.parse(data);
   const [saveStatus, setSaveStatus] = useState(null);
 
   const handlePublish = async (publishedData) => {
@@ -199,7 +196,7 @@ const AboutEdit = ({ dataSourceId, data }) => {
   }, [saveStatus]);
 
   const fec = createFileEmbedConfig(dataSourceId);
-  config.components['FileChooser']=fec;
+  config.components['FileChooser'] = fec;
 
   return (
     <div style={{ position: 'relative', height: '100%' }}>
@@ -222,7 +219,7 @@ const AboutEdit = ({ dataSourceId, data }) => {
       <Puck
         height="100%"
         config={config}
-        data={dataO}
+        data={data ?? {}}
         onPublish={handlePublish}
       />
     </div>
