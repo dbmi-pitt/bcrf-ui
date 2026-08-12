@@ -19,7 +19,7 @@ async function shutdown() {
   isShuttingDown = true;
 
   try {
-    ppConn.closeSync();
+    connectionPromise.closeSync();
     instance.closeSync();
     log.info('DuckDB connection closed cleanly.');
   } catch (err) {
