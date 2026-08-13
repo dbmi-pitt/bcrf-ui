@@ -40,12 +40,12 @@ function AppNavBar() {
                   <i className="bi bi-search"></i>
                 </Link>
               </Nav>
-              <Nav className={'me-4'}>
-                <Link href={'/projects/create'}>
-                  <span className="me-1">CREATE PROJECT</span>
-                  <RegisterIcon className="align-baseline" />
-                </Link>
-              </Nav>
+              {/*<Nav className={'me-4'}>*/}
+              {/*  <Link href={'/projects/create'}>*/}
+              {/*    <span className="me-1">CREATE PROJECT</span>*/}
+              {/*    <RegisterIcon className="align-baseline" />*/}
+              {/*  </Link>*/}
+              {/*</Nav>*/}
               <Nav className={'me-0'}>
                 <button
                   type="button"

@@ -3,11 +3,14 @@
 import { usePathname } from 'next/navigation';
 import Nav from 'react-bootstrap/Nav';
 
-export default function Navbar({ links }) {
+export default function Navbar({ links, dataSource }) {
   const pathname = usePathname();
 
   return (
     <Nav variant={"tabs"} activeKey={pathname}>
+      <Nav.Item>
+        <Nav.Link disabled><b>{dataSource}</b></Nav.Link>
+      </Nav.Item>
       {links.map((link) => (
         <Nav.Item key={link.path}>
           <Nav.Link href={link.path}>{link.label}</Nav.Link>
