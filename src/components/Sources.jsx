@@ -83,7 +83,11 @@ export default function Sources({ summary }) {
   return (
     <div>
       <BasicLayout fluid={undefined}>
-        <div className="c-selectedTags" aria-label="Selected Tags">
+        <div
+          className="c-selectedTags"
+          aria-label="Selected Tags"
+          style={{ minHeight: 70 }}
+        >
           {headerTags.length > 0 && (
             <div className="c-selectedTags__wrap">{headerTags}</div>
           )}
