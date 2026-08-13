@@ -2,10 +2,10 @@
 
 import log from 'xac-loglevel';
 import { getConnection } from '../data/database-puck.js';
-import { requireSession } from './index.js';
+import { getCurrentUser } from './auth.js';
 
-export const getPerms = async (sourceId, username) => {
-  await requireSession();
+export const getPerms = async (sourceId) => {
+  const { username } = await getCurrentUser();
 
   try {
     const conn = await getConnection();
@@ -33,4 +33,16 @@ export const getPerms = async (sourceId, username) => {
     );
     return { data: rows };
   }
+};
+
+export const hasPermission = async (sourceId, requiredPerms) => {
+  const { data: permissionSet } = await getPerms(sourceId);
+  const required = Array.isArray(requiredPerms)
+    ? requiredPerms
+    : [requiredPerms];
+
+  return (
+    permissionSet.includes('ADMIN') ||
+    required.some((perm) => permissionSet.includes(perm))
+  );
 };

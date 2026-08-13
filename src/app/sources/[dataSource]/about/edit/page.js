@@ -1,8 +1,7 @@
 import AboutEdit from '@/components/AboutEdit';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
-import { getCurrentUser } from '@/lib/actions/auth';
-import { getPerms } from '@/lib/actions/perms';
+import { hasPermission } from '@/lib/actions/perms';
 import { getPuckData } from '@/lib/actions/puck';
 import { getSummaryDataSource } from '@/lib/actions/sources';
 
@@ -14,12 +13,8 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
-  const user = await getCurrentUser();
-  const permissionSet = (await getPerms(dataSource, user.username)).data;
-  if (
-    !permissionSet.includes('ADMIN') &&
-    !permissionSet.includes('ABOUT-EDIT')
-  ) {
+  const authorized = await hasPermission(dataSource, 'ABOUT-EDIT');
+  if (!authorized) {
     // person is not authorized
     return <div>Not Authorized.</div>;
   }
