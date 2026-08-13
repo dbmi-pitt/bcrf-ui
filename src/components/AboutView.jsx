@@ -19,12 +19,15 @@ const config = {
   components: {
     HeadingBlock: {
       fields: {
-        children: {
+        heading: {
           type: 'text',
         },
       },
-      render: ({ children }) => {
-        return <h1>{children}</h1>;
+       defaultProps: {
+        title: 'your heading',
+      },
+      render: ({ heading }) => {
+        return <h1>{heading}</h1>;
       },
     },
     Space: {
