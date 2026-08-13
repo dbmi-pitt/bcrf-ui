@@ -5,7 +5,6 @@ import { getPerms } from '@/lib/actions/perms';
 import Navbar from './Navbar';
 import { getSummaryDataSource } from '@/lib/actions/content';
 
-
 export default async function SourceNavbar(param) {
   const dataSource = param.dataSource
   const user = await getCurrentUser();  

@@ -5,6 +5,12 @@ import { getPerms } from '@/lib/actions/perms';
 import AboutEdit from '@/components/AboutEdit';
 import SourceNavbar from '@/components/SourceNavbar';
 
+import { getSummaryDataSource } from '@/lib/actions/content';
+export async function generateMetadata({ params }) {
+  const { dataSource } = await params;
+  const config = await getSummaryDataSource(dataSource);
+  return { title: config.name + ' - Edit' };
+}
 
 export default async function Page({ params }) {
   const { dataSource } = await params;

@@ -9,10 +9,13 @@ import { getSummaryDataSource } from '@/lib/actions/content';
 import { notFound } from 'next/navigation';
 import SourceNavbar from '@/components/SourceNavbar';
 
+
+
+
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
   const config = await getSummaryDataSource(dataSource);
-  return { title: config.name || 'Data Source' };
+  return { title: config.name || ' - Data Source' };
 }
 
 export default async function Page({ params }) {

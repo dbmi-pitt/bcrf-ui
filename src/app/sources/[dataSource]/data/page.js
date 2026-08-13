@@ -4,6 +4,13 @@ import { downloadLinksDemo } from '@/lib/data/demo-globus-links';
 import Button from 'react-bootstrap/Button';
 import { DownloadIcon } from 'lucide-react';
 import { Badge } from 'react-bootstrap';
+import { getSummaryDataSource } from '@/lib/actions/content';
+
+export async function generateMetadata({ params }) {
+  const { dataSource } = await params;
+  const config = await getSummaryDataSource(dataSource);
+  return { title: config.name + ' - Data Sets' };
+}
 
 
 export default async function Page({ params }) {
@@ -18,7 +25,7 @@ export default async function Page({ params }) {
       
       {dlLinks.map((link) => (
         <div className="my-2" key={link.name}>
-          <Button size="" href={link.url}><DownloadIcon />{link.name}</Button> - <Badge  bg="info">{link.count??link.fileCount}</Badge>  {link.description}
+          <Button size="" href={link.url} target='_blank'><DownloadIcon />{link.name}</Button> - <Badge  bg="info">{link.count??link.fileCount}</Badge>  {link.description}
         </div>
       ))}
       
