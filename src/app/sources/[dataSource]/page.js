@@ -1,16 +1,13 @@
 import DataSourceTabs from '@/components/DataSourceTabs';
 import BasicLayout from '@/components/layout/BasicLayout';
+import SourceNavbar from '@/components/SourceNavbar';
 import {
   getAllClinicalData,
   getChartConfig,
   getChartData,
 } from '@/lib/actions/charts.js';
-import { getSummaryDataSource } from '@/lib/actions/content';
+import { getSummaryDataSource } from '@/lib/actions/sources';
 import { notFound } from 'next/navigation';
-import SourceNavbar from '@/components/SourceNavbar';
-
-
-
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -32,7 +29,7 @@ export default async function Page({ params }) {
 
   return (
     <BasicLayout fluid={true}>
-      <SourceNavbar dataSource={dataSource}/>
+      <SourceNavbar dataSource={dataSource} />
       <DataSourceTabs
         dataSource={dataSource}
         charts={config.charts}

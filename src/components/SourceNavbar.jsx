@@ -2,12 +2,12 @@
 
 import { getCurrentUser } from '@/lib/actions/auth';
 import { getPerms } from '@/lib/actions/perms';
+import { getSummaryDataSource } from '@/lib/actions/sources';
 import Navbar from './Navbar';
-import { getSummaryDataSource } from '@/lib/actions/content';
 
 export default async function SourceNavbar(param) {
-  const dataSource = param.dataSource
-  const user = await getCurrentUser();  
+  const dataSource = param.dataSource;
+  const user = await getCurrentUser();
   const permissionSet = (await getPerms(dataSource, user.username)).data;
   const sds = await getSummaryDataSource(dataSource);
 
@@ -20,10 +20,11 @@ export default async function SourceNavbar(param) {
   if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
     links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
   }
-  if (permissionSet.includes('ADMIN') || permissionSet.includes('GLOBUS-READ')) {
+  if (
+    permissionSet.includes('ADMIN') ||
+    permissionSet.includes('GLOBUS-READ')
+  ) {
     links.push({ label: 'Data Sets', path: `/sources/${dataSource}/data` });
   }
-  return (
-    <Navbar links={links} dataSource={sds.name}/>
-  );
+  return <Navbar links={links} dataSource={sds.name} />;
 }

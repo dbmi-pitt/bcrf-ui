@@ -3,9 +3,9 @@
 import log from 'xac-loglevel';
 import { getConnection } from '../data/database-puck.js';
 import { getCurrentUser } from './auth.js';
-import { getSummaryDataSource } from './content.js';
 import { requireSession } from './index.js';
 import { getPerms } from './perms.js';
+import { getSummaryDataSource } from './sources.js';
 
 export const getPuckData = async (sourceId) => {
   await requireSession();

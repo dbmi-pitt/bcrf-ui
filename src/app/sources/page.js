@@ -1,5 +1,5 @@
 import Sources from '@/components/sources/Sources';
-import { getSummaryDataSources } from '@/lib/actions/content.js';
+import { getSummaryDataSources } from '@/lib/actions/sources.js';
 
 export const metadata = { title: 'Data Sources' };
 
