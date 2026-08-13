@@ -25,6 +25,7 @@ const config = {
       fields: {
         heading: {
           type: 'text',
+          contentEditable: true,
         },
       },
        defaultProps: {
@@ -91,6 +92,7 @@ const config = {
       fields: {
         title: {
           type: 'text',
+          contentEditable: true,
         },
         level: {
           type: 'number',
@@ -119,6 +121,7 @@ const config = {
       fields: {
         content: {
           type: 'richtext',
+          contentEditable: true,
         },
       },
       defaultProps: {
