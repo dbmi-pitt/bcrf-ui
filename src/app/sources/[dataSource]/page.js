@@ -1,4 +1,6 @@
+import ClinicalData from '@/components/ClinicalData';
 import DataSourceTabs from '@/components/DataSourceTabs';
+import GridLayout from '@/components/grid/GridLayout';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
 import {
@@ -27,14 +29,50 @@ export default async function Page({ params }) {
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);
 
+  const header = (
+    <div key="header" className="card px-4 pt-3 mb-2">
+      <h1 className="fs-4">{summaryDataSource.name}</h1>
+      <p>{summaryDataSource.description}</p>
+    </div>
+  );
+
+  const items = [
+    {
+      label: 'Visualizations & Summary',
+      key: 'summary',
+      children: (
+        <GridLayout
+          key="summary"
+          dataSource={dataSource}
+          charts={config.charts}
+          initialData={chartData.data}
+          header={header}
+        />
+      ),
+    },
+    {
+      label: 'Tabular View',
+      key: 'table',
+      children: (
+        <ClinicalData
+          key="table"
+          data={clinicalData}
+          columnKeys={
+            clinicalData.data && clinicalData.data.length > 0
+              ? [...new Set(clinicalData.data.flatMap(Object.keys))]
+              : []
+          }
+        />
+      ),
+    },
+  ];
+
   return (
     <BasicLayout fluid={true}>
       <SourceNavbar dataSource={dataSource} />
       <DataSourceTabs
         dataSource={dataSource}
-        charts={config.charts}
-        summaryDataSource={summaryDataSource}
-        initialData={chartData.data}
+        items={items}
         clinicalData={clinicalData}
       />
     </BasicLayout>

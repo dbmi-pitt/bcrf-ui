@@ -1,17 +1,9 @@
 'use client';
 
-import GridLayout from '@/components/grid/GridLayout';
 import { autoBlobDownloader } from '@/lib/general';
 import { Button, Flex, Tabs, Tooltip } from 'antd';
-import ClinicalData from './ClinicalData';
 
-function DataSourceTabs({
-  dataSource,
-  charts,
-  summaryDataSource,
-  initialData,
-  clinicalData,
-}) {
+function DataSourceTabs({ dataSource, items, clinicalData }) {
   const downloadData = () => {
     const allClinicalData = clinicalData.data;
     autoBlobDownloader(
@@ -20,25 +12,6 @@ function DataSourceTabs({
       `${dataSource}.csv`,
     );
   };
-  const items = [
-    {
-      label: 'Visualizations & Summary',
-      key: 'summary',
-      children: (
-        <GridLayout
-          dataSource={dataSource}
-          charts={charts}
-          initialData={initialData}
-          summaryDataSource={summaryDataSource}
-        />
-      ),
-    },
-    {
-      label: 'Tabular View',
-      key: 'table',
-      children: <ClinicalData data={clinicalData} />,
-    },
-  ];
 
   return (
     <div>

@@ -1,12 +1,10 @@
+'use client';
+
 import { Table } from 'antd';
 
-function ClinicalData({ data }) {
+function ClinicalData({ data, columnKeys }) {
   const getColumns = () => {
-    if (!data.data || data.data.length === 0) return [];
-
-    const uniqueKeys = [...new Set(data.data.flatMap(Object.keys))];
-
-    return uniqueKeys.map((key) => ({
+    return columnKeys.map((key) => ({
       title: key,
       dataIndex: key,
       key,
