@@ -4,6 +4,7 @@ import {
   createChallenge,
   createState,
   createVerifier,
+  safeRedirectPath,
 } from '@/lib/globus/pkce';
 import { deleteSession, getSession } from '@/lib/globus/session';
 import { cookies } from 'next/headers';
@@ -22,10 +23,15 @@ export async function getCurrentUser() {
   };
 }
 
-export async function logInWithGlobus() {
+export async function logInWithGlobus(formData) {
   const verifier = createVerifier();
   const challenge = createChallenge(verifier);
   const state = createState();
+
+  // Get the from field from the form data, if present.
+  const rawReturnTo =
+    formData instanceof FormData ? formData.get('from') : null;
+  const safeReturnTo = safeRedirectPath(rawReturnTo, '/');
 
   const store = await cookies();
   // short-lived httpOnly cookies used only to validate the callback
@@ -36,6 +42,12 @@ export async function logInWithGlobus() {
     maxAge: 600,
   });
   store.set('globus_oauth_state', state, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'lax',
+    maxAge: 600,
+  });
+  store.set('globus_return_to', safeReturnTo, {
     httpOnly: true,
     secure: true,
     sameSite: 'lax',
@@ -75,4 +87,11 @@ export async function logOutOfGlobus() {
   }
   await deleteSession();
   redirect('/');
+}
+
+export async function popReturnTo(fallback = '/') {
+  const store = await cookies();
+  const raw = store.get('globus_return_to')?.value;
+  store.delete('globus_return_to');
+  return safeRedirectPath(raw, fallback);
 }

@@ -1,3 +1,4 @@
+import { popReturnTo } from '@/lib/actions/auth';
 import { safeCompare } from '@/lib/globus/pkce';
 import { createSession } from '@/lib/globus/session';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
@@ -14,6 +15,10 @@ export async function GET(req) {
   const error = searchParams.get('error');
 
   if (error) {
+    const store = await cookies();
+    store.delete('globus_oauth_state');
+    store.delete('globus_pkce_verifier');
+    store.delete('globus_return_to');
     return NextResponse.redirect(new URL(`/login`, BASE_URL));
   }
 
@@ -30,6 +35,7 @@ export async function GET(req) {
     !safeCompare(state, expectedState) ||
     !verifier
   ) {
+    store.delete('globus_return_to');
     return NextResponse.redirect(new URL('/login', BASE_URL));
   }
 
@@ -83,5 +89,7 @@ export async function GET(req) {
     otherTokens: otherTokens,
   });
 
-  return NextResponse.redirect(new URL('/sources', BASE_URL));
+  const returnTo = await popReturnTo('/sources');
+
+  return NextResponse.redirect(new URL(returnTo, BASE_URL));
 }
