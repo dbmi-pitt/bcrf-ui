@@ -1,3 +1,4 @@
+import Unauthorized from '@/app/unauthorized';
 import AboutEdit from '@/components/AboutEdit';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
@@ -16,7 +17,7 @@ export default async function Page({ params }) {
   const authorized = await hasPermission(dataSource, 'ABOUT-EDIT');
   if (!authorized) {
     // person is not authorized
-    return <div>Not Authorized.</div>;
+    return <Unauthorized />;
   }
 
   const aboutContent = await getPuckData(dataSource);
