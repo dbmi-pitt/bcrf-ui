@@ -325,7 +325,7 @@ export const CONFIG = {
         freq: 'Frequency',
       },
       query: (clause) => {
-        const whereClause = clause ? `AND ${clause}` : '';
+        const whereClause = clause ? `WHERE ${clause}` : '';
         return `
           SELECT
             "num_metastatic_sites_at_inclusion" AS x,
@@ -352,7 +352,7 @@ export const CONFIG = {
         freq: 'Frequency',
       },
       query: (clause) => {
-        const whereClause = clause ? `AND ${clause}` : '';
+        const whereClause = clause ? `WHERE ${clause}` : '';
         return `
           SELECT
             "primary_grade" AS x,
@@ -481,7 +481,7 @@ export const CONFIG = {
         freq: 'Frequency',
       },
       query: (clause) => {
-        const whereClause = clause ? `AND ${clause}` : '';
+        const whereClause = clause ? `WHERE ${clause}` : '';
         return `
           SELECT
             "death_events" AS x,
@@ -531,7 +531,7 @@ export const CONFIG = {
         { value: 4000, label: '>4000' },
       ],
       query: (clause) => {
-        const whereClause = clause ? `WHERE ${clause}` : '';
+        const whereClause = clause ? `AND ${clause}` : '';
         // Cast y to integer to avoid returning a string value for count
         return `
           SELECT "ssid" AS "ssid", "time_to_metastatic_relapse_days" AS x

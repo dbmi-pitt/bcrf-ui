@@ -67,11 +67,11 @@ function createLayout(charts) {
   let x = 0;
   let y = 0;
 
-  return charts.map((chart) => {
+  return charts.map((chart, index) => {
     const size = getChartLayout(chart);
 
     const item = {
-      i: chart.id,
+      i: chart.id ?? `chart-${index}`,
       x,
       y,
       ...size,
@@ -92,7 +92,7 @@ export default function GridLayout({
   dataSource,
   charts,
   initialData,
-  summaryDataSource,
+  header,
 }) {
   const STORAGE_KEY = `grid-layout-${dataSource}`;
   const { width, containerRef, mounted } = useContainerWidth({
@@ -113,9 +113,9 @@ export default function GridLayout({
 
   const hasActiveFilters = Object.keys(filters).length > 0;
 
-  const widgetItems = charts.map((chart) => ({
+  const widgetItems = charts.map((chart, index) => ({
     ...chart,
-    key: chart.id,
+    key: chart.id ?? `chart-${index}`,
     data: chartData[chart.id] ?? initialData[chart.id],
   }));
 
@@ -268,10 +268,7 @@ export default function GridLayout({
 
   return (
     <div ref={containerRef} className="pt-3">
-      <div className="card px-4 pt-3 mb-2">
-        <h1 className="fs-4">{summaryDataSource.name}</h1>
-        <p>{summaryDataSource.description}</p>
-      </div>
+      {header}
       <div
         className="d-flex flex-wrap align-items-center gap-2 px-2"
         style={{ minHeight: 40 }}

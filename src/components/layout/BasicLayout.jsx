@@ -1,11 +1,8 @@
-'use client'
-
-import React from 'react';
-import AppNavBar from './AppNavBar';
-import AppFooter from './AppFooter';
 import { Container } from 'react-bootstrap';
+import AppFooter from './AppFooter';
+import AppNavBar from './AppNavBar';
 
-const BasicLayout = ({ children, fluid = true, classNameMain = '' }) => {
+const BasicLayout = ({ children, classNameMain = '', fluid = true }) => {
   return (
     <div className="body__wrapper bg--dirtyWhite">
       <AppNavBar />
@@ -18,4 +15,5 @@ const BasicLayout = ({ children, fluid = true, classNameMain = '' }) => {
     </div>
   );
 };
+
 export default BasicLayout;

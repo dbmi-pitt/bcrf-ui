@@ -1,27 +1,19 @@
-import { useContext, useEffect } from 'react';
-import { Alert } from 'react-bootstrap';
-import AppContext from '@/context/AppContext';
-import log from 'xac-loglevel'
+import Alert from 'react-bootstrap/Alert';
+import AlertHeading from 'react-bootstrap/AlertHeading';
 
-function AppBanner({ key = 'default' }) {
-  const { bannerContent } = useContext(AppContext);
+function AppBanner({ bannerKey = 'default', content }) {
+  const banner = content[bannerKey];
 
-  useEffect(() => {
-    log.debug('AppBanner.useEffect', bannerContent)
-  }, [bannerContent])
-
-  if (!bannerContent[key]) {
-    return <></>
+  if (!banner) {
+    return <></>;
   }
-  const banner = bannerContent[key];
+
   return (
     <div className={`c-banner ${banner.containerClassName || 'mt-3'}`}>
-      {banner && (
-        <Alert variant={banner.variant}>
-          {banner.title && <Alert.Heading>{banner.title}</Alert.Heading>}
-          <div dangerouslySetInnerHTML={{ __html: banner.content }}></div>
-        </Alert>
-      )}
+      <Alert variant={banner.variant}>
+        {banner.title && <AlertHeading>{banner.title}</AlertHeading>}
+        <div dangerouslySetInnerHTML={{ __html: banner.content }}></div>
+      </Alert>
     </div>
   );
 }

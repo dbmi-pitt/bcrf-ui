@@ -1,13 +1,13 @@
 'use client';
+
 import AppSpinner from '@/components/AppSpinner';
-import BasicLayout from '@/components/layout/BasicLayout';
-import SummaryCard from '@/components/SummaryCard';
+import SummaryCard from '@/components/sources/SummaryCard';
 import { Masonry, Tag } from 'antd';
 import { useState } from 'react';
 
-export default function Sources({ summary }) {
+export default function SourcesExplorer({ dataSources }) {
   const [tags, setTags] = useState([]);
-  const [cards, setCards] = useState(summary.data_sources);
+  const [cards, setCards] = useState(dataSources);
 
   const filterCards = (tag, value, sources = []) => {
     const sourceIds = sources.map((d) => d.source);
@@ -18,7 +18,7 @@ export default function Sources({ summary }) {
 
     // filter out the cards already included
     const availableSources =
-      summary.data_sources.filter((d) => dict[d.source] === undefined) || [];
+      dataSources.filter((d) => dict[d.source] === undefined) || [];
     availableSources.map((data) => {
       data.tags.map((t) => {
         if (
@@ -74,43 +74,45 @@ export default function Sources({ summary }) {
     for (const t of newTags) {
       sources = filterCards(t, t.value, sources);
     }
-    setCards(sources.length ? sources : summary.data_sources);
+    setCards(sources.length ? sources : dataSources);
     setTags(newTags);
   };
 
   const headerTags = getHeaderTags();
 
   return (
-    <div>
-      <BasicLayout fluid={undefined}>
-        <div className="c-selectedTags" aria-label="Selected Tags">
-          {headerTags.length > 0 && (
-            <div className="c-selectedTags__wrap">{headerTags}</div>
-          )}
-        </div>
-        <div aria-label="Clinical Data Sources">
-          {cards && (
-            <Masonry
-              columns={{ xs: 1, sm: 2, md: 3 }}
-              gutter={10}
-              items={cards.map((source, index) => ({
-                key: `item-${index}`,
-                data: source,
-              }))}
-              itemRender={({ data, index }) => (
-                <SummaryCard
-                  data={data}
-                  index={index}
-                  key={`card-${index}`}
-                  onTagClick={onCardTagClick}
-                />
-              )}
-            />
-          )}
-          <br />
-        </div>
-        {cards.length <= 0 && <AppSpinner />}
-      </BasicLayout>
-    </div>
+    <>
+      <div
+        className="c-selectedTags"
+        aria-label="Selected Tags"
+        style={{ minHeight: 70 }}
+      >
+        {headerTags.length > 0 && (
+          <div className="c-selectedTags__wrap">{headerTags}</div>
+        )}
+      </div>
+      <div aria-label="Clinical Data Sources">
+        {cards && (
+          <Masonry
+            columns={{ xs: 1, sm: 2, md: 3 }}
+            gutter={10}
+            items={cards.map((source, index) => ({
+              key: `item-${index}`,
+              data: source,
+            }))}
+            itemRender={({ data, index }) => (
+              <SummaryCard
+                data={data}
+                index={index}
+                key={`card-${index}`}
+                onTagClick={onCardTagClick}
+              />
+            )}
+          />
+        )}
+        <br />
+      </div>
+      {cards.length <= 0 && <AppSpinner />}
+    </>
   );
 }

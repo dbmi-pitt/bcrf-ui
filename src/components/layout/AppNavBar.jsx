@@ -1,6 +1,8 @@
-import RegisterIcon from '@/components/icons/RegisterIcon';
+'use client';
+
 import LogInIcon from '@/components/icons/LogInIcon';
 import LogOutIcon from '@/components/icons/LogOutIcon';
+import RegisterIcon from '@/components/icons/RegisterIcon';
 import AuthContext from '@/context/AuthContext';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -38,12 +40,12 @@ function AppNavBar() {
                   <i className="bi bi-search"></i>
                 </Link>
               </Nav>
-              <Nav className={'me-4'}>
-                <Link href={'/projects/create'}>
-                  <span className="me-1">CREATE PROJECT</span>
-                  <RegisterIcon className="align-baseline" />
-                </Link>
-              </Nav>
+              {/*<Nav className={'me-4'}>*/}
+              {/*  <Link href={'/projects/create'}>*/}
+              {/*    <span className="me-1">CREATE PROJECT</span>*/}
+              {/*    <RegisterIcon className="align-baseline" />*/}
+              {/*  </Link>*/}
+              {/*</Nav>*/}
               <Nav className={'me-0'}>
                 <button
                   type="button"

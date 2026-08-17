@@ -1,20 +1,20 @@
+import ClinicalData from '@/components/ClinicalData';
 import DataSourceTabs from '@/components/DataSourceTabs';
+import GridLayout from '@/components/grid/GridLayout';
 import BasicLayout from '@/components/layout/BasicLayout';
-import { getCurrentUser } from '@/lib/actions/auth';
+import SourceNavbar from '@/components/SourceNavbar';
 import {
   getAllClinicalData,
   getChartConfig,
   getChartData,
 } from '@/lib/actions/charts.js';
-import { getSummaryDataSource } from '@/lib/actions/content';
-import { getPerms } from '@/lib/actions/perms';
+import { getSummaryDataSource } from '@/lib/actions/sources';
 import { notFound } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
   const config = await getSummaryDataSource(dataSource);
-  return { title: config.name || 'Data Source' };
+  return { title: config.name || ' - Data Source' };
 }
 
 export default async function Page({ params }) {
@@ -26,30 +26,53 @@ export default async function Page({ params }) {
   }
 
   const summaryDataSource = await getSummaryDataSource(dataSource);
-
-  const user = await getCurrentUser();
-  const permissionSet = (await getPerms(dataSource, user.username)).data;
-
-  const links = [
-    { label: 'Overview', path: `/sources/${dataSource}` },
-    { label: 'About', path: `/sources/${dataSource}/about` },
-  ];
-
-  if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
-    links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
-  }
-
   const chartData = await getChartData(dataSource);
   const clinicalData = await getAllClinicalData(dataSource);
 
+  const header = (
+    <div key="header" className="card px-4 pt-3 mb-2">
+      <h1 className="fs-4">{summaryDataSource.name}</h1>
+      <p>{summaryDataSource.description}</p>
+    </div>
+  );
+
+  const items = [
+    {
+      label: 'Visualizations & Summary',
+      key: 'summary',
+      children: (
+        <GridLayout
+          key="summary"
+          dataSource={dataSource}
+          charts={config.charts}
+          initialData={chartData.data}
+          header={header}
+        />
+      ),
+    },
+    {
+      label: 'Tabular View',
+      key: 'table',
+      children: (
+        <ClinicalData
+          key="table"
+          data={clinicalData}
+          columnKeys={
+            clinicalData.data && clinicalData.data.length > 0
+              ? [...new Set(clinicalData.data.flatMap(Object.keys))]
+              : []
+          }
+        />
+      ),
+    },
+  ];
+
   return (
     <BasicLayout fluid={true}>
-      <Navbar links={links} />
+      <SourceNavbar dataSource={dataSource} />
       <DataSourceTabs
         dataSource={dataSource}
-        charts={config.charts}
-        summaryDataSource={summaryDataSource}
-        initialData={chartData.data}
+        items={items}
         clinicalData={clinicalData}
       />
     </BasicLayout>

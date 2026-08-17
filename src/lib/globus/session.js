@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import { EncryptJWT, jwtDecrypt } from 'jose';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 import 'server-only';
 
 const sessionKey = createHash('sha256')
@@ -43,8 +44,8 @@ export async function decryptSessionToken(raw) {
   }
 }
 
-export async function getSession() {
+export const getSession = cache(async function getSession() {
   const store = await cookies();
   const raw = store.get(COOKIE_NAME)?.value;
   return decryptSessionToken(raw);
-}
+});

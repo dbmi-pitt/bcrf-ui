@@ -1,6 +1,4 @@
-import React from 'react';
-import { Container, Row, Col } from 'react-bootstrap';
-import Image from "next/image";
+import Image from 'next/image';
 
 function AppFooter() {
   const year = new Date().getFullYear();
@@ -28,7 +26,7 @@ function AppFooter() {
                 />
               </div>
               <p className="c-footer__meta c-footer__tagline my-4">
-                A partnership between BCRF and{" "}
+                A partnership between BCRF and{' '}
                 <span> the University of Pittsburgh</span>
               </p>
             </div>
