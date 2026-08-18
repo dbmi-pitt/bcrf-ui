@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import log from 'xac-loglevel';
+import { createFileEmbedConfig } from './puck/file-embed/file-embed-config';
 
 // Create Puck component config
 const config = {
@@ -22,12 +23,16 @@ const config = {
   components: {
     HeadingBlock: {
       fields: {
-        children: {
+        heading: {
           type: 'text',
+          contentEditable: true,
         },
       },
-      render: ({ children }) => {
-        return <h1>{children}</h1>;
+       defaultProps: {
+        heading: 'your heading',
+      },
+      render: ({ heading }) => {
+        return <h1>{heading}</h1>;
       },
     },
     Space: {
@@ -87,6 +92,7 @@ const config = {
       fields: {
         title: {
           type: 'text',
+          contentEditable: true,
         },
         level: {
           type: 'number',
@@ -115,6 +121,7 @@ const config = {
       fields: {
         content: {
           type: 'richtext',
+          contentEditable: true,
         },
       },
       defaultProps: {
@@ -167,7 +174,6 @@ const config = {
 };
 
 const AboutEdit = ({ dataSourceId, data }) => {
-  const dataO = JSON.parse(data);
   const [saveStatus, setSaveStatus] = useState(null);
 
   const handlePublish = async (publishedData) => {
@@ -195,6 +201,9 @@ const AboutEdit = ({ dataSourceId, data }) => {
     return () => clearTimeout(timer);
   }, [saveStatus]);
 
+  const fec = createFileEmbedConfig(dataSourceId);
+  config.components['FileChooser'] = fec;
+
   return (
     <div style={{ position: 'relative', height: '100%' }}>
       {saveStatus && (
@@ -216,7 +225,7 @@ const AboutEdit = ({ dataSourceId, data }) => {
       <Puck
         height="100%"
         config={config}
-        data={dataO}
+        data={data ?? {}}
         onPublish={handlePublish}
       />
     </div>

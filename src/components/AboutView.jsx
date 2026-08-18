@@ -1,6 +1,9 @@
+'use client';
+
 import { Render } from '@puckeditor/core';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { createFileEmbedConfig } from './puck/file-embed/file-embed-config';
 
 // Create Puck component config
 const config = {
@@ -16,12 +19,15 @@ const config = {
   components: {
     HeadingBlock: {
       fields: {
-        children: {
+        heading: {
           type: 'text',
         },
       },
-      render: ({ children }) => {
-        return <h1>{children}</h1>;
+       defaultProps: {
+        title: 'your heading',
+      },
+      render: ({ heading }) => {
+        return <h1>{heading}</h1>;
       },
     },
     Space: {
@@ -165,9 +171,10 @@ const config = {
   },
 };
 
-const AboutView = ({ data }) => {
-  const dataO = JSON.parse(data);
-  return <Render config={config} data={dataO ? dataO : {}} />;
+const AboutView = ({ dataSourceId, data }) => {
+  const fec = createFileEmbedConfig(dataSourceId);
+  config.components['FileChooser'] = fec;
+  return <Render config={config} data={data ?? {}} />;
 };
 
 export default AboutView;

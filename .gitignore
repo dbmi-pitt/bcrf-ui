@@ -61,3 +61,4 @@ public/content/banner.json
 # data
 *.db
 *.tsv
+*.wal
