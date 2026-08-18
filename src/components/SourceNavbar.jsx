@@ -1,14 +1,13 @@
 'use server';
 
-import { getCurrentUser } from '@/lib/actions/auth';
-import { getPerms } from '@/lib/actions/perms';
+import { hasPermission } from '@/lib/actions/perms';
+import { getSummaryDataSource } from '@/lib/actions/sources';
 import Navbar from './Navbar';
-import { getSummaryDataSource } from '@/lib/actions/content';
 
 export default async function SourceNavbar(param) {
-  const dataSource = param.dataSource
-  const user = await getCurrentUser();  
-  const permissionSet = (await getPerms(dataSource, user.username)).data;
+  const dataSource = param.dataSource;
+  const authorizedToEdit = await hasPermission(dataSource, 'ABOUT-EDIT');
+  const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS-READ');
   const sds = await getSummaryDataSource(dataSource);
 
   // console.log(dataSource, user, permissionSet, sds)
@@ -17,13 +16,11 @@ export default async function SourceNavbar(param) {
     { label: 'About', path: `/sources/${dataSource}/about` },
   ];
 
-  if (permissionSet.includes('ADMIN') || permissionSet.includes('ABOUT-EDIT')) {
+  if (authorizedToEdit) {
     links.push({ label: 'Edit', path: `/sources/${dataSource}/about/edit` });
   }
-  if (permissionSet.includes('ADMIN') || permissionSet.includes('GLOBUS-READ')) {
+  if (authorizedToViewData) {
     links.push({ label: 'Data Sets', path: `/sources/${dataSource}/data` });
   }
-  return (
-    <Navbar links={links} dataSource={sds.name}/>
-  );
+  return <Navbar links={links} dataSource={sds.name} />;
 }

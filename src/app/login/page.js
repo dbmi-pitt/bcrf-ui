@@ -5,7 +5,10 @@ import { Alert, Button, Container } from 'react-bootstrap';
 
 export const metadata = { title: 'Login' };
 
-export default function LogIn() {
+export default async function LogIn({ searchParams }) {
+  const params = await searchParams;
+  const from = typeof params?.from === 'string' ? params.from : '';
+
   return (
     <BasicLayout>
       <Container className="container--alert">
@@ -20,6 +23,7 @@ export default function LogIn() {
           </p>
           <hr />
           <form action={logInWithGlobus}>
+            <input type="hidden" name="from" value={from} />
             <Button type="submit">Log in with Globus</Button>
           </form>
         </Alert>

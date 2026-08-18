@@ -3,9 +3,9 @@
 import log from 'xac-loglevel';
 import { getConnection } from '../data/database-puck.js';
 import { getCurrentUser } from './auth.js';
-import { getSummaryDataSource } from './content.js';
 import { requireSession } from './index.js';
-import { getPerms } from './perms.js';
+import { hasPermission } from './perms.js';
+import { getSummaryDataSource } from './sources.js';
 
 export const getPuckData = async (sourceId) => {
   await requireSession();
@@ -30,13 +30,13 @@ export const getPuckData = async (sourceId) => {
 };
 
 export const savePuckData = async (sourceId, data) => {
-  const currentUser = await getCurrentUser();
-  const permSet = await getPerms(sourceId, currentUser.username);
-  if (!permSet.data.includes('ADMIN') && !permSet.data.includes('ABOUT-EDIT')) {
+  const authorized = await hasPermission(sourceId, 'ABOUT-EDIT');
+  if (!authorized) {
+    const currentUser = await getCurrentUser();
     log.error(
       `User ${currentUser.username} does not have permission to save puckdata for ${sourceId}`,
     );
-    return { success: false, error: 'User does not have permission' };
+    return { success: false, error: 'User does not have permission to edit' };
   }
 
   try {

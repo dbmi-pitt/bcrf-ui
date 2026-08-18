@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
-import { Card, Badge, Tag } from 'antd';
-import Accordion from 'react-bootstrap/Accordion';
+'use client';
+
 import THEME from '@/lib/theme';
+import { Badge, Card, Tag } from 'antd';
+import Accordion from 'react-bootstrap/Accordion';
 
 function SummaryCard({ data, onTagClick }) {
-  useEffect(() => {});
   const handleTagClick = (e, tag, value) => {
     e.preventDefault();
     e.stopPropagation();
