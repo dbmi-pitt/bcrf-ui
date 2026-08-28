@@ -10,7 +10,7 @@ export const getSummaryDataSources = async () => {
 
 export const getSummaryDataSource = async (dataSource) => {
   await requireSession();
-  const summaryDataSource = SUMMARY.data_sources.find(
+  const summaryDataSource = SUMMARY.dataSources.find(
     (ds) => ds.source === dataSource,
   );
   if (!summaryDataSource) {

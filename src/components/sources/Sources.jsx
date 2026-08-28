@@ -4,7 +4,7 @@ import SourcesExplorer from './SourcesExplorer';
 export default function Sources({ summary }) {
   return (
     <BasicLayout fluid={undefined}>
-      <SourcesExplorer dataSources={summary.data_sources} />
+      <SourcesExplorer dataSources={summary.dataSources} />
     </BasicLayout>
   );
 }

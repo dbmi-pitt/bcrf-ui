@@ -1,5 +1,5 @@
 export const SUMMARY = {
-  data_sources: [
+  dataSources: [
     {
       source: 'aurora-us',
       name: 'Aurora US',
@@ -7,7 +7,7 @@ export const SUMMARY = {
         'Aurora US is a clinical study, not a treatment trial, that will collect biospecimens from patient volunteers who have received a diagnosis of metastatic breast cancer after having been treated for early stage breast cancer.',
       patients: 55,
       samples: 155,
-      data_types: ['Methylation', 'RNASeq', 'H&E Slides', 'WES', 'WGS'],
+      dataTypes: ['Methylation', 'RNASeq', 'H&E Slides', 'WES', 'WGS'],
       tags: [
         {
           name: 'Did the patient receive adjuvant treatment for localized disease?',
@@ -237,7 +237,7 @@ export const SUMMARY = {
         'AURORA is an international, academic research programme that uses molecular technologies to analyse the genetic characteristics of a tumour and identify the changes (genetic aberrations) that drive disease evolution over time in patients with recurrent or locally relapsed metastatic breast cancer. AURORA seeks to address an important unmet need in metastatic breast cancer and gain a deeper understanding of this complex largely incurable disease.',
       patients: 55,
       samples: 155,
-      data_types: ['TGS', 'OncoScan CNA', 'RNASeq', 'H&E Slides', 'CNV'],
+      dataTypes: ['TGS', 'OncoScan CNA', 'RNASeq', 'H&E Slides', 'CNV'],
       tags: [
         {
           name: 'type',
