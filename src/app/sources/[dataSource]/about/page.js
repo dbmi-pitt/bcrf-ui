@@ -2,7 +2,7 @@ import AboutView from '@/components/AboutView';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
 import { getPuckData } from '@/lib/actions/puck';
-import { getSummaryDataSource } from '@/lib/actions/sources';
+import { getSummaryDataSource } from '@/lib/sources/services';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;

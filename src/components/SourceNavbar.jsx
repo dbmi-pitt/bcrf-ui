@@ -1,7 +1,7 @@
 'use server';
 
-import { getSummaryDataSource } from '@/lib/actions/sources';
 import { hasPermission } from '@/lib/permission/services';
+import { getSummaryDataSource } from '@/lib/sources/services';
 import Navbar from './Navbar';
 
 export default async function SourceNavbar(param) {

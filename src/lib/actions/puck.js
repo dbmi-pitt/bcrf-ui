@@ -5,7 +5,7 @@ import { getConnection } from '../data/database-puck.js';
 import { getCurrentUser } from '@/lib/auth/services.js';
 import { requireSession } from './index.js';
 import { hasPermission } from '../permission/services.js';
-import { getSummaryDataSource } from './sources.js';
+import { getSummaryDataSource } from '../sources/services.js';
 
 export const getPuckData = async (sourceId) => {
   await requireSession();
