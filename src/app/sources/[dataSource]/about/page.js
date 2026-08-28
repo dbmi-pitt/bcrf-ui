@@ -1,7 +1,7 @@
 import AboutView from '@/components/AboutView';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
-import { getPuckData } from '@/lib/actions/puck';
+import { getPuckData } from '@/lib/puck/services';
 import { getSummaryDataSource } from '@/lib/sources/services';
 
 export async function generateMetadata({ params }) {
@@ -17,7 +17,7 @@ export default async function Page({ params }) {
   return (
     <BasicLayout fluid={true}>
       <SourceNavbar dataSource={dataSource} />
-      <AboutView dataSourceId={dataSource} data={aboutContent.data} />
+      <AboutView dataSourceId={dataSource} data={aboutContent} />
     </BasicLayout>
   );
 }
