@@ -1,5 +1,5 @@
 'use server';
-import { getCurrentUser } from '../actions/auth';
+import { getCurrentUser } from '@/lib/auth/services';
 // import { requireSession } from '@lib/actions/index.js';
 // import { getPerms } from '@lib/actions/perms';
 import { getPerms } from '../actions/perms';

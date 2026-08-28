@@ -1,7 +1,7 @@
 import { AntdRegistry } from '@ant-design/nextjs-registry';
 
 import MountedWrapper from '@/components/MountedWrapper';
-import { getCurrentUser } from '@/lib/actions/auth';
+import { getCurrentUser } from '@/lib/auth/services';
 import ENVS from '@/lib/envs';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';

@@ -1,6 +1,5 @@
-import { popReturnTo } from '@/lib/actions/auth';
-import { safeCompare } from '@/lib/globus/pkce';
-import { createSession } from '@/lib/globus/session';
+import { popReturnTo, safeCompare } from '@/lib/auth/pkce';
+import { createSession } from '@/lib/auth/session';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';

@@ -1,6 +1,6 @@
 'use server';
 
-import { getSession } from '@/lib/globus/session';
+import { getSession } from '@/lib/auth/session';
 
 export async function requireSession() {
   const session = await getSession();

@@ -1,5 +1,5 @@
 import BasicLayout from '@/components/layout/BasicLayout';
-import { logInWithGlobus } from '@/lib/actions/auth';
+import { logInWithGlobus } from '@/lib/auth/actions';
 import ENVS from '@/lib/envs';
 import { Alert, Button, Container } from 'react-bootstrap';
 

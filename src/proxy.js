@@ -1,4 +1,4 @@
-import { COOKIE_NAME, decryptSessionToken } from '@/lib/globus/session';
+import { COOKIE_NAME, decryptSessionToken } from '@/lib/auth/session';
 import { NextResponse } from 'next/server';
 
 const PUBLIC_PATHS = ['/', '/login', '/about'];

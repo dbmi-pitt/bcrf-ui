@@ -2,7 +2,7 @@
 
 import log from 'xac-loglevel';
 import { getConnection } from '../data/database-puck.js';
-import { getCurrentUser } from './auth.js';
+import { getCurrentUser } from '@/lib/auth/services.js';
 import { requireSession } from './index.js';
 import { hasPermission } from './perms.js';
 import { getSummaryDataSource } from './sources.js';

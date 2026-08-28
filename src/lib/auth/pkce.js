@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import { cookies } from 'next/headers';
+import 'server-only';
 import log from 'xac-loglevel';
 
 export function createVerifier() {
@@ -59,4 +61,11 @@ export function safeRedirectPath(path, fallback = '/') {
     log.error('Error resolving redirect path:', error);
     return fallback;
   }
+}
+
+export async function popReturnTo(fallback = '/') {
+  const store = await cookies();
+  const raw = store.get('globus_return_to')?.value;
+  store.delete('globus_return_to');
+  return safeRedirectPath(raw, fallback);
 }

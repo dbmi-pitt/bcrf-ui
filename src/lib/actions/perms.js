@@ -2,7 +2,7 @@
 
 import log from 'xac-loglevel';
 import { getConnection } from '../data/database-puck.js';
-import { getCurrentUser } from './auth.js';
+import { getCurrentUser } from '@/lib/auth/services.js';
 
 export const getPerms = async (sourceId) => {
   const { username } = await getCurrentUser();
