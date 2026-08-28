@@ -2,7 +2,7 @@
 import { getCurrentUser } from '@/lib/auth/services';
 // import { requireSession } from '@lib/actions/index.js';
 // import { getPerms } from '@lib/actions/perms';
-import { getPerms } from '../actions/perms';
+import { getPerms } from '../permission/services';
 
 
 export async function getUserSourcePerms(sourceId) {

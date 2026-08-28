@@ -1,8 +1,7 @@
-'use server';
-
-import log from 'xac-loglevel';
-import { getConnection } from '../data/database-puck.js';
 import { getCurrentUser } from '@/lib/auth/services.js';
+import { getConnection } from '@/lib/data/database-puck.js';
+import 'server-only';
+import log from 'xac-loglevel';
 
 export const getPerms = async (sourceId) => {
   const { username } = await getCurrentUser();
@@ -12,10 +11,17 @@ export const getPerms = async (sourceId) => {
 
     const result = await conn.run(
       `
-      select permission_set from group_grants where gid='G0'
-      UNION select permission_set from group_grants gg join group_membership gm
-      on (gg.gid=gm.gid and gg.source=gm.source)
-      where gg.source = $source and gm.email = $email
+      SELECT permission_set
+      FROM group_grants
+      WHERE gid = 'G0'
+      UNION
+      SELECT permission_set
+      FROM group_grants gg
+      JOIN group_membership gm
+        ON gg.gid = gm.gid
+        AND gg.source = gm.source
+      WHERE gg.source = $source
+        AND gm.email = $email
       `,
       { source: sourceId, email: username },
     );
