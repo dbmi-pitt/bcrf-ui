@@ -159,7 +159,7 @@ export default function GridLayout({
 
     async function loadData() {
       const result = await getSourceChartData(dataSource, filters);
-      if (cancelled || !result) {
+      if (cancelled || !result.success) {
         return;
       }
       setChartData(result.data);

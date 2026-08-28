@@ -10,12 +10,15 @@ export const getSourceChartData = async (sourceId, filters = {}) => {
   const user = getCurrentUser();
   if (!user) {
     log.error('No user found in getSourceChartData', sourceId);
-    return null;
+    return { success: false, error: 'User not authenticated' };
   }
 
   const config = sourceMap[sourceId];
   if (!config) {
-    return null;
+    return {
+      success: false,
+      error: `No chart config found for source ${sourceId}`,
+    };
   }
 
   const cleanFilters = {};
@@ -155,6 +158,7 @@ export const getSourceChartData = async (sourceId, filters = {}) => {
 
   log.debug('Tags:', tags);
   return {
+    success: true,
     data: data,
     filters: cleanFilters,
     tags: tags,
