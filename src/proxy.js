@@ -1,4 +1,4 @@
-import { COOKIE_NAME, decryptSessionToken } from '@/lib/auth/session';
+import { getCurrentUser } from '@/lib/auth/services';
 import { NextResponse } from 'next/server';
 
 const PUBLIC_PATHS = ['/', '/login', '/about'];
@@ -14,10 +14,8 @@ export async function proxy(request) {
   });
 
   if (isProtected) {
-    const rawSession = request.cookies.get(COOKIE_NAME)?.value;
-    const session = await decryptSessionToken(rawSession);
-
-    if (!session) {
+    const user = await getCurrentUser(request);
+    if (!user) {
       const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
       url.searchParams.set('from', request.nextUrl.pathname);
       return NextResponse.redirect(url);
