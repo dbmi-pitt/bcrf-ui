@@ -6,7 +6,7 @@ const LinkButton = ({ className, href, children, variant = "secondary",
     <a
       href={href}
       className={
-        `c-btn c-btn--${variant} btn rounded-pill mt-3 px-4 shadow` +
+        `c-btn c-btn--${variant} mt-3 shadow` +
         (className ? " " + className : "")
       }
       {...props}

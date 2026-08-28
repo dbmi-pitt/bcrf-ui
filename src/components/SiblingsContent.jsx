@@ -17,7 +17,7 @@ const SiblingsContent = ({content}) => {
               width={433}
               height={247}
             />
-            <h2 className="display-5 fs-6">{section.title}</h2>
+            <h2 className="display-5 h--eyebrow">{section.title}</h2>
           </div>
           <div className="c-box__body">
             <p className="lead mb-4 hurmeFontSemiBold">
