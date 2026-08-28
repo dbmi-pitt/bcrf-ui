@@ -1,6 +1,6 @@
 import BasicLayout from '@/components/layout/BasicLayout';
 import UsersGrid from '@/components/users/UsersGrid';
-import { getUsers } from '@/lib/actions/users';
+import { getUsers } from '@/lib/users/services';
 
 export const metadata = { title: 'Users' };
 

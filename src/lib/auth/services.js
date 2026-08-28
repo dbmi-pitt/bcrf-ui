@@ -7,8 +7,6 @@ import 'server-only';
  * @async
  * @function getCurrentUser
  * @returns {Promise<{sub: string, username: string, name: string, email: string} | null>}
- *   A promise that resolves to the current user's info, or `null` if no
- *   session is active.
  */
 export async function getCurrentUser() {
   const session = await getSession();
