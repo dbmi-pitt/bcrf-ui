@@ -235,32 +235,32 @@ export const SUMMARY = {
       name: 'Aurora EU',
       description:
         'AURORA is an international, academic research programme that uses molecular technologies to analyse the genetic characteristics of a tumour and identify the changes (genetic aberrations) that drive disease evolution over time in patients with recurrent or locally relapsed metastatic breast cancer. AURORA seeks to address an important unmet need in metastatic breast cancer and gain a deeper understanding of this complex largely incurable disease.',
-      patients: 55,
-      samples: 155,
+      patients: 371,
+      samples: 371,
       dataTypes: ['TGS', 'OncoScan CNA', 'RNASeq', 'H&E Slides', 'CNV'],
       tags: [
         {
-          name: 'type',
+          name: 'Type',
           values: ['HER2+', 'HR+/HER2-', 'TNBC'],
         },
         {
-          name: 'PAM50_primary',
+          name: 'PAM50 Primary',
           values: ['Basal', 'Her2', 'LumA', 'LumB', 'N/A', 'Normal'],
         },
         {
-          name: 'PAM50_meta',
+          name: 'PAM50 Meta',
           values: ['Basal', 'Her2', 'LumA', 'LumB', 'N/A', 'Normal'],
         },
         {
-          name: 'IHC_primary',
+          name: 'IHC Primary',
           values: ['HER2+', 'HR+/HER2-', 'N/A', 'TNBC'],
         },
         {
-          name: 'IHC_meta',
+          name: 'IHC Meta',
           values: ['HER2+', 'HR+/HER2-', 'N/A', 'TNBC'],
         },
         {
-          name: 'metastatic_biopsy_site',
+          name: 'Metastatic Biopsy Site',
           values: [
             'Abdominal wall',
             'Brain',
@@ -278,19 +278,19 @@ export const SUMMARY = {
           ],
         },
         {
-          name: 'is_de_novo',
+          name: 'Is De Novo',
           values: [false, true],
         },
         {
-          name: 'adjuvant',
+          name: 'Adjuvant',
           values: [false, true],
         },
         {
-          name: 'neoadjuvant',
+          name: 'Neoadjuvant',
           values: [false, true],
         },
         {
-          name: 'block_before_or_after_neo_treatment',
+          name: 'Block Before or After Neo Treatment',
           display_type: 'collapsed',
           values: [
             'After neoadjuvant treatment',
@@ -299,19 +299,19 @@ export const SUMMARY = {
           ],
         },
         {
-          name: 'primary_grade',
+          name: 'Primary Grade',
           values: ['1', '2', '3', '4', 'N/A', 'NA'],
         },
         {
-          name: 'primary_patho_node_status',
+          name: 'Primary Patho Node Status',
           values: ['N/A', 'N0', 'N1', 'N2', 'N3', 'NA', 'NX'],
         },
         {
-          name: 'primary_size_t1_or_t2',
+          name: 'Primary Size T1 or T2',
           values: ['FALSE', 'N/A', 'TRUE'],
         },
         {
-          name: 'patient_in_oncoplot',
+          name: 'Patient in Oncoplot',
           values: [false, true],
         },
       ],
