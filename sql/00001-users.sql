@@ -4,7 +4,10 @@ CREATE TABLE users (
 );
 
 CREATE TABLE sources (
-    source VARCHAR PRIMARY KEY
+    source VARCHAR PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    description VARCHAR NOT NULL,
+    data   JSON NOT NULL
 );
 
 CREATE TABLE groups (

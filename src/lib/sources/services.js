@@ -1,20 +1,38 @@
-import { SUMMARY } from '@/lib/content/summaryDataSources.js';
+import { getConnection } from '@/lib/data/database-puck.js';
 import { connection } from '@/lib/data/database.js';
 import { sourceMap } from '@/lib/sources/charts.js';
 import 'server-only';
 
 export const getSummaryDataSources = async () => {
-  return SUMMARY;
+  const conn = await getConnection();
+  const result = await conn.run(
+    'SELECT source, name, description, data FROM sources',
+  );
+  const rows = await result.getRowObjectsJson();
+  return rows.map((row) => ({
+    ...JSON.parse(row.data),
+    source: row.source,
+    name: row.name,
+    description: row.description,
+  }));
 };
 
 export const getSummaryDataSource = async (dataSource) => {
-  const summaryDataSource = SUMMARY.dataSources.find(
-    (ds) => ds.source === dataSource,
+  const conn = await getConnection();
+  const result = await conn.run(
+    'SELECT source, name, description, data FROM sources WHERE source = $source',
+    { source: dataSource },
   );
-  if (!summaryDataSource) {
+  const rows = await result.getRowObjectsJson();
+  if (rows.length === 0) {
     return null;
   }
-  return summaryDataSource;
+  return {
+    ...JSON.parse(rows[0].data),
+    source: rows[0].source,
+    name: rows[0].name,
+    description: rows[0].description,
+  };
 };
 
 export const getSourceChartConfig = async (sourceId) => {
