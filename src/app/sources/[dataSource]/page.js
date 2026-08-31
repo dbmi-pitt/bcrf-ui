@@ -52,9 +52,10 @@ export default async function Page({ params }) {
             />
             {!authorizedToViewData && (
               <Button
+                type={'primary'}
                 className={'mb-1'}
                 style={{ alignSelf: 'flex-start' }}
-                href="mailto:example@://domain.com"
+                href="mailto:BCRFGDH@pitt.edu"
               >
                 Request Access
               </Button>
