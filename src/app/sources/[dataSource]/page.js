@@ -11,7 +11,7 @@ import {
 import { getSummaryDataSource } from '@/lib/actions/sources';
 import { notFound } from 'next/navigation';
 import { hasPermission } from '@/lib/actions/perms';
-import { Button } from 'antd';
+import TermsOfUse from '@/components/TermsOfUse';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -39,29 +39,11 @@ export default async function Page({ params }) {
         <p>{summaryDataSource.description}</p>
       </div>
       {summaryDataSource?.terms_of_use && (
-        <>
-          <div
-            key="terms_of_use"
-            className="card  text-bg-warning px-4 pt-3 mb-2"
-          >
-            <h1 className="fs-4">Terms of Use</h1>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: summaryDataSource.terms_of_use,
-              }}
-            />
-            {!authorizedToViewData && (
-              <Button
-                type={'primary'}
-                className={'mb-1'}
-                style={{ alignSelf: 'flex-start' }}
-                href="mailto:BCRFGDH@pitt.edu"
-              >
-                Request Access
-              </Button>
-            )}
-          </div>
-        </>
+        <TermsOfUse
+          termsText={summaryDataSource.terms_of_use}
+          authorizedToViewData={authorizedToViewData}
+          summaryDataSource={summaryDataSource}
+        />
       )}
     </>
   );
