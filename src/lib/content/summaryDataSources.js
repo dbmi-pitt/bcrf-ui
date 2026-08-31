@@ -5,6 +5,17 @@ export const SUMMARY = {
       name: 'Aurora US',
       description:
         'Aurora US is a clinical study, not a treatment trial, that will collect biospecimens from patient volunteers who have received a diagnosis of metastatic breast cancer after having been treated for early stage breast cancer.',
+      terms_of_use:
+        '<dl>\n' +
+        '  <dt>Definition list</dt>\n' +
+        '  <dd>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna\n' +
+        'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea\n' +
+        'commodo consequat.</dd>\n' +
+        '  <dt>Lorem ipsum dolor sit amet</dt>\n' +
+        '  <dd>Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna\n' +
+        'aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea\n' +
+        'commodo consequat.</dd>\n' +
+        '</dl>',
       patients: 55,
       samples: 155,
       data_types: ['Methylation', 'RNASeq', 'H&E Slides', 'WES', 'WGS'],
