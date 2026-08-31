@@ -1,6 +1,8 @@
 CREATE TABLE users (
     email VARCHAR PRIMARY KEY,
-    name VARCHAR
+    uuid VARCHAR NOT NULL UNIQUE,
+    name VARCHAR NOT NULL,
+    organization VARCHAR
 );
 
 CREATE TABLE sources (
