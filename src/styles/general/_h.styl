@@ -1,27 +1,38 @@
 h1()
-  px2em(font-size, 34)
-  lh-ratio(34, 44)
+  px2em(font-size, 38)
+  lh-ratio(38, 44)
 
 .h1
   h1()
 
 h2()
-  px2em(font-size, 26)
-  lh-ratio(26, 42)
+  px2em(font-size, 34)
+  lh-ratio(34, 42)
 
 .h2
   h2()
 
 h3()
-  px2em(font-size, 24)
-  lh-ratio(24, 40)
+  px2em(font-size, 28)
+  lh-ratio(28, 40)
 
 .h3
   h3()
 
 h4()
-  px2em(font-size, 22)
-  lh-ratio(22, 38)
+  px2em(font-size, 24)
+  lh-ratio(24, 38)
 
 .h4
   h4()
+
+.h--subheadline
+  font-important('Merriweather Regular')
+  h3()
+  color $col-primary-accent
+
+.h--eyebrow 
+  font-important('Inter ExtraBold')
+  h4()
+  color $col-primary-accent
+  

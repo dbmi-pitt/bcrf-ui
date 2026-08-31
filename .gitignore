@@ -57,6 +57,7 @@ package-lock.json
 /.secrets
 public/sample-fixtures
 public/content/banner.json
+puck_perms.puckdata
 
 # data
 *.db
