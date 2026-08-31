@@ -11,7 +11,7 @@ export const getPuckData = async (sourceId) => {
   const rows = await result.getRowObjectsJson();
   if (rows.length === 0) {
     log.debug(`No puckdata found for ${sourceId}, returning default`);
-    return { data: await getDefaultPuckData(sourceId) };
+    return await getDefaultPuckData(sourceId);
   }
 
   return JSON.parse(rows[0].data);
@@ -32,6 +32,7 @@ const getDefaultPuckData = async (sourceId) => {
         props: {
           id: 'HeadingBlock-0fdd677d-5209-47f3-b122-16ee9e6d5694',
           children: name,
+          heading: name,
         },
       },
       {
