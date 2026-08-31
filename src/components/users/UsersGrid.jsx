@@ -1,6 +1,6 @@
 'use client';
 
-import { MailOutlined, UserOutlined } from '@ant-design/icons';
+import { BankOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Card, Masonry, Typography } from 'antd';
 
 const AVATAR_COLORS = [
@@ -106,6 +106,21 @@ export default function UsersGrid({ users }) {
               <MailOutlined style={{ fontSize: 12 }} />
               {user.email}
             </Typography.Text>
+            {user.organization && (
+              <Typography.Text
+                type="secondary"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontSize: 13,
+                }}
+                ellipsis={{ tooltip: user.organization }}
+              >
+                <BankOutlined style={{ fontSize: 12 }} />
+                {user.organization}
+              </Typography.Text>
+            )}
           </div>
         </Card>
       )}
