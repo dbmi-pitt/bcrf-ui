@@ -52,3 +52,30 @@ export const hasPermission = async (sourceId, requiredPerms) => {
     required.some((perm) => permissionSet.includes(perm))
   );
 };
+
+/**
+ * Checks whether a user is in the `users` table.
+ *
+ * @async
+ * @function hasGlobusReadPermission
+ * @param {string} email - The email address to check.
+ * @returns {Promise<boolean>} `true` if the user has the permission,
+ *   `false` if they don't, the email is invalid, or a query error occurs.
+ */
+export const hasGlobusReadPermission = async (email) => {
+  try {
+    const conn = await getConnection();
+
+    const result = await conn.run(
+      `SELECT EXISTS (
+        SELECT 1 FROM users WHERE email = $email
+      ) AS hasPermission;`,
+      { email: email },
+    );
+    const rows = await result.getRowObjects();
+    return rows[0]?.hasPermission === true;
+  } catch (error) {
+    log.error(`Error checking Globus read permission for ${email}:`, error);
+    return false;
+  }
+};

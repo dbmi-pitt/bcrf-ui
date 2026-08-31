@@ -1,4 +1,5 @@
 import { getCurrentUser } from '@/lib/auth/services';
+import { hasGlobusReadPermission } from '@/lib/permission/services.js';
 import { NextResponse } from 'next/server';
 
 const PUBLIC_PATHS = ['/', '/login', '/about'];
@@ -15,7 +16,7 @@ export async function proxy(request) {
 
   if (isProtected) {
     const user = await getCurrentUser(request);
-    if (!user) {
+    if (!user || !(await hasGlobusReadPermission(user.username))) {
       const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
       url.searchParams.set('from', request.nextUrl.pathname);
       return NextResponse.redirect(url);
