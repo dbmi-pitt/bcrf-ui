@@ -43,13 +43,17 @@ formInvalid()
   border solid 1px red !important
   box-shadow 0 0 0 .25rem #fd0d0d40 !important
 
-font-hurme($mod = 'Hurme Regular', $spacing = normal)
+font($mod = 'Inter Regular', $spacing = normal)
   font-family $mod, Georgia, monospace
   letter-spacing $spacing
 
-font-hurmeSemiBold()
-  font-hurme('Hurme SemiBold', 2px)
+font-important($mod = 'Inter Regular', $spacing = normal)
+  font-family $mod, Georgia, monospace !important
+  letter-spacing $spacing
+
+font-heading()
+  font('Inter Medium', 2px)
 
 headings()
   h1, h2, h3, h4, h5, h6
-    font-hurmeSemiBold()
+    font-heading()

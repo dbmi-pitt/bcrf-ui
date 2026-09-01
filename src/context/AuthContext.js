@@ -1,6 +1,6 @@
 'use client';
 
-import { logInWithGlobus, logOutOfGlobus } from '@/lib/actions/auth';
+import { logInWithGlobus, logOutOfGlobus } from '@/lib/auth/actions';
 import { createContext, useEffect } from 'react';
 
 const AuthContext = createContext({});

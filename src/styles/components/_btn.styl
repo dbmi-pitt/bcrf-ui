@@ -4,11 +4,19 @@
   transition .2s transform ease-in-out
   will-change transform
   z-index 0
+  display inline-block
+  padding 1em 2em
+  p3()
+  &--lg
+    p2()
+    padding 1em 2.5em
+  &.rounded-pill
+    &::after
+      border-radius 2rem
 
   &::after
     content ' '
     display block
-    border-radius 2rem
     height 100%
     width 100%
     position absolute
