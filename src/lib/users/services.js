@@ -6,12 +6,14 @@ import 'server-only';
  *
  * @async
  * @function getUsers
- * @returns {Promise<Array<{email: string, name: string}>>}
+ * @returns {Promise<Array<{uuid: string, name: string, email: string, organization: string}>>}
  */
 export const getUsers = async () => {
   const conn = await getConnection();
 
-  const reader = await conn.runAndReadAll('SELECT email, name FROM users');
+  const reader = await conn.runAndReadAll(
+    'SELECT uuid, name, email, organization FROM users',
+  );
   const rows = reader.getRowObjects();
   return rows;
 };
@@ -23,13 +25,13 @@ export const getUsers = async () => {
  * @function getUserByEmail
  * @param {string} email - The email address to look up. Must be a
  *   non-empty string.
- * @returns {Promise<{email: string, name: string} | null>}
+ * @returns {Promise<{uuid: string, email: string, name: string, organization: string} | null>}
  */
 export const getUserByEmail = async (email) => {
   const conn = await getConnection();
 
   const reader = await conn.runAndReadAll(
-    'SELECT email, name FROM users WHERE email = $email',
+    'SELECT uuid, email, name, organization FROM users WHERE email = $email',
     { $email: email },
   );
   const rows = reader.getRowObjects();
