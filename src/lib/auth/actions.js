@@ -5,23 +5,10 @@ import {
   createState,
   createVerifier,
   safeRedirectPath,
-} from '@/lib/globus/pkce';
-import { deleteSession, getSession } from '@/lib/globus/session';
+} from '@/lib/auth/pkce';
+import { deleteSession, getSession } from '@/lib/auth/session';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-
-export async function getCurrentUser() {
-  const session = await getSession();
-  if (!session) {
-    return null;
-  }
-  return {
-    sub: session.sub,
-    username: session.username,
-    name: session.name,
-    email: session.email,
-  };
-}
 
 export async function logInWithGlobus(formData) {
   const verifier = createVerifier();
@@ -87,11 +74,4 @@ export async function logOutOfGlobus() {
   }
   await deleteSession();
   redirect('/');
-}
-
-export async function popReturnTo(fallback = '/') {
-  const store = await cookies();
-  const raw = store.get('globus_return_to')?.value;
-  store.delete('globus_return_to');
-  return safeRedirectPath(raw, fallback);
 }

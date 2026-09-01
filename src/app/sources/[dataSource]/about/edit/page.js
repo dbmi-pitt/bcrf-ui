@@ -2,9 +2,9 @@ import Unauthorized from '@/app/unauthorized';
 import AboutEdit from '@/components/AboutEdit';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
-import { hasPermission } from '@/lib/actions/perms';
-import { getPuckData } from '@/lib/actions/puck';
-import { getSummaryDataSource } from '@/lib/actions/sources';
+import { hasPermission } from '@/lib/permission/services';
+import { getPuckData } from '@/lib/puck/services';
+import { getSummaryDataSource } from '@/lib/sources/services';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -25,7 +25,7 @@ export default async function Page({ params }) {
   return (
     <BasicLayout fluid={true}>
       <SourceNavbar dataSource={dataSource} />
-      <AboutEdit dataSourceId={dataSource} data={aboutContent.data} />
+      <AboutEdit dataSourceId={dataSource} data={aboutContent} />
     </BasicLayout>
   );
 }

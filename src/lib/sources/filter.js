@@ -1,3 +1,5 @@
+import 'server-only';
+
 // const exampleMappedFilters = {
 //   'Cancer Type Detailed': ['Breast Invasive Ductal Carcinoma'],
 //   'Pathologic Stage': ['Stage IIA'],

@@ -60,6 +60,6 @@ public/content/banner.json
 puck_perms.puckdata
 
 # data
-*.db
+*.db*
 *.tsv
 *.wal

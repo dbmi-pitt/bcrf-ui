@@ -1,6 +1,6 @@
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
-import { getSummaryDataSource } from '@/lib/actions/sources';
+import { getSummaryDataSource } from '@/lib/sources/services';
 import { downloadLinksDemo } from '@/lib/data/demo-globus-links';
 import { DownloadIcon } from 'lucide-react';
 import { Badge } from 'react-bootstrap';
