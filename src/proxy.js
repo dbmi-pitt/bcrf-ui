@@ -16,10 +16,19 @@ export async function proxy(request) {
 
   if (isProtected) {
     const user = await getCurrentUser(request);
-    if (!user || !(await hasGlobusReadPermission(user.username))) {
+    if (!user) {
       const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
       url.searchParams.set('from', request.nextUrl.pathname);
       return NextResponse.redirect(url);
+    }
+
+    const hasPermission = await hasGlobusReadPermission(user.username);
+    if (!hasPermission) {
+      const url = new URL(
+        '/unauthorized',
+        process.env.NEXT_PUBLIC_APP_BASE_URL,
+      );
+      return NextResponse.rewrite(url);
     }
   }
 
