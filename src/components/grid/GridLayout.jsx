@@ -1,7 +1,7 @@
 'use client';
 
 import GridWidget from '@/components/grid/GridWidget';
-import { getChartData } from '@/lib/actions/charts.js';
+import { getSourceChartData } from '@/lib/sources/actions';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
 import { useEffect, useRef, useState } from 'react';
@@ -158,8 +158,8 @@ export default function GridLayout({
     let cancelled = false;
 
     async function loadData() {
-      const result = await getChartData(dataSource, filters);
-      if (cancelled || result.notFound) {
+      const result = await getSourceChartData(dataSource, filters);
+      if (cancelled || !result.success) {
         return;
       }
       setChartData(result.data);

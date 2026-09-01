@@ -1,7 +1,7 @@
 'use server';
 
-import { hasPermission } from '@/lib/actions/perms';
-import { getSummaryDataSource } from '@/lib/actions/sources';
+import { hasPermission } from '@/lib/permission/services';
+import { getSummaryDataSource } from '@/lib/sources/services';
 import Navbar from './Navbar';
 
 export default async function SourceNavbar(param) {
@@ -10,7 +10,6 @@ export default async function SourceNavbar(param) {
   const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS-READ');
   const sds = await getSummaryDataSource(dataSource);
 
-  // console.log(dataSource, user, permissionSet, sds)
   const links = [
     { label: 'Overview', path: `/sources/${dataSource}` },
     { label: 'About', path: `/sources/${dataSource}/about` },

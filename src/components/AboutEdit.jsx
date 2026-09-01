@@ -1,6 +1,6 @@
 'use client';
 
-import { savePuckData } from '@/lib/actions/puck';
+import { savePuckData } from '@/lib/puck/actions';
 import { Puck } from '@puckeditor/core';
 import { Alert } from 'antd';
 import { useEffect, useState } from 'react';

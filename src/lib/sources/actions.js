@@ -1,52 +1,24 @@
 'use server';
 
+import { getCurrentUser } from '@/lib/auth/services.js';
 import { connection } from '@/lib/data/database.js';
-import { buildFilterClause } from '@/lib/data/filter.js';
+import { sourceMap } from '@/lib/sources/charts.js';
+import { buildFilterClause } from '@/lib/sources/filter.js';
 import log from 'xac-loglevel';
-import { requireSession } from './index.js';
 
-const sourceMap = {
-  'aurora-us': (await import('@/lib/data/config/auroraUS.js')).CONFIG,
-  'aurora-eu': (await import('@/lib/data/config/auroraEU.js')).CONFIG,
-};
-
-export const getChartConfig = async (sourceId) => {
-  await requireSession();
-
-  const config = sourceMap[sourceId];
-  if (!config) {
-    return { notFound: true };
+export const getSourceChartData = async (sourceId, filters = {}) => {
+  const user = getCurrentUser();
+  if (!user) {
+    log.error('No user found in getSourceChartData', sourceId);
+    return { success: false, error: 'User not authenticated' };
   }
 
-  // return non-client, non-data fields from charts array in config
-  return {
-    title: config.title,
-    charts: config.charts.map(({ filter, query, data, ...rest }) => ({
-      ...rest,
-      isFilterable: Boolean(filter),
-      filterType: filter?.type ?? null,
-    })),
-  };
-};
-
-// const exampleInputFilters = {
-//   'cancer-type-detailed': ['Breast Invasive Ductal Carcinoma'],
-//   'pathologic-stage': ['Stage IIA'],
-//   'age-at-diagnosis': ['50', '60'],
-// };
-
-// const exampleMappedFilters = {
-//   'Cancer Type Detailed': ['Breast Invasive Ductal Carcinoma'],
-//   'Pathologic Stage': ['Stage IIA'],
-//   'Age at Diagnosis': [50, 60],
-// };
-
-export const getChartData = async (sourceId, filters = {}) => {
-  await requireSession();
-
   const config = sourceMap[sourceId];
   if (!config) {
-    return { notFound: true };
+    return {
+      success: false,
+      error: `No chart config found for source ${sourceId}`,
+    };
   }
 
   const cleanFilters = {};
@@ -186,26 +158,9 @@ export const getChartData = async (sourceId, filters = {}) => {
 
   log.debug('Tags:', tags);
   return {
+    success: true,
     data: data,
     filters: cleanFilters,
     tags: tags,
-  };
-};
-
-export const getAllClinicalData = async (sourceId) => {
-  await requireSession();
-
-  const config = sourceMap[sourceId];
-  if (!config) {
-    return { notFound: true };
-  }
-
-  const tableName = config.table;
-  const result = await connection.run('SELECT * FROM ' + tableName);
-  const rows = await result.getRowObjectsJson();
-
-  return {
-    data: rows,
-    key: config.keyColumn,
   };
 };

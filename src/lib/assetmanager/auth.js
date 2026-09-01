@@ -1,21 +1,18 @@
 'use server';
-import { getCurrentUser } from '../actions/auth';
-// import { requireSession } from '@lib/actions/index.js';
-// import { getPerms } from '@lib/actions/perms';
-import { getPerms } from '../actions/perms';
-
+import { getCurrentUser } from '@/lib/auth/services';
+import { getPerms } from '../permission/services';
 
 export async function getUserSourcePerms(sourceId) {
   const currentUser = await getCurrentUser();
   const permSet = await getPerms(sourceId, currentUser.username);
-  return {id: currentUser.username, source: sourceId, perms: permSet.data};
+  return { id: currentUser.username, source: sourceId, perms: permSet.data };
 }
 
 /**
  * @param {{ id: string, perms: []string }} user
  */
 export async function userCanUploadTo(user) {
-    return user.perms.includes('ADMIN') || user.perms.includes('ASSETS-WRITE');
+  return user.perms.includes('ADMIN') || user.perms.includes('ASSETS-WRITE');
 }
 
 /**

@@ -3,12 +3,12 @@ import DataSourceTabs from '@/components/DataSourceTabs';
 import GridLayout from '@/components/grid/GridLayout';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
+import { getSourceChartData } from '@/lib/sources/actions';
 import {
-  getAllClinicalData,
-  getChartConfig,
-  getChartData,
-} from '@/lib/actions/charts.js';
-import { getSummaryDataSource } from '@/lib/actions/sources';
+  getSourceChartConfig,
+  getSourceClinicalData,
+  getSummaryDataSource,
+} from '@/lib/sources/services';
 import { notFound } from 'next/navigation';
 
 export async function generateMetadata({ params }) {
@@ -19,15 +19,14 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
-  const config = await getChartConfig(dataSource);
-
-  if (config.notFound) {
+  const summaryDataSource = await getSummaryDataSource(dataSource);
+  if (!summaryDataSource) {
     notFound();
   }
 
-  const summaryDataSource = await getSummaryDataSource(dataSource);
-  const chartData = await getChartData(dataSource);
-  const clinicalData = await getAllClinicalData(dataSource);
+  const config = await getSourceChartConfig(dataSource);
+  const chartData = await getSourceChartData(dataSource);
+  const clinicalData = await getSourceClinicalData(dataSource);
 
   const header = (
     <div key="header" className="card px-4 pt-3 mb-2">
