@@ -62,3 +62,4 @@ public/content/banner.json
 *.db
 *.tsv
 *.wal
+*.puckdata
