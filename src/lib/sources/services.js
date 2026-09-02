@@ -6,7 +6,7 @@ import 'server-only';
 export const getSummaryDataSources = async () => {
   const conn = await getConnection();
   const result = await conn.run(
-    'SELECT source, name, description, data FROM sources',
+    'SELECT source, name, description, data FROM sources WHERE NOT virtual',
   );
   const rows = await result.getRowObjectsJson();
   return rows.map((row) => ({

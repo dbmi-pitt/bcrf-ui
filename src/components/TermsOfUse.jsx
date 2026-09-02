@@ -27,7 +27,7 @@ export default function TermsOfUse({
           __html: termsText,
         }}
       />
-      {authorizedToViewData && (
+      {!authorizedToViewData && (
         <>
           <Button
             className={'mb-1'}
