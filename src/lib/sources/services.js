@@ -3,20 +3,6 @@ import { connection } from '@/lib/data/database.js';
 import { sourceMap } from '@/lib/sources/charts.js';
 import 'server-only';
 
-export const getSummaryDataSources = async () => {
-  const conn = await getConnection();
-  const result = await conn.run(
-    'SELECT source, name, description, data FROM sources WHERE NOT virtual',
-  );
-  const rows = await result.getRowObjectsJson();
-  return rows.map((row) => ({
-    ...JSON.parse(row.data),
-    source: row.source,
-    name: row.name,
-    description: row.description,
-  }));
-};
-
 export const getSummaryDataSource = async (dataSource) => {
   const conn = await getConnection();
   const result = await conn.run(
