@@ -14,7 +14,7 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
-  const authorized = await hasPermission(dataSource, 'ABOUT-EDIT');
+  const authorized = await hasPermission(dataSource, 'ABOUT_WRITE');
   if (!authorized) {
     // person is not authorized
     return <Unauthorized />;

@@ -11,17 +11,22 @@ export const getPerms = async (sourceId) => {
 
     const result = await conn.run(
       `
-      SELECT permission_set
-      FROM group_grants
-      WHERE gid = 'G0'
-      UNION
-      SELECT permission_set
-      FROM group_grants gg
-      JOIN group_membership gm
-        ON gg.gid = gm.gid
-        AND gg.source = gm.source
-      WHERE gg.source = $source
-        AND gm.email = $email
+      SELECT DISTINCT
+          p.key,
+          p.description
+      FROM group_membership gm
+      JOIN groups g
+          ON g.uuid = gm.group_uuid
+      JOIN group_grants gg
+          ON gg.group_uuid = g.uuid
+      JOIN permissions p
+          ON p.key = gg.permission_key
+      WHERE gm.user_email = $email
+        AND (
+              g.source = $source
+              OR g.source = 'bcrf-global'
+            )
+      ORDER BY p.key;
       `,
       { source: sourceId, email: username },
     );
@@ -48,7 +53,8 @@ export const hasPermission = async (sourceId, requiredPerms) => {
     : [requiredPerms];
 
   return (
-    permissionSet.includes('ADMIN') ||
+    permissionSet.includes('SOURCE_ADMIN') ||
+    permissionSet.includes('SUPER_ADMIN') ||
     required.some((perm) => permissionSet.includes(perm))
   );
 };

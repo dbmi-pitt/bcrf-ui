@@ -11,7 +11,7 @@ export const savePuckData = async (sourceId, data) => {
     log.error(`User not authenticated, cannot save puckdata for ${sourceId}`);
     return { success: false, error: 'User not authenticated' };
   }
-  const authorized = await hasPermission(sourceId, 'ABOUT-EDIT');
+  const authorized = await hasPermission(sourceId, 'ABOUT_WRITE');
   if (!authorized) {
     log.error(
       `User ${currentUser.username} does not have permission to save puckdata for ${sourceId}`,
