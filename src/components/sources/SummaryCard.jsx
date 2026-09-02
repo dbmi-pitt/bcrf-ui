@@ -17,7 +17,7 @@ function SummaryCard({ data, onTagClick }) {
     const list = [];
     let tags = [];
 
-    for (const tag of data.tags) {
+    for (const tag of data.tags || []) {
       if (tag.display_type !== 'collapsed') {
         tags = [];
         for (const v of tag.values) {
@@ -98,7 +98,7 @@ function SummaryCard({ data, onTagClick }) {
         style={{ maxHeight: 200, overflowY: 'auto' }}
       >
         <Accordion>
-          {data.tags
+          {(data.tags || [])
             .filter((tag) => tag.display_type === 'collapsed')
             .map((tag) => (
               <Accordion.Item

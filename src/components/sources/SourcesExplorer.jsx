@@ -2,8 +2,11 @@
 
 import AppSpinner from '@/components/AppSpinner';
 import SummaryCard from '@/components/sources/SummaryCard';
+import { SearchProvider } from '@/context/SearchContext';
 import { Masonry, Tag } from 'antd';
 import { useState } from 'react';
+import { summaryDataSources } from '@/lib/content/summaryDataSources';
+import Facets from '@/components/search/Facets';
 
 export default function SourcesExplorer({ dataSources }) {
   const [tags, setTags] = useState([]);
@@ -92,25 +95,32 @@ export default function SourcesExplorer({ dataSources }) {
         )}
       </div>
       <div aria-label="Clinical Data Sources">
-        {cards && (
-          <Masonry
-            columns={{ xs: 1, sm: 2, md: 3 }}
-            gutter={10}
-            items={cards.map((source, index) => ({
-              key: `item-${index}`,
-              data: source,
-            }))}
-            itemRender={({ data, index }) => (
-              <SummaryCard
-                data={data}
-                index={index}
-                key={`card-${index}`}
-                onTagClick={onCardTagClick}
-              />
-            )}
-          />
-        )}
-        <br />
+        <SearchProvider config={{ facets: summaryDataSources[0].common_fields, dataSources }}>
+          <div className="row">
+            <div className="col-2"><Facets setCards={setCards} setTag={setTags} /></div>
+            <div className="col-10">
+              {cards && (
+                <Masonry
+                  columns={{ xs: 1, sm: 2, md: 3 }}
+                  gutter={10}
+                  items={cards.map((source, index) => ({
+                    key: `item-${index}`,
+                    data: source,
+                  }))}
+                  itemRender={({ data, index }) => (
+                    <SummaryCard
+                      data={data}
+                      index={index}
+                      key={`card-${index}`}
+                      onTagClick={onCardTagClick}
+                    />
+                  )}
+                />
+              )}
+            </div>
+          </div>
+          <br />
+        </SearchProvider>
       </div>
       {cards.length <= 0 && <AppSpinner />}
     </>
