@@ -22,7 +22,7 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const { dataSource } = await params;
   const summaryDataSource = await getSummaryDataSource(dataSource);
-  const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS-READ');
+  const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS_READ');
 
   if (!summaryDataSource) {
     notFound();
