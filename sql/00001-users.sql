@@ -43,6 +43,10 @@ INSERT INTO groups (uuid, name, source, description) VALUES
     ('21420174-8290-4dd5-87e7-0a70003402ad', 'BCRF Global Read', 'bcrf-global', 'Virtual group representing read access to all sources.'),
     ('d2416ff1-84ff-4087-8632-cd5a46be5a34', 'BCRF Global Admin', 'bcrf-global', 'Virtual group representing admin access to all sources.');
 
+INSERT INTO group_grants (group_uuid, permission_key) VALUES
+    ('21420174-8290-4dd5-87e7-0a70003402ad', 'READ'),
+    ('d2416ff1-84ff-4087-8632-cd5a46be5a34', 'SUPER_ADMIN');
+
 CREATE TABLE group_membership (
     group_uuid VARCHAR NOT NULL,
     user_email VARCHAR NOT NULL,
