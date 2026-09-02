@@ -12,7 +12,11 @@ export async function getUserSourcePerms(sourceId) {
  * @param {{ id: string, perms: []string }} user
  */
 export async function userCanUploadTo(user) {
-  return user.perms.includes('ADMIN') || user.perms.includes('ASSETS-WRITE');
+  return (
+    user.perms.includes('SOURCE_ADMIN') ||
+    user.perms.includes('SUPER_ADMIN') ||
+    user.perms.includes('ASSETS-WRITE')
+  );
 }
 
 /**
@@ -21,7 +25,11 @@ export async function userCanUploadTo(user) {
  */
 export async function userCanView(user, file) {
   if (file.is_public) return true;
-  return user.perms.includes('ADMIN') || user.perms.includes('ASSETS-WRITE');
+  return (
+    user.perms.includes('SOURCE_ADMIN') ||
+    user.perms.includes('SUPER_ADMIN') ||
+    user.perms.includes('ASSETS-WRITE')
+  );
 }
 
 /**
@@ -30,5 +38,9 @@ export async function userCanView(user, file) {
  */
 export async function userCanViewSource(user, source) {
   if (source.is_public) return true;
-  return user.perms.includes('ADMIN') || user.perms.includes('ASSETS-WRITE');
+  return (
+    user.perms.includes('SOURCE_ADMIN') ||
+    user.perms.includes('SUPER_ADMIN') ||
+    user.perms.includes('ASSETS-WRITE')
+  );
 }
