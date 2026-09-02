@@ -7,10 +7,12 @@ import { Masonry, Tag } from 'antd';
 import { useState } from 'react';
 import { summaryDataSources } from '@/lib/content/summaryDataSources';
 import Facets from '@/components/search/Facets';
+import ClearFilters from '../search/ClearFilters';
 
 export default function SourcesExplorer({ dataSources }) {
   const [tags, setTags] = useState([]);
   const [cards, setCards] = useState(dataSources);
+  const [isBusy, setIsBusy] = useState(false);
 
   const filterCards = (tag, value, sources = []) => {
     const sourceIds = sources.map((d) => d.source);
@@ -23,7 +25,7 @@ export default function SourcesExplorer({ dataSources }) {
     const availableSources =
       dataSources.filter((d) => dict[d.source] === undefined) || [];
     availableSources.map((data) => {
-      data.tags.map((t) => {
+      ( data.tags || []).map((t) => {
         if (
           dict[data.source] === undefined &&
           t.name === tag.name &&
@@ -95,9 +97,12 @@ export default function SourcesExplorer({ dataSources }) {
         )}
       </div>
       <div aria-label="Clinical Data Sources">
-        <SearchProvider config={{ facets: summaryDataSources[0].common_fields, dataSources }}>
+        <SearchProvider config={{ facets: summaryDataSources[0].common_fields, dataSources, setCards, setTags, setIsBusy }}>
           <div className="row">
-            <div className="col-2"><Facets setCards={setCards} setTag={setTags} /></div>
+            <div className="col-2">
+              <ClearFilters />
+              <Facets />
+              </div>
             <div className="col-10">
               {cards && (
                 <Masonry
@@ -122,7 +127,7 @@ export default function SourcesExplorer({ dataSources }) {
           <br />
         </SearchProvider>
       </div>
-      {cards.length <= 0 && <AppSpinner />}
+      {isBusy && <AppSpinner />}
     </>
   );
 }
