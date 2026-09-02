@@ -6,8 +6,8 @@ import Navbar from './Navbar';
 
 export default async function SourceNavbar(param) {
   const dataSource = param.dataSource;
-  const authorizedToEdit = await hasPermission(dataSource, 'ABOUT-EDIT');
-  const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS-READ');
+  const authorizedToEdit = await hasPermission(dataSource, 'ABOUT_WRITE');
+  const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS_READ');
   const sds = await getSummaryDataSource(dataSource);
 
   const links = [

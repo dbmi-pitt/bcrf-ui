@@ -10,7 +10,13 @@ export default function Unauthorized() {
       <Result
         status="403"
         title="Unauthorized"
-        subTitle="Sorry, you are not authorized to view this page."
+        subTitle={
+          <p>
+            Sorry, you are not authorized to view this page. Please contact us
+            via <a href="mailto:BCRFGDH@pitt.edu">BCRFGDH@pitt.edu</a> to
+            request access.
+          </p>
+        }
         extra={[
           <Button key="home" type="primary" href="/">
             Back Home
