@@ -4,15 +4,18 @@ import { connection } from '@/lib/data/database';
 import { getConnection } from '@/lib/data/database-puck';
 import { PERMISSION } from '@/lib/permission/constants';
 import {
-  hasGlobalReadPermission,
-  hasPermission,
+  hasCurrentUserGlobalReadPermission,
+  hasCurrentUserPermission,
 } from '@/lib/permission/services';
 import { sourceMap } from '@/lib/sources/charts';
 import { buildFilterClause } from '@/lib/sources/filter';
 import log from 'xac-loglevel';
 
 export const getSourceChartData = async (sourceId, filters = {}) => {
-  const authorized = await hasPermission(sourceId, PERMISSION.GLOBUS_READ);
+  const authorized = await hasCurrentUserPermission(
+    sourceId,
+    PERMISSION.GLOBUS_READ,
+  );
   if (!authorized) {
     log.error(`User does not have Globus read permission for ${sourceId}`);
     return {
@@ -227,7 +230,7 @@ async function getAllColumns() {
  * >}
  */
 export const getSummaryDataSources = async (filters = {}) => {
-  const authorized = await hasGlobalReadPermission();
+  const authorized = await hasCurrentUserGlobalReadPermission();
   if (!authorized) {
     log.error(`User does not have global read permission for summary data`);
     return {

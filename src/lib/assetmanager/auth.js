@@ -1,11 +1,11 @@
 import { getCurrentUser } from '@/lib/auth/services';
 import { PERMISSION } from '@/lib/permission/constants';
-import { getPerms } from '@/lib/permission/services';
+import { getCurrentUserPermissions } from '@/lib/permission/services';
 import 'server-only';
 
 export async function getUserSourcePerms(sourceId) {
   const currentUser = await getCurrentUser();
-  const perms = await getPerms(sourceId);
+  const perms = await getCurrentUserPermissions(sourceId);
   return { id: currentUser.username, source: sourceId, perms };
 }
 

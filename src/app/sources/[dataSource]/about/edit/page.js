@@ -3,7 +3,7 @@ import AboutEdit from '@/components/AboutEdit';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
 import { PERMISSION } from '@/lib/permission/constants';
-import { hasPermission } from '@/lib/permission/services';
+import { hasCurrentUserPermission } from '@/lib/permission/services';
 import { getPuckData } from '@/lib/puck/services';
 import { getSummaryDataSource } from '@/lib/sources/services';
 
@@ -15,7 +15,10 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
-  const authorized = await hasPermission(dataSource, PERMISSION.ABOUT_WRITE);
+  const authorized = await hasCurrentUserPermission(
+    dataSource,
+    PERMISSION.ABOUT_WRITE,
+  );
   if (!authorized) {
     // person is not authorized
     return <Unauthorized />;

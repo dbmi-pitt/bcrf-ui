@@ -5,7 +5,7 @@ import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
 import TermsOfUse from '@/components/TermsOfUse';
 import { PERMISSION } from '@/lib/permission/constants';
-import { hasPermission } from '@/lib/permission/services';
+import { hasCurrentUserPermission } from '@/lib/permission/services';
 import { getSourceChartData } from '@/lib/sources/actions';
 import {
   getSourceChartConfig,
@@ -27,7 +27,7 @@ export default async function Page({ params }) {
     notFound();
   }
 
-  const authorizedToViewData = await hasPermission(
+  const authorizedToViewData = await hasCurrentUserPermission(
     dataSource,
     PERMISSION.GLOBUS_READ,
   );

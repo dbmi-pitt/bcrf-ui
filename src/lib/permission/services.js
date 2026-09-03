@@ -4,7 +4,7 @@ import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
 import 'server-only';
 import log from 'xac-loglevel';
 
-export const getPerms = async (sourceId) => {
+export const getCurrentUserPermissions = async (sourceId) => {
   const { username } = await getCurrentUser();
 
   try {
@@ -43,8 +43,8 @@ export const getPerms = async (sourceId) => {
   }
 };
 
-export const hasPermission = async (sourceId, requiredPerms) => {
-  const permissionSet = await getPerms(sourceId);
+export const hasCurrentUserPermission = async (sourceId, requiredPerms) => {
+  const permissionSet = await getCurrentUserPermissions(sourceId);
   const required = Array.isArray(requiredPerms)
     ? requiredPerms
     : [requiredPerms];
@@ -60,10 +60,10 @@ export const hasPermission = async (sourceId, requiredPerms) => {
  * Checks whether the currently authenticated user has global read permission.
  *
  * @async
- * @function hasGlobalReadPermission
+ * @function hasCurrentUserGlobalReadPermission
  * @returns {Promise<boolean>} `true` if the user has the permission,
  *   `false` otherwise.
  */
-export const hasGlobalReadPermission = async () => {
-  return hasPermission(GLOBAL_SOURCE, PERMISSION.READ);
+export const hasCurrentUserGlobalReadPermission = async () => {
+  return hasCurrentUserPermission(GLOBAL_SOURCE, PERMISSION.READ);
 };

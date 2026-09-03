@@ -1,14 +1,17 @@
 'use server';
 
 import { PERMISSION } from '@/lib/permission/constants';
-import { hasPermission } from '@/lib/permission/services';
+import { hasCurrentUserPermission } from '@/lib/permission/services';
 import { getSummaryDataSource } from '@/lib/sources/services';
 import Navbar from './Navbar';
 
 export default async function SourceNavbar(param) {
   const dataSource = param.dataSource;
-  const authorizedToEdit = await hasPermission(dataSource, PERMISSION.ABOUT_WRITE);
-  const authorizedToViewData = await hasPermission(
+  const authorizedToEdit = await hasCurrentUserPermission(
+    dataSource,
+    PERMISSION.ABOUT_WRITE,
+  );
+  const authorizedToViewData = await hasCurrentUserPermission(
     dataSource,
     PERMISSION.GLOBUS_READ,
   );
