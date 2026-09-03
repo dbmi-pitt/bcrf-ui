@@ -79,7 +79,7 @@ export default function SourcesExplorer({ summary }) {
     for (const t of newTags) {
       sources = filterCards(t, t.value, sources);
     }
-    setCards(sources.length ? sources : dataSources);
+    setCards(sources.length ? sources : summary.sources);
     setTags(newTags);
   };
 
@@ -106,7 +106,7 @@ export default function SourcesExplorer({ summary }) {
             <div className="col-10">
               {cards && (
                 <Masonry
-                  columns={{ xs: 1, sm: 2, md: 3 }}
+                  columns={{ xs: 1, sm: 2, xl: 3 }}
                   gutter={10}
                   items={cards.map((source, index) => ({
                     key: `item-${index}`,
