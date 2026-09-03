@@ -1,17 +1,12 @@
 'use server';
 
-import { getCurrentUser } from '@/lib/auth/services.js';
-import { getConnection } from '@/lib/data/database-puck.js';
-import { hasPermission } from '@/lib/permission/services.js';
+import { getConnection } from '@/lib/data/database-puck';
+import { PERMISSION } from '@/lib/permission/constants';
+import { hasPermission } from '@/lib/permission/services';
 import log from 'xac-loglevel';
 
 export const savePuckData = async (sourceId, data) => {
-  const currentUser = await getCurrentUser();
-  if (!currentUser) {
-    log.error(`User not authenticated, cannot save puckdata for ${sourceId}`);
-    return { success: false, error: 'User not authenticated' };
-  }
-  const authorized = await hasPermission(sourceId, 'ABOUT_WRITE');
+  const authorized = await hasPermission(sourceId, PERMISSION.ABOUT_WRITE);
   if (!authorized) {
     log.error(
       `User ${currentUser.username} does not have permission to save puckdata for ${sourceId}`,

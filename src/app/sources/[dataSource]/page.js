@@ -3,6 +3,9 @@ import DataSourceTabs from '@/components/DataSourceTabs';
 import GridLayout from '@/components/grid/GridLayout';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
+import TermsOfUse from '@/components/TermsOfUse';
+import { PERMISSION } from '@/lib/permission/constants';
+import { hasPermission } from '@/lib/permission/services';
 import { getSourceChartData } from '@/lib/sources/actions';
 import {
   getSourceChartConfig,
@@ -10,8 +13,6 @@ import {
   getSummaryDataSource,
 } from '@/lib/sources/services';
 import { notFound } from 'next/navigation';
-import { hasPermission } from '@/lib/permission/services';
-import TermsOfUse from '@/components/TermsOfUse';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -22,7 +23,10 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const { dataSource } = await params;
   const summaryDataSource = await getSummaryDataSource(dataSource);
-  const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS_READ');
+  const authorizedToViewData = await hasPermission(
+    dataSource,
+    PERMISSION.GLOBUS_READ,
+  );
 
   if (!summaryDataSource) {
     notFound();

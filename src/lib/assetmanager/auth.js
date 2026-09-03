@@ -1,11 +1,12 @@
-'use server';
 import { getCurrentUser } from '@/lib/auth/services';
-import { getPerms } from '../permission/services';
+import { PERMISSION } from '@/lib/permission/constants';
+import { getPerms } from '@/lib/permission/services';
+import 'server-only';
 
 export async function getUserSourcePerms(sourceId) {
   const currentUser = await getCurrentUser();
-  const permSet = await getPerms(sourceId, currentUser.username);
-  return { id: currentUser.username, source: sourceId, perms: permSet.data };
+  const perms = await getPerms(sourceId);
+  return { id: currentUser.username, source: sourceId, perms };
 }
 
 /**
@@ -13,9 +14,9 @@ export async function getUserSourcePerms(sourceId) {
  */
 export async function userCanUploadTo(user) {
   return (
-    user.perms.includes('SOURCE_ADMIN') ||
-    user.perms.includes('SUPER_ADMIN') ||
-    user.perms.includes('ASSETS-WRITE')
+    user.perms.includes(PERMISSION.SOURCE_ADMIN) ||
+    user.perms.includes(PERMISSION.SUPER_ADMIN) ||
+    user.perms.includes(PERMISSION.ASSETS_WRITE)
   );
 }
 
@@ -26,9 +27,9 @@ export async function userCanUploadTo(user) {
 export async function userCanView(user, file) {
   if (file.is_public) return true;
   return (
-    user.perms.includes('SOURCE_ADMIN') ||
-    user.perms.includes('SUPER_ADMIN') ||
-    user.perms.includes('ASSETS-WRITE')
+    user.perms.includes(PERMISSION.SOURCE_ADMIN) ||
+    user.perms.includes(PERMISSION.SUPER_ADMIN) ||
+    user.perms.includes(PERMISSION.ASSETS_WRITE)
   );
 }
 
@@ -39,8 +40,8 @@ export async function userCanView(user, file) {
 export async function userCanViewSource(user, source) {
   if (source.is_public) return true;
   return (
-    user.perms.includes('SOURCE_ADMIN') ||
-    user.perms.includes('SUPER_ADMIN') ||
-    user.perms.includes('ASSETS-WRITE')
+    user.perms.includes(PERMISSION.SOURCE_ADMIN) ||
+    user.perms.includes(PERMISSION.SUPER_ADMIN) ||
+    user.perms.includes(PERMISSION.ASSETS_WRITE)
   );
 }

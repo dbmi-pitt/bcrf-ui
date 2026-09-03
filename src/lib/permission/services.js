@@ -1,5 +1,6 @@
-import { getCurrentUser } from '@/lib/auth/services.js';
-import { getConnection } from '@/lib/data/database-puck.js';
+import { getCurrentUser } from '@/lib/auth/services';
+import { getConnection } from '@/lib/data/database-puck';
+import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
 import 'server-only';
 import log from 'xac-loglevel';
 
@@ -24,64 +25,45 @@ export const getPerms = async (sourceId) => {
       WHERE gm.user_email = $email
         AND (
               g.source = $source
-              OR g.source = 'bcrf-global'
+              OR g.source = $globalSource
             )
       ORDER BY p.key;
       `,
-      { source: sourceId, email: username },
+      { source: sourceId, email: username, globalSource: GLOBAL_SOURCE },
     );
     const rows = await result.getRows();
-    return {
-      data: rows.map((n) => {
-        return n[0];
-      }),
-    };
+    return rows.map((n) => n[0]);
   } catch (error) {
     const rows = [];
     log.error(
       `Error querying puckdata / permissons for ${sourceId} ${username}:`,
       error,
     );
-    return { data: rows };
+    return rows;
   }
 };
 
 export const hasPermission = async (sourceId, requiredPerms) => {
-  const { data: permissionSet } = await getPerms(sourceId);
+  const permissionSet = await getPerms(sourceId);
   const required = Array.isArray(requiredPerms)
     ? requiredPerms
     : [requiredPerms];
 
   return (
-    permissionSet.includes('SOURCE_ADMIN') ||
-    permissionSet.includes('SUPER_ADMIN') ||
+    permissionSet.includes(PERMISSION.SOURCE_ADMIN) ||
+    permissionSet.includes(PERMISSION.SUPER_ADMIN) ||
     required.some((perm) => permissionSet.includes(perm))
   );
 };
 
 /**
- * Checks whether a user has global read permission.
+ * Checks whether the currently authenticated user has global read permission.
  *
  * @async
  * @function hasGlobalReadPermission
- * @param {string} email - The email address to check.
  * @returns {Promise<boolean>} `true` if the user has the permission,
- *   `false` if they don't, the email is invalid, or a query error occurs.
+ *   `false` otherwise.
  */
-export const hasGlobalReadPermission = async (email) => {
-  try {
-    const conn = await getConnection();
-
-    const result = await conn.run(
-      `SELECT EXISTS (
-        SELECT 1 FROM users WHERE email = $email
-      ) AS hasPermission;`,
-      { email: email },
-    );
-    const rows = await result.getRowObjects();
-    return rows[0]?.hasPermission === true;
-  } catch (error) {
-    log.error(`Error checking global read permission for ${email}:`, error);
-    return false;
-  }
+export const hasGlobalReadPermission = async () => {
+  return hasPermission(GLOBAL_SOURCE, PERMISSION.GLOBUS_READ);
 };
