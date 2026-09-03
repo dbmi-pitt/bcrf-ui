@@ -5,7 +5,6 @@ import SummaryCard from '@/components/sources/SummaryCard';
 import { SearchProvider } from '@/context/SearchContext';
 import { Masonry, Tag } from 'antd';
 import { useState } from 'react';
-import { summaryDataSources } from '@/lib/content/summaryDataSources';
 import Facets from '@/components/search/Facets';
 import ClearFilters from '@/components/search/ClearFilters';
 
