@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
 import AppModal from '@/components/AppModal';
 import { Button } from 'antd';
+import { useState } from 'react';
 
 export default function TermsOfUse({
   termsText,

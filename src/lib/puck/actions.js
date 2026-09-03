@@ -8,9 +8,7 @@ import log from 'xac-loglevel';
 export const savePuckData = async (sourceId, data) => {
   const authorized = await hasPermission(sourceId, PERMISSION.ABOUT_WRITE);
   if (!authorized) {
-    log.error(
-      `User ${currentUser.username} does not have permission to save puckdata for ${sourceId}`,
-    );
+    log.error(`User does not have permission to save puckdata for ${sourceId}`);
     return { success: false, error: 'User does not have permission to edit' };
   }
 

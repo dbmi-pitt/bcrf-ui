@@ -1,17 +1,24 @@
 'use server';
 
-import { getCurrentUser } from '@/lib/auth/services.js';
-import { getConnection } from '@/lib/data/database-puck.js';
-import { connection } from '@/lib/data/database.js';
-import { sourceMap } from '@/lib/sources/charts.js';
-import { buildFilterClause } from '@/lib/sources/filter.js';
+import { connection } from '@/lib/data/database';
+import { getConnection } from '@/lib/data/database-puck';
+import { PERMISSION } from '@/lib/permission/constants';
+import {
+  hasGlobalReadPermission,
+  hasPermission,
+} from '@/lib/permission/services';
+import { sourceMap } from '@/lib/sources/charts';
+import { buildFilterClause } from '@/lib/sources/filter';
 import log from 'xac-loglevel';
 
 export const getSourceChartData = async (sourceId, filters = {}) => {
-  const user = getCurrentUser();
-  if (!user) {
-    log.error('No user found in getSourceChartData', sourceId);
-    return { success: false, error: 'User not authenticated' };
+  const authorized = await hasPermission(sourceId, PERMISSION.GLOBUS_READ);
+  if (!authorized) {
+    log.error(`User does not have Globus read permission for ${sourceId}`);
+    return {
+      success: false,
+      error: 'User does not have permission to view data',
+    };
   }
 
   const config = sourceMap[sourceId];
@@ -220,10 +227,13 @@ async function getAllColumns() {
  * >}
  */
 export const getSummaryDataSources = async (filters = {}) => {
-  const user = getCurrentUser();
-  if (!user) {
-    log.error('No user found in getSummaryDataSources');
-    return { success: false, error: 'User not authenticated' };
+  const authorized = await hasGlobalReadPermission();
+  if (!authorized) {
+    log.error(`User does not have global read permission for summary data`);
+    return {
+      success: false,
+      error: 'User does not have permission to view summary data',
+    };
   }
 
   let allColumns;

@@ -65,5 +65,5 @@ export const hasPermission = async (sourceId, requiredPerms) => {
  *   `false` otherwise.
  */
 export const hasGlobalReadPermission = async () => {
-  return hasPermission(GLOBAL_SOURCE, PERMISSION.GLOBUS_READ);
+  return hasPermission(GLOBAL_SOURCE, PERMISSION.READ);
 };

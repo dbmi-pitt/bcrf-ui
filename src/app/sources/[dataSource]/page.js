@@ -23,13 +23,24 @@ export async function generateMetadata({ params }) {
 export default async function Page({ params }) {
   const { dataSource } = await params;
   const summaryDataSource = await getSummaryDataSource(dataSource);
+  if (!summaryDataSource) {
+    notFound();
+  }
+
   const authorizedToViewData = await hasPermission(
     dataSource,
     PERMISSION.GLOBUS_READ,
   );
-
-  if (!summaryDataSource) {
-    notFound();
+  if (!authorizedToViewData) {
+    return (
+      <BasicLayout fluid={true}>
+        <TermsOfUse
+          termsText="You are not authorized to view this data source"
+          authorizedToViewData={authorizedToViewData}
+          summaryDataSource={summaryDataSource}
+        />
+      </BasicLayout>
+    );
   }
 
   const config = await getSourceChartConfig(dataSource);
