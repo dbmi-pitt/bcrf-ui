@@ -7,11 +7,11 @@ import { Masonry, Tag } from 'antd';
 import { useState } from 'react';
 import { summaryDataSources } from '@/lib/content/summaryDataSources';
 import Facets from '@/components/search/Facets';
-import ClearFilters from '../search/ClearFilters';
+import ClearFilters from '@/components/search/ClearFilters';
 
-export default function SourcesExplorer({ dataSources }) {
+export default function SourcesExplorer({ summary }) {
   const [tags, setTags] = useState([]);
-  const [cards, setCards] = useState(dataSources);
+  const [cards, setCards] = useState(summary.sources);
   const [isBusy, setIsBusy] = useState(false);
 
   const filterCards = (tag, value, sources = []) => {
@@ -23,7 +23,7 @@ export default function SourcesExplorer({ dataSources }) {
 
     // filter out the cards already included
     const availableSources =
-      dataSources.filter((d) => dict[d.source] === undefined) || [];
+      summary.sources.filter((d) => dict[d.source] === undefined) || [];
     availableSources.map((data) => {
       ( data.tags || []).map((t) => {
         if (
@@ -97,7 +97,7 @@ export default function SourcesExplorer({ dataSources }) {
         )}
       </div>
       <div aria-label="Clinical Data Sources">
-        <SearchProvider config={{ facets: summaryDataSources[0].common_fields, dataSources, setCards, setTags, setIsBusy }}>
+        <SearchProvider config={{ summary, setCards, setTags, setIsBusy }}>
           <div className="row">
             <div className="col-2">
               <ClearFilters />

@@ -5,7 +5,8 @@ import log from 'xac-loglevel';
 const SearchContext = createContext({});
 
 export const SearchProvider = ({ children, config }) => {
-  const [facets, setFacets] = useState(undefined); 
+  const [facets, setFacets] = useState(config.summary?.aggregations || {}); 
+  const [selectedFacets, setSelectedFacets] = useState(undefined);
 
   useEffect(() => {
 
@@ -15,6 +16,8 @@ export const SearchProvider = ({ children, config }) => {
     config,
     facets,
     setFacets,
+    selectedFacets,
+    setSelectedFacets,
   }}>{children}</SearchContext.Provider>;
 };
 

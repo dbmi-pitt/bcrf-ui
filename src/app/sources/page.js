@@ -8,5 +8,5 @@ export default async function SourcesPage() {
   const summary = await getSummaryDataSources();
   log.debug('SourcesPage summary:', summary.aggregations);
 
-  return <Sources summary={summary.sources} />;
+  return <Sources summary={summary} />;
 }
