@@ -8,9 +8,10 @@ services:
         HOST_GID: ${HOST_GID:-1002}
         PORT_MAPPING: ${PORT_MAPPING:-3003}
         DUCK_DB_PATH: ${DUCK_DB_PATH}
+        DUCK_DB_PUCK_PERMS_PATH: ${DUCK_DB_PUCK_PERMS_PATH}
     container_name: bcrf-ui-test
     hostname: bcrf-ui-test
-    image: dbmi/bcrf-ui-test:${VERSION}
+    image: sennet/bcrf-ui-test:${VERSION}
     restart: unless-stopped
     platform: linux/amd64
     init: true
