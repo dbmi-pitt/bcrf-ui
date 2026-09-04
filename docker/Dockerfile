@@ -25,11 +25,10 @@ COPY next.config.mjs jsconfig.json package.json pnpm-workspace.yaml ./
 COPY .env .env.production
 COPY public ./public
 COPY src ./src
-COPY scripts ./scripts
 
-# Build the duckdb database
-RUN node scripts/importData.js scripts duckdb.db && \
-    rm -rf scripts
+# Copy prebuilt databases
+COPY duckdb.db ./duckdb.db
+COPY bcrf_data.db ./bcrf_data.db
 
 # Compile stylus css
 RUN pnpm exec stylus --include-css --compress src/styles/main.styl -o src/app/main.css
