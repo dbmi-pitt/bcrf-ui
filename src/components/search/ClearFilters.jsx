@@ -3,11 +3,12 @@ import SearchContext from '@/context/SearchContext'
 import log from 'xac-loglevel';
 
 function ClearFilters() {
-  const { config, setSelectedFacets } = useContext(SearchContext)
+  const { config, setSelectedFacets, setFacets } = useContext(SearchContext)
   const handleClearFilters = () => {
 
     log.debug('ClearFilters: handleClearFilters', config)
     setSelectedFacets(undefined)
+    setFacets(config.summary.aggregations)
     config.setCards(config.summary.sources)
     
   }
