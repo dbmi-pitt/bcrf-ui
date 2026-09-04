@@ -2,12 +2,16 @@
 
 import AppSpinner from '@/components/AppSpinner';
 import SummaryCard from '@/components/sources/SummaryCard';
+import { SearchProvider } from '@/context/SearchContext';
 import { Masonry, Tag } from 'antd';
 import { useState } from 'react';
+import Facets from '@/components/search/Facets';
+import ClearFilters from '@/components/search/ClearFilters';
 
-export default function SourcesExplorer({ dataSources }) {
+export default function SourcesExplorer({ summary }) {
   const [tags, setTags] = useState([]);
-  const [cards, setCards] = useState(dataSources);
+  const [cards, setCards] = useState(summary.sources);
+  const [isBusy, setIsBusy] = useState(false);
 
   const filterCards = (tag, value, sources = []) => {
     const sourceIds = sources.map((d) => d.source);
@@ -18,9 +22,9 @@ export default function SourcesExplorer({ dataSources }) {
 
     // filter out the cards already included
     const availableSources =
-      dataSources.filter((d) => dict[d.source] === undefined) || [];
+      summary.sources.filter((d) => dict[d.source] === undefined) || [];
     availableSources.map((data) => {
-      data.tags.map((t) => {
+      ( data.tags || []).map((t) => {
         if (
           dict[data.source] === undefined &&
           t.name === tag.name &&
@@ -74,7 +78,7 @@ export default function SourcesExplorer({ dataSources }) {
     for (const t of newTags) {
       sources = filterCards(t, t.value, sources);
     }
-    setCards(sources.length ? sources : dataSources);
+    setCards(sources.length ? sources : summary.sources);
     setTags(newTags);
   };
 
@@ -92,27 +96,37 @@ export default function SourcesExplorer({ dataSources }) {
         )}
       </div>
       <div aria-label="Clinical Data Sources">
-        {cards && (
-          <Masonry
-            columns={{ xs: 1, sm: 2, md: 3 }}
-            gutter={10}
-            items={cards.map((source, index) => ({
-              key: `item-${index}`,
-              data: source,
-            }))}
-            itemRender={({ data, index }) => (
-              <SummaryCard
-                data={data}
-                index={index}
-                key={`card-${index}`}
-                onTagClick={onCardTagClick}
-              />
-            )}
-          />
-        )}
-        <br />
+        <SearchProvider config={{ summary, setCards, setTags, setIsBusy }}>
+          <div className="row">
+            <div className="col-2">
+              <ClearFilters />
+              <Facets />
+              </div>
+            <div className="col-10">
+              {cards && (
+                <Masonry
+                  columns={{ xs: 1, sm: 2, xl: 3 }}
+                  gutter={10}
+                  items={cards.map((source, index) => ({
+                    key: `item-${index}`,
+                    data: source,
+                  }))}
+                  itemRender={({ data, index }) => (
+                    <SummaryCard
+                      data={data}
+                      index={index}
+                      key={`card-${index}`}
+                      onTagClick={onCardTagClick}
+                    />
+                  )}
+                />
+              )}
+            </div>
+          </div>
+          <br />
+        </SearchProvider>
       </div>
-      {cards.length <= 0 && <AppSpinner />}
+      {isBusy && <AppSpinner />}
     </>
   );
 }
