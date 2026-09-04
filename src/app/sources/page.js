@@ -1,5 +1,5 @@
 import Sources from '@/components/sources/Sources';
-import { getSummaryDataSources } from '@/lib/sources/actions.js';
+import { getSummaryDataSources } from '@/lib/sources/services.js';
 import log from 'xac-loglevel';
 
 export const metadata = { title: 'Data Sources' };
