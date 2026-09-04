@@ -19,10 +19,10 @@ function AppNavBar() {
       <Container fluid>
         <a href="/" className={'ms-3 align-items-center d-flex gap-3'}>
           <Image
-            src={'/imgs/brand-logo-cropped.png'}
+            src={'/imgs/partnership-bcrf-logo.png'}
             className="c-navbar__logo w-fixed"
-            width="178"
-            height="65"
+            width="145"
+            height="105"
             alt="BCRF logo"
           />{' '}
           <span className="c-navbar__tagline">

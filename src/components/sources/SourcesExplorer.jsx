@@ -7,6 +7,7 @@ import { Masonry, Tag } from 'antd';
 import { useState } from 'react';
 import Facets from '@/components/search/Facets';
 import ClearFilters from '@/components/search/ClearFilters';
+import SourcesVizualizations from './SourcesVizualizations';
 
 export default function SourcesExplorer({ summary }) {
   const [tags, setTags] = useState([]);
@@ -86,7 +87,7 @@ export default function SourcesExplorer({ summary }) {
 
   return (
     <>
-      <div
+      {/* <div
         className="c-selectedTags"
         aria-label="Selected Tags"
         style={{ minHeight: 70 }}
@@ -94,9 +95,10 @@ export default function SourcesExplorer({ summary }) {
         {headerTags.length > 0 && (
           <div className="c-selectedTags__wrap">{headerTags}</div>
         )}
-      </div>
+      </div> */}
       <div aria-label="Clinical Data Sources">
-        <SearchProvider config={{ summary, setCards, setTags, setIsBusy }}>
+        <SearchProvider config={{ summary, cards, setCards, setTags, setIsBusy }}>
+          <div className="c-sourcesExplorer__vizualizations"><SourcesVizualizations /></div>
           <div className="row">
             <div className="col-2">
               <ClearFilters />
@@ -112,12 +114,14 @@ export default function SourcesExplorer({ summary }) {
                     data: source,
                   }))}
                   itemRender={({ data, index }) => (
+                    <>
+                    {/* {index === 0 && <SourcesVizualizations />} */}
                     <SummaryCard
                       data={data}
                       index={index}
                       key={`card-${index}`}
                       onTagClick={onCardTagClick}
-                    />
+                    /></>
                   )}
                 />
               )}
