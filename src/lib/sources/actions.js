@@ -14,7 +14,7 @@ import log from 'xac-loglevel';
 export const getSourceChartData = async (sourceId, filters = {}) => {
   const authorized = await hasCurrentUserPermission(
     sourceId,
-    PERMISSION.GLOBUS_READ,
+    PERMISSION.READ,
   );
   if (!authorized) {
     log.error(`User does not have Globus read permission for ${sourceId}`);

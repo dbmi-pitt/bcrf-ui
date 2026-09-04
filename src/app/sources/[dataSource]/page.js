@@ -1,4 +1,3 @@
-import Unauthorized from '@/app/unauthorized';
 import ClinicalData from '@/components/ClinicalData';
 import DataSourceTabs from '@/components/DataSourceTabs';
 import GridLayout from '@/components/grid/GridLayout';
@@ -32,10 +31,6 @@ export default async function Page({ params }) {
     dataSource,
     PERMISSION.GLOBUS_READ,
   );
-  if (!authorizedToViewData) {
-    // person is not authorized
-    return <Unauthorized />;
-  }
 
   const config = await getSourceChartConfig(dataSource);
   const chartData = await getSourceChartData(dataSource);
