@@ -17,7 +17,7 @@ function SummaryCard({ data, onTagClick }) {
     const list = [];
     let tags = [];
 
-    for (const tag of data.tags) {
+    for (const tag of data.tags || []) {
       if (tag.display_type !== 'collapsed') {
         tags = [];
         for (const v of tag.values) {
@@ -60,7 +60,7 @@ function SummaryCard({ data, onTagClick }) {
     <Card
       onClick={handleHeaderAreaClick}
       className="c-summaryCard"
-      title={<span onClick={(e) => goToSource(e, data)}>{data.name}</span>}
+      title={<span onClick={(e) => goToSource(e, data)}><span className="p2">{data.name}</span></span>}
       extra={
         <>
           <span key={`patients-${data.source}`} className="mx-3">
@@ -68,7 +68,7 @@ function SummaryCard({ data, onTagClick }) {
             <Badge
               count={data.patients}
               overflowCount={THEME.badge.overflow}
-              color={THEME.colors.primary}
+              color={THEME.colors.plum}
             />{' '}
             patients
           </span>
@@ -76,7 +76,7 @@ function SummaryCard({ data, onTagClick }) {
             <Badge
               count={data.samples}
               overflowCount={THEME.badge.overflow}
-              color={THEME.colors.secondary}
+              color={THEME.colors.navy}
             />{' '}
             samples{' '}
           </span>
@@ -98,7 +98,7 @@ function SummaryCard({ data, onTagClick }) {
         style={{ maxHeight: 200, overflowY: 'auto' }}
       >
         <Accordion>
-          {data.tags
+          {(data.tags || [])
             .filter((tag) => tag.display_type === 'collapsed')
             .map((tag) => (
               <Accordion.Item

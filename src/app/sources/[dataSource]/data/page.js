@@ -1,7 +1,10 @@
+import Unauthorized from '@/app/unauthorized';
 import BasicLayout from '@/components/layout/BasicLayout';
 import SourceNavbar from '@/components/SourceNavbar';
-import { getSummaryDataSource } from '@/lib/sources/services';
 import { downloadLinksDemo } from '@/lib/data/demo-globus-links';
+import { PERMISSION } from '@/lib/permission/constants';
+import { hasCurrentUserPermission } from '@/lib/permission/services';
+import { getSummaryDataSource } from '@/lib/sources/services';
 import { DownloadIcon } from 'lucide-react';
 import { Badge } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
@@ -14,6 +17,15 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
+  const authorizedToViewData = await hasCurrentUserPermission(
+    dataSource,
+    PERMISSION.GLOBUS_READ,
+  );
+  if (!authorizedToViewData) {
+    // person is not authorized
+    return <Unauthorized />;
+  }
+
   const dlLinks = downloadLinksDemo[dataSource];
 
   return (

@@ -63,3 +63,4 @@ puck_perms.puckdata
 *.db*
 *.tsv
 *.wal
+*.puckdata

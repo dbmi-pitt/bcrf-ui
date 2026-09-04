@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/lib/auth/services';
-import { hasGlobusReadPermission } from '@/lib/permission/services.js';
+import { hasCurrentUserGlobalReadPermission } from '@/lib/permission/services';
 import { NextResponse } from 'next/server';
 
 const PUBLIC_PATHS = ['/', '/login', '/about'];
@@ -22,7 +22,7 @@ export async function proxy(request) {
       return NextResponse.redirect(url);
     }
 
-    const hasPermission = await hasGlobusReadPermission(user.username);
+    const hasPermission = await hasCurrentUserGlobalReadPermission();
     if (!hasPermission) {
       const url = new URL(
         '/unauthorized',
