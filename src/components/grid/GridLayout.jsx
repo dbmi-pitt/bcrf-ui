@@ -2,8 +2,10 @@
 
 import GridWidget from '@/components/grid/GridWidget';
 import { getSourceChartData } from '@/lib/sources/actions';
+import { applyFiltersToSearchParams } from '@/lib/urlFilters';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
@@ -92,6 +94,8 @@ export default function GridLayout({
   dataSource,
   charts,
   initialData,
+  initialFilters,
+  initialTags,
   header,
 }) {
   const STORAGE_KEY = `grid-layout-${dataSource}`;
@@ -102,14 +106,17 @@ export default function GridLayout({
   const rowHeightPx = 30;
   const margin = [10, 10];
   const cols = 12;
+  const router = useRouter();
+  const pathname = usePathname();
 
   const loadedRef = useRef(false);
+  const isInitialFiltersRef = useRef(true);
   const [hiddenWidgets, setHiddenWidgets] = useState([]);
-  const [filters, setFilters] = useState({});
+  const [filters, setFilters] = useState(initialFilters ?? {});
   const [chartData, setChartData] = useState(initialData);
   const [layout, setLayout] = useState(() => createLayout(charts));
   const [legend, setLegend] = useState({});
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState(initialTags ?? []);
 
   const hasActiveFilters = Object.keys(filters).length > 0;
 
@@ -147,11 +154,19 @@ export default function GridLayout({
     loadedRef.current = true;
   }, [STORAGE_KEY]);
 
+  // Keep the url `filter.<chartId>` query params in sync with the current
+  // filters
   useEffect(() => {
-    if (!hasActiveFilters) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setChartData(initialData);
-      setTags([]);
+    const params = new URLSearchParams(window.location.search);
+    applyFiltersToSearchParams(params, filters);
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
+    });
+
+    // Skip the fetch on first render. Already have data from server.
+    if (isInitialFiltersRef.current) {
+      isInitialFiltersRef.current = false;
       return;
     }
 
@@ -171,7 +186,7 @@ export default function GridLayout({
     return () => {
       cancelled = true;
     };
-  }, [dataSource, filters, hasActiveFilters, initialData]);
+  }, [dataSource, filters, hasActiveFilters, pathname, router]);
 
   // Dynamically change widget size when charts change type
   const handleChartTypeChange = (widgetKey, chartType) => {

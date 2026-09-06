@@ -83,6 +83,7 @@ function Histogram({ data, width, height }) {
   const [brushResetKey, setBrushResetKey] = useState(0);
   const [brushDomain, setBrushDomain] = useState({ x: [0, 0] });
   const [highlightedBins, setHighlightedBins] = useState([]);
+  const syncedFiltersRef = useRef(null);
 
   const binnedData = useMemo(() => {
     const bins = data.bins;
@@ -115,7 +116,10 @@ function Histogram({ data, width, height }) {
     });
   }, [histogramData]);
 
-  const binLabels = histogramData.map((d) => d.bin);
+  const binLabels = useMemo(
+    () => histogramData.map((d) => d.bin),
+    [histogramData],
+  );
 
   const chartPaddings = {
     left: 30,
@@ -177,13 +181,36 @@ function Histogram({ data, width, height }) {
   );
 
   useEffect(() => {
+    const serializedFilters = JSON.stringify(activeFilters);
+    if (serializedFilters === syncedFiltersRef.current) {
+      return;
+    }
+    syncedFiltersRef.current = serializedFilters;
+
     log.debug('Active filters changed for chart', data.id, activeFilters);
+
     if (activeFilters.length === 0) {
       setBrushDomain({ x: [0, 0] });
       setHighlightedBins([]);
       setBrushResetKey((prev) => prev + 1);
+      return;
     }
-  }, [activeFilters, data.id]);
+
+    const indexes = activeFilters
+      .map((label) => binLabels.indexOf(label))
+      .filter((index) => index !== -1);
+    if (indexes.length === 0) {
+      return;
+    }
+
+    const minIndex = Math.min(...indexes);
+    const maxIndex = Math.max(...indexes);
+    const [x0] = binCoordinates[minIndex];
+    const [, x1] = binCoordinates[maxIndex];
+
+    setHighlightedBins(activeFilters);
+    setBrushDomain({ x: [x0, x1] });
+  }, [activeFilters, data.id, binCoordinates, binLabels]);
 
   return (
     <div className="c-chart__histogram">
