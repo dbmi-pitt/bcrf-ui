@@ -5,7 +5,7 @@ FROM node:22-bookworm-slim AS base
 RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-RUN npm install -g pnpm
+RUN corepack enable
 WORKDIR /usr/src/app
 
 # Dependencies
