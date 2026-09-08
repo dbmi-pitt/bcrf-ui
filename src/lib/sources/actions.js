@@ -12,10 +12,7 @@ import { buildFilterClause } from '@/lib/sources/filter';
 import log from 'xac-loglevel';
 
 export const getSourceChartData = async (sourceId, filters = {}) => {
-  const authorized = await hasCurrentUserPermission(
-    sourceId,
-    PERMISSION.READ,
-  );
+  const authorized = await hasCurrentUserPermission(sourceId, PERMISSION.READ);
   if (!authorized) {
     log.error(`User does not have Globus read permission for ${sourceId}`);
     return {
@@ -360,8 +357,6 @@ export const getSummaryDataSources = async (filters = {}) => {
         Object.assign(stats, metadata, {
           name: row.name,
           description: row.description,
-          samples: stats.samples,
-          patients: stats.patients,
         });
       }
     } catch (error) {
