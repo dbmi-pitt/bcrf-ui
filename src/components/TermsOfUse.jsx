@@ -19,7 +19,7 @@ export default function TermsOfUse({
       },
       body: JSON.stringify({
         template: 'globusDataSet',
-        to: 'mas400@pitt.edu',
+        to: 'BCRFGDH@pitt.edu',
         subject: 'Request Globus Data Sets Access',
         templateProps: {
           sourceName: summaryDataSourceName,
