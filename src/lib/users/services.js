@@ -31,8 +31,7 @@ export const getUserByEmail = async (email) => {
   const conn = await getConnection();
 
   const reader = await conn.runAndReadAll(
-    'SELECT uuid, email, name, organization FROM users WHERE email = $email',
-    { $email: email },
+    'SELECT uuid, name, email, organization  FROM users WHERE email = ?', [email],
   );
   const rows = reader.getRowObjects();
   if (rows.length === 0) {
