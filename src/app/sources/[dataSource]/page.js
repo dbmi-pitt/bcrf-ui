@@ -25,7 +25,6 @@ export default async function Page({ params }) {
   const { dataSource } = await params;
   const currentUser = await getCurrentUser();
   const user = await getUserByEmail(currentUser.username);
-  console.log(user)
   const summaryDataSource = await getSummaryDataSource(dataSource);
   const authorizedToViewData = await hasPermission(dataSource, 'GLOBUS_READ');
 
