@@ -28,7 +28,6 @@ export default async function Page({ params, searchParams }) {
   const { dataSource } = await params;
   const currentUser = await getCurrentUser();
   const user = await getUserByEmail(currentUser.username);
-  console.log(user)
   const resolvedSearchParams = await searchParams;
   const initialFilters = parseFiltersFromSearchParams(resolvedSearchParams);
 
