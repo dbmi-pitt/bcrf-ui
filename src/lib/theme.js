@@ -6,6 +6,8 @@ const THEME = {
   colors: {
     plum: '#6B2C5D',
     navy: '#00354B',
+    samples: '#00354B',
+    patients: '#6B2C5D',
   },
   chart: {
     ticks: {
