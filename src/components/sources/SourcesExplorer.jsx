@@ -25,7 +25,7 @@ export default function SourcesExplorer({ summary }) {
     const availableSources =
       summary.sources.filter((d) => dict[d.source] === undefined) || [];
     availableSources.map((data) => {
-      ( data.tags || []).map((t) => {
+      (data.tags || []).map((t) => {
         if (
           dict[data.source] === undefined &&
           t.name === tag.name &&
@@ -97,14 +97,18 @@ export default function SourcesExplorer({ summary }) {
         )}
       </div> */}
       <div aria-label="Clinical Data Sources">
-        <SearchProvider config={{ summary, cards, setCards, setTags, setIsBusy }}>
-          <div className="c-sourcesExplorer__vizualizations"><SourcesVizualizations /></div>
+        <SearchProvider
+          config={{ summary, cards, setCards, setTags, setIsBusy }}
+        >
+          <div className="c-sourcesExplorer__vizualizations">
+            <SourcesVizualizations />
+          </div>
           <div className="row">
-            <div className="col-2">
+            <div className="col-lg-2">
               <ClearFilters />
               <Facets />
-              </div>
-            <div className="col-10">
+            </div>
+            <div className="col-lg-10">
               {cards && (
                 <Masonry
                   columns={{ xs: 1, sm: 2, xl: 3 }}
@@ -115,13 +119,14 @@ export default function SourcesExplorer({ summary }) {
                   }))}
                   itemRender={({ data, index }) => (
                     <>
-                    {/* {index === 0 && <SourcesVizualizations />} */}
-                    <SummaryCard
-                      data={data}
-                      index={index}
-                      key={`card-${index}`}
-                      onTagClick={onCardTagClick}
-                    /></>
+                      {/* {index === 0 && <SourcesVizualizations />} */}
+                      <SummaryCard
+                        data={data}
+                        index={index}
+                        key={`card-${index}`}
+                        onTagClick={onCardTagClick}
+                      />
+                    </>
                   )}
                 />
               )}
