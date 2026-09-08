@@ -72,7 +72,7 @@ export default function TermsOfUse({
           >
             <buton
               className="c-btn c-btn--primary rounded-0 text-white d-block mb-2"
-              style={{ alignSelf: 'flex-start' }}
+              style={{ alignSelf: 'flex-start', cursor: 'pointer' }}
             >
               Request Access
             </buton>
