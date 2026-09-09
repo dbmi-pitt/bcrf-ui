@@ -14,88 +14,14 @@ export default function SourcesExplorer({ summary }) {
   const [cards, setCards] = useState(summary.sources);
   const [isBusy, setIsBusy] = useState(false);
 
-  const filterCards = (tag, value, sources = []) => {
-    const sourceIds = sources.map((d) => d.source);
-    const dict = {};
-    sourceIds.forEach((role) => {
-      dict[role] = true;
-    });
-
-    // filter out the cards already included
-    const availableSources =
-      summary.sources.filter((d) => dict[d.source] === undefined) || [];
-    availableSources.map((data) => {
-      (data.tags || []).map((t) => {
-        if (
-          dict[data.source] === undefined &&
-          t.name === tag.name &&
-          t.values.indexOf(value) !== -1
-        ) {
-          sources.push(data);
-          dict[data.source] = true;
-        }
-      });
-    });
-    return sources;
-  };
 
   const onCardTagClick = ({ data, tag, value }) => {
-    const found = tags.map(
-      (t) => t.value == value && t.name === tag.name && t.id === data.source,
-    );
-    if (found.length <= 0) {
-      const sources = filterCards(tag, value);
-      setCards(sources);
-      setTags([...tags, { name: tag.name, value, id: data.source }]);
-    }
+    window.location = `/sources/${data.source}?tag=${tag.name}&value=${encodeURIComponent(value)}`;
   };
-
-  const getHeaderTags = () => {
-    const list = [];
-    for (const t of tags) {
-      list.push(
-        <Tag
-          className="c-tag c-tag--filter"
-          key={`${t.name}-${t.value}`}
-          closable
-          onClose={() => onHeaderTagClick(t)}
-          style={{
-            paddingInline: 10,
-            paddingBlock: 4,
-          }}
-        >
-          <strong>{t.name}</strong>: {t.value}
-        </Tag>,
-      );
-    }
-    return list;
-  };
-
-  const onHeaderTagClick = (tag) => {
-    const newTags = tags.filter(
-      (t) => t.id === tag.id && t.value !== tag.value,
-    );
-    let sources = [];
-    for (const t of newTags) {
-      sources = filterCards(t, t.value, sources);
-    }
-    setCards(sources.length ? sources : summary.sources);
-    setTags(newTags);
-  };
-
-  const headerTags = getHeaderTags();
 
   return (
     <>
-      {/* <div
-        className="c-selectedTags"
-        aria-label="Selected Tags"
-        style={{ minHeight: 70 }}
-      >
-        {headerTags.length > 0 && (
-          <div className="c-selectedTags__wrap">{headerTags}</div>
-        )}
-      </div> */}
+     
       <div aria-label="Clinical Data Sources">
         <SearchProvider
           config={{ summary, cards, setCards, setTags, setIsBusy }}

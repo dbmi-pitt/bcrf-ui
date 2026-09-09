@@ -4,7 +4,7 @@ import GridWidget from '@/components/grid/GridWidget';
 import { getSourceChartData } from '@/lib/sources/actions';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -139,6 +139,20 @@ export default function GridLayout({
     return acc;
   }, {});
 
+  const updateParamFilters = useEffectEvent(() => {
+    const query = new URLSearchParams(window.location.search);
+    const tag = query.get('tag')
+    const value = query.get('value')
+    if (tag && value) {
+      setFilters({[tag.toDashedCase()]: value.trim().split(',')})
+    }
+    
+  })
+
+  useEffect(() => {
+    updateParamFilters()
+  }, []);
+
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -158,6 +172,7 @@ export default function GridLayout({
     let cancelled = false;
 
     async function loadData() {
+      debugger
       const result = await getSourceChartData(dataSource, filters);
       if (cancelled || !result.success) {
         return;
