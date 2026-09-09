@@ -20,7 +20,7 @@ export default function TermsOfUse({
     });
 
   return (
-    <div key="terms_of_use" className="card  text-bg-warning px-4 pt-3 mb-2">
+    <div key="terms_of_use" className="card bg--warning px-4 pt-3 mb-2">
       <h1 className="fs-4">Terms of Use</h1>
       <div
         dangerouslySetInnerHTML={{
