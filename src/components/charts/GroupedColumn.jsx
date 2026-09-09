@@ -41,7 +41,7 @@ const getLegendData = (data) => {
   for (const name in data) {
     legend.push({
       name,
-      symbol: { fill: THEME.colors[name] },
+      symbol: { type: 'square', fill: THEME.colors[name] },
     });
   }
   return legend;
@@ -50,13 +50,13 @@ const getLegendData = (data) => {
 function GroupedColumn({ data, width, height }) {
   return (
     <div
-      className="c-chart__groupedColumn"
-      style={{ width: '100%', maxWidth: '2000px' }}
+      className="c-chart__groupedColumn d-flex justify-content-start"
+      
     >
       <VictoryChart theme={VictoryTheme.clean}>
         <VictoryGroup offset={50}>{getBars(data)}</VictoryGroup>
-        <VictoryLegend x={125} y={20} data={getLegendData(data)} />
       </VictoryChart>
+      <VictoryLegend x={0} y={150} data={getLegendData(data)} />
     </div>
   );
 }

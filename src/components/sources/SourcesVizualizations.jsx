@@ -7,7 +7,7 @@ function SourcesVizualizations() {
   const {config} = useContext(SearchContext);
   const [chartData, setChartData] = useState(null);
 
-  const prepareChartData = useEffectEvent(() => {
+  const prepareChartData = useEffectEvent(() => { 
     const groups = ['patients', 'samples'];
     const groupData = {};
     for (const group of groups) {
@@ -18,7 +18,7 @@ function SourcesVizualizations() {
         if (card[group]) {
           groupData[group].push({
             x: card.source,
-            y: Number(card[group]),
+            y: Number(card.aggregations[group]),
           });
         }
       });
