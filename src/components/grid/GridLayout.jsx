@@ -186,7 +186,6 @@ export default function GridLayout({
     let cancelled = false;
 
     async function loadData() {
-      debugger
       const result = await getSourceChartData(dataSource, filters);
       if (cancelled || !result.success) {
         return;
