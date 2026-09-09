@@ -2,10 +2,11 @@ import React, {useEffect, useContext, useState, useEffectEvent} from 'react'
 import Accordion from 'react-bootstrap/Accordion';
 import GroupedColumn from '../charts/GroupedColumn';
 import SearchContext from '@/context/SearchContext';
+import AppSpinner from '../AppSpinner';
 
 function SourcesVizualizations() {
   const {config} = useContext(SearchContext);
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState(null);
 
   const prepareChartData = useEffectEvent(() => {
     const groups = ['patients', 'samples'];
@@ -34,7 +35,8 @@ function SourcesVizualizations() {
   return (
     <div className="c-sourcesVizualizations">
       <div className="c-sourcesVizualizations__wrap">
-        <GroupedColumn data={chartData} />
+        {chartData && <GroupedColumn data={chartData} />}
+        {!chartData && <div className='text-center align-middle'><AppSpinner fullscreen={false} /></div>}
       </div>
     </div>
   )
