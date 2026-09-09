@@ -2,6 +2,7 @@ import React, {useEffect, useContext, useState, useEffectEvent} from 'react'
 import GroupedColumn from '../charts/GroupedColumn';
 import SearchContext from '@/context/SearchContext';
 import AppSpinner from '../AppSpinner';
+import log from 'xac-loglevel'
 
 function SourcesVizualizations() {
   const {config} = useContext(SearchContext);
@@ -22,8 +23,8 @@ function SourcesVizualizations() {
           });
         }
       });
-      
     }
+    log.debug('SourcesVizualizations: prepareChartData', groupData)
     setChartData(groupData);
   });
 
