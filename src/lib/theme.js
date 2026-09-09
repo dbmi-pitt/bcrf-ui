@@ -4,8 +4,10 @@ const THEME = {
     overflow: 999,
   },
   colors: {
-    primary: '#e4196d',
-    secondary: '#54a3aa',
+    plum: '#6B2C5D',
+    navy: '#00354B',
+    samples: '#2F5D6F',
+    patients: '#6B2C5D',
   },
   chart: {
     ticks: {
