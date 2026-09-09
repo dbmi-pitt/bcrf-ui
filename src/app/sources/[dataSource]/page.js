@@ -13,6 +13,8 @@ import {
   getSummaryDataSource,
 } from '@/lib/sources/services';
 import { notFound } from 'next/navigation';
+import { getCurrentUser } from '@/lib/auth/services';
+import { getUserByEmail } from '@/lib/users/services';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -22,6 +24,8 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const { dataSource } = await params;
+  const currentUser = await getCurrentUser();
+  const user = await getUserByEmail(currentUser.username);
   const summaryDataSource = await getSummaryDataSource(dataSource);
   if (!summaryDataSource) {
     notFound();
@@ -46,7 +50,8 @@ export default async function Page({ params }) {
         <TermsOfUse
           termsText={summaryDataSource.terms_of_use}
           authorizedToViewData={authorizedToViewData}
-          summaryDataSource={summaryDataSource}
+          summaryDataSourceName={summaryDataSource.name}
+          user={user}
         />
       )}
     </>
