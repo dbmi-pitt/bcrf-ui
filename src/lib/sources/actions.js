@@ -357,6 +357,10 @@ export const getSummaryDataSources = async (filters = {}) => {
         Object.assign(stats, metadata, {
           name: row.name,
           description: row.description,
+          aggregations: {
+            samples: stats.samples,
+            patients: stats.patients,
+          }
         });
       }
     } catch (error) {

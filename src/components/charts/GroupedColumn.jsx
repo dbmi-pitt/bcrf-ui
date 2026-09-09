@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Bar,
+  VictoryLegend,
   VictoryAxis,
   VictoryGroup,
   VictoryBar,
@@ -17,8 +17,8 @@ const getBars = (data) => {
     bars.push(
       <VictoryBar
         animate={{
-          duration: 1000,      
-          onLoad: { duration: 500 } 
+          duration: 1000,
+          onLoad: { duration: 500 },
         }}
         style={
           THEME.colors[group]
@@ -36,18 +36,27 @@ const getBars = (data) => {
   return bars;
 };
 
+const getLegendData = (data) => {
+  const legend = [];
+  for (const name in data) {
+    legend.push({
+      name,
+      symbol: { type: 'square', fill: THEME.colors[name] },
+    });
+  }
+  return legend;
+};
+
 function GroupedColumn({ data, width, height }) {
-  
   return (
-    <div className="c-chart__groupedColumn" style={{ width: '100%', maxWidth: '2000px' }}>
-      <VictoryChart 
-        theme={VictoryTheme.clean}>
-        <VictoryGroup
-          offset={50}
-          >
-          {getBars(data)}
-        </VictoryGroup>
+    <div
+      className="c-chart__groupedColumn d-flex justify-content-start"
+      
+    >
+      <VictoryChart theme={VictoryTheme.clean}>
+        <VictoryGroup offset={50}>{getBars(data)}</VictoryGroup>
       </VictoryChart>
+      <VictoryLegend x={0} y={150} data={getLegendData(data)} />
     </div>
   );
 }
