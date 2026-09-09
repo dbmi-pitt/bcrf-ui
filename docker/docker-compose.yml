@@ -32,3 +32,4 @@ services:
       options:
         awslogs-region: us-east-1
         awslogs-group: ${BCRF_UI_CLOUDWATCH_LOG_GROUP:?err}
+        awslogs-stream: ${BCRF_UI_CLOUDWATCH_LOG_STREAM:?err}
