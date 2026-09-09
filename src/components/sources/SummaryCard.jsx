@@ -68,7 +68,7 @@ function SummaryCard({ data, onTagClick }) {
             <Badge
               count={data.patients}
               overflowCount={THEME.badge.overflow}
-              color={THEME.colors.plum}
+              color={THEME.colors.patients}
             />{' '}
             patients
           </span>
@@ -76,7 +76,7 @@ function SummaryCard({ data, onTagClick }) {
             <Badge
               count={data.samples}
               overflowCount={THEME.badge.overflow}
-              color={THEME.colors.navy}
+              color={THEME.colors.samples}
             />{' '}
             samples{' '}
           </span>
