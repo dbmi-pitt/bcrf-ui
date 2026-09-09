@@ -1,5 +1,4 @@
 import React, {useEffect, useContext, useState, useEffectEvent} from 'react'
-import Accordion from 'react-bootstrap/Accordion';
 import GroupedColumn from '../charts/GroupedColumn';
 import SearchContext from '@/context/SearchContext';
 import AppSpinner from '../AppSpinner';

@@ -3,20 +3,20 @@
 import AppSpinner from '@/components/AppSpinner';
 import SummaryCard from '@/components/sources/SummaryCard';
 import { SearchProvider } from '@/context/SearchContext';
-import { Masonry, Tag } from 'antd';
+import { Masonry } from 'antd';
 import { useState } from 'react';
 import Facets from '@/components/search/Facets';
 import ClearFilters from '@/components/search/ClearFilters';
 import SourcesVizualizations from './SourcesVizualizations';
 
 export default function SourcesExplorer({ summary }) {
-  const [tags, setTags] = useState([]);
+
   const [cards, setCards] = useState(summary.sources);
   const [isBusy, setIsBusy] = useState(false);
 
 
   const onCardTagClick = ({ data, tag, value }) => {
-    window.location = `/sources/${data.source}?tag=${tag.name}&value=${encodeURIComponent(value)}`;
+    window.location = `/sources/${data.source}?tag=${encodeURIComponent(tag.name)}&value=${encodeURIComponent(value)}`;
   };
 
   return (
@@ -24,7 +24,7 @@ export default function SourcesExplorer({ summary }) {
      
       <div aria-label="Clinical Data Sources">
         <SearchProvider
-          config={{ summary, cards, setCards, setTags, setIsBusy }}
+          config={{ summary, cards, setCards, setIsBusy }}
         >
           <div className="c-sourcesExplorer__vizualizations">
             <SourcesVizualizations />
