@@ -17,7 +17,7 @@ const getBars = (data) => {
     bars.push(
       <VictoryBar
         animate={{
-          duration: 1000,
+          duration: 500,
           onLoad: { duration: 500 },
         }}
         style={
@@ -53,7 +53,7 @@ function GroupedColumn({ data, width, height }) {
       className="c-chart__groupedColumn d-flex justify-content-start"
       
     >
-      <VictoryChart theme={VictoryTheme.clean}>
+      <VictoryChart key={JSON.stringify(data)} theme={VictoryTheme.clean}>
         <VictoryGroup offset={50}>{getBars(data)}</VictoryGroup>
       </VictoryChart>
       <VictoryLegend x={0} y={150} data={getLegendData(data)} />
