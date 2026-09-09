@@ -36,7 +36,7 @@ function SourcesVizualizations() {
     <div className="c-sourcesVizualizations">
       <div className="c-sourcesVizualizations__wrap">
         {chartData && <GroupedColumn data={chartData} />}
-        {!chartData && <div className='text-center align-middle'><AppSpinner fullscreen={false} /></div>}
+        {!chartData && <div className='text-center c-sourcesVizualizations__spinner'><AppSpinner fullscreen={false} /></div>}
       </div>
     </div>
   )
