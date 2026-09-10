@@ -16,7 +16,7 @@ export const CONFIG = {
         y: 'Count',
         freq: 'Frequency',
       },
-      tooltip: "Cancer Type Detailed Tooltip Text",
+      tooltip: 'Cancer Type Detailed Tooltip Text',
       query: (clause) => {
         const whereClause = clause ? `WHERE ${clause}` : '';
         // Cast y to integer to avoid returning a string value for count
@@ -364,8 +364,8 @@ export const CONFIG = {
       },
     },
     {
-      id: 'overall-survival',
-      title: 'Overall Survival',
+      id: 'overall-survival-status',
+      title: 'Overall Survival Status',
       types: ['pie', 'table'],
       filter: {
         column: 'Overall Survival Status',
@@ -488,6 +488,687 @@ export const CONFIG = {
         return `
           SELECT 
             "Ethnicity" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'did-the-patient-receive-adjuvant-treatment-for-localized-disease',
+      title:
+        'Did the patient receive adjuvant treatment for localized disease?',
+      types: ['pie', 'table'],
+      filter: {
+        column:
+          'Did the patient receive adjuvant treatment for localized disease?', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Did the patient receive adjuvant treatment for localized disease?',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Did the patient receive adjuvant treatment for localized disease?" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'cancer-type',
+      title: 'Cancer Type',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Cancer Type', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Cancer Type',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Cancer Type" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'disease-free-status',
+      title: 'Disease Free Status',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Disease Free Status', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Disease Free Status',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Disease Free Status" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'source-of-tissue-used-for-mutational-profile',
+      title: 'Source of tissue used for mutational profile',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Source of tissue used for mutational profile', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Source of tissue used for mutational profile',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Source of tissue used for mutational profile" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'number-proliferating-cells',
+      title: 'Number Proliferating Cells',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Number Proliferating Cells', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Number Proliferating Cells',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Number Proliferating Cells" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'oncotree-code',
+      title: 'Oncotree Code',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Oncotree Code', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Oncotree Code',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Oncotree Code" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'participating-site',
+      title: 'Participating site',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Participating site', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Participating site" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'preservation',
+      title: 'Preservation',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Preservation', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Preservation" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'does-the-patient-have-a-second-breast-primary',
+      title: 'Does the patient have a second breast primary?',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Does the patient have a second breast primary?', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Does the patient have a second breast primary?" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'estrogen-receptor-status',
+      title: 'Estrogen Receptor Status',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Estrogen Receptor Status', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Estrogen Receptor Status" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'primary-tumor-her2-neu-receptor-status-by-ihc',
+      title: 'Primary tumor HER2/neu Receptor status by IHC',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Primary tumor HER2/neu Receptor status by IHC', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Primary tumor HER2/neu Receptor status by IHC" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'family-history-of-breast-or-ovarian-cancer',
+      title: 'Family history of breast or ovarian cancer?',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Family history of breast or ovarian cancer?', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Family history of breast or ovarian cancer?',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Family history of breast or ovarian cancer?" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'is-her2-copy-number-known-primary-tumor',
+      title: 'Is HER2 copy number known? (Primary tumor)',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Is HER2 copy number known? (Primary tumor)', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Is HER2 copy number known? (Primary tumor)',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Is HER2 copy number known? (Primary tumor)" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'her2-copy-number-for-primary-tumor',
+      title: 'HER2 copy number for primary tumor',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'HER2 copy number for primary tumor', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'HER2 copy number for primary tumor',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "HER2 copy number for primary tumor" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'primary-tumor-her2-fish',
+      title: 'Primary tumor HER2 FISH',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Primary tumor HER2 FISH', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Primary tumor HER2 FISH',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Primary tumor HER2 FISH" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'primary-tumor-her2-status-interpretation',
+      title: 'Primary tumor HER2 status interpretation',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Primary tumor HER2 status interpretation', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Primary tumor HER2 status interpretation',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Primary tumor HER2 status interpretation" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'clinical-m-stage-of-first-primary',
+      title: 'Clinical M stage of first primary',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Clinical M stage of first primary', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Clinical M stage of first primary',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Clinical M stage of first primary" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'clinical-n-stage-of-first-primary',
+      title: 'Clinical N stage of first primary',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Clinical N stage of first primary', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Clinical N stage of first primary',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Clinical N stage of first primary" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'did-patient-receive-a-genomic-prognostic-assay-for-this-tumor',
+      title: 'Did patient receive a genomic prognostic assay for this tumor?',
+      types: ['pie', 'table'],
+      filter: {
+        column:
+          'Did patient receive a genomic prognostic assay for this tumor?', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Did patient receive a genomic prognostic assay for this tumor?',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Did patient receive a genomic prognostic assay for this tumor?" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'source-of-genomic-prognostic-assay-on-first-primary',
+      title: 'Source of genomic prognostic assay on first primary',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Source of genomic prognostic assay on first primary', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Source of genomic prognostic assay on first primary',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Source of genomic prognostic assay on first primary" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'clinical-t-stage-of-first-primary',
+      title: 'Clinical T stage of first primary',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Clinical T stage of first primary', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Clinical T stage of first primary',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Clinical T stage of first primary" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'did-patient-receive-radiation-for-localized-disease',
+      title: 'Did patient receive radiation for localized disease?',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Did patient receive radiation for localized disease?', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Did patient receive radiation for localized disease?',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Did patient receive radiation for localized disease?" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'did-patient-receive-radiation-for-metastatic-disease',
+      title: 'Did patient receive radiation for metastatic disease?',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Did patient receive radiation for metastatic disease?', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Did patient receive radiation for metastatic disease?',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Did patient receive radiation for metastatic disease?" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'sample-type',
+      title: 'Sample Type',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Sample_Type', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Sample Type',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        // Sample_Type is a sample-level attribute, so count samples rather than distinct patients
+        return `
+          SELECT 
+            "Sample_Type" AS x, 
+            CAST(COUNT(*) AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'sex',
+      title: 'Sex',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Sex', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Sex',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Sex" AS x, 
+            CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
+            ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
+          FROM aurora_us
+          ${whereClause}
+          GROUP BY x
+          ORDER BY y DESC; 
+        `;
+      },
+    },
+    {
+      id: 'type-of-primary-tumor-final-resection',
+      title: 'Type of primary tumor final resection',
+      types: ['pie', 'table'],
+      filter: {
+        column: 'Type of primary tumor final resection', // column name in the tsv file
+        type: 'term', // type of filter: term
+      },
+      labels: {
+        x: 'Type of primary tumor final resection',
+        y: 'Count',
+        freq: 'Frequency',
+      },
+      query: (clause) => {
+        const whereClause = clause ? `WHERE ${clause}` : '';
+        return `
+          SELECT 
+            "Type of primary tumor final resection" AS x, 
             CAST(COUNT(DISTINCT "Patient ID") AS INTEGER) AS y,
             ROUND(100.0 * COUNT(DISTINCT "Patient ID") / SUM(COUNT(DISTINCT "Patient ID")) OVER (), 2) AS freq
           FROM aurora_us
