@@ -1,7 +1,22 @@
 .c-sourcesVizualizations
+  padding 5px 20px
   &__spinner
     min-height 300px
     display grid
     place-items center
   .VictoryContainer
     width initial !important
+    tspan
+      &.axisValue
+        opacity 0
+        animation fadeIn 500ms ease-in forwards
+        animation-delay 600ms
+      &:not(.axisValue)
+        font-size 16px !important
+      
+
+@keyframes fadeIn 
+	from
+    opacity 0
+  to 
+    opacity 1

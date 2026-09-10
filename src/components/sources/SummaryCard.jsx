@@ -85,17 +85,15 @@ function SummaryCard({ data, onTagClick }) {
       style={{ width: '100%' }}
       actions={[]}
     >
-      <p onClick={(e) => goToSource(e, data)}>{data.description}</p>
-
+      <div  style={{ maxHeight: 550, overflowY: 'auto' }}>
+        <p onClick={(e) => goToSource(e, data)}>{data.description}</p>
       <div
         className="c-summaryCard__tags"
-        style={{ maxHeight: 400, overflowY: 'auto' }}
       >
         {getHighlightedTags()}
       </div>
       <div
         className="c-summaryCard__collapsed"
-        style={{ maxHeight: 200, overflowY: 'auto' }}
       >
         <Accordion>
           {(data.tags || [])
@@ -122,6 +120,8 @@ function SummaryCard({ data, onTagClick }) {
             ))}
         </Accordion>
       </div>
+      </div>
+      
     </Card>
   );
 }

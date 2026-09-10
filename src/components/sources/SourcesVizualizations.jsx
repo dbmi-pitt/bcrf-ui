@@ -17,13 +17,22 @@ const GroupedColumn = dynamic(
 );
 
 function SourcesVizualizations() {
-  const { activeSources } = useContext(SearchContext);
+  const { activeSources, config } = useContext(SearchContext);
+  const sourceTotals = new Map(
+    config.sources.map(({ source, patients, samples }) => [
+      source,
+      { patients, samples },
+    ]),
+  );
   const chartData = ['patients', 'samples'].reduce((groupData, group) => {
     groupData[group] = activeSources.reduce((values, source) => {
-      if (source[group]) {
+      const total = sourceTotals.get(source.source)?.[group];
+      if (source[group] && total) {
         values.push({
+          total,
           x: source.source,
-          y: Number(source[group]),
+          y: (Number(source[group]) / Number(total)) * 100,
+          value: Number(source[group]),
         });
       }
       return values;
