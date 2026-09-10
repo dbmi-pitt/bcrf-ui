@@ -17,9 +17,12 @@ function SourcesVizualizations() {
       }
       config.cards.forEach((card) => {
         if (card[group]) {
+          const source = config.summary.sources.filter((s) => card.source === s.source)
           groupData[group].push({
+            total: source[0][group],
             x: card.source,
-            y: Number(card.aggregations[group]),
+            y: (Number(card.aggregations[group]) / Number(source[0][group])) * 100,
+            value: Number(card.aggregations[group]),
           });
         }
       });
