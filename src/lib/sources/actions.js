@@ -254,43 +254,74 @@ export const getSummaryDataSources = async (filters = {}) => {
     mappedFilters[key] = { type: 'term', values: value };
   }
 
-  const { clause, params } = buildFilterClause(mappedFilters);
-  const whereSql = clause ? `WHERE ${clause}` : '';
-  const subQueries = [SOURCE_COLUMN, ...aggregationColumns].map((column) => {
-    const label = column.replace(/'/g, "''");
-    if (column === SOURCE_COLUMN) {
-      return `
+  // Build a separate subquery per facet column, exclude that column's own
+  // filter so a facet is never filtered by its own selected values.
+  const subQueries = [SOURCE_COLUMN, ...aggregationColumns].map(
+    (column, idx) => {
+      const label = column.replace(/'/g, "''");
+
+      const filtersForColumn = { ...mappedFilters };
+      delete filtersForColumn[column];
+      const { clause, params: columnParams } =
+        buildFilterClause(filtersForColumn);
+
+      const renamedParams = {};
+      let renamedClause = clause;
+      for (const [name, value] of Object.entries(columnParams)) {
+        const uniqueName = `q${idx}_${name}`;
+        renamedParams[uniqueName] = value;
+        renamedClause = renamedClause.replace(
+          new RegExp(`\\$${name}\\b`, 'g'),
+          `$${uniqueName}`,
+        );
+      }
+
+      const whereSql = renamedClause ? `WHERE ${renamedClause}` : '';
+
+      if (column === SOURCE_COLUMN) {
+        return {
+          sql: `
+          SELECT
+            '${label}' AS column_name,
+            "${column}" AS term,
+            COUNT(*) AS count,
+            COUNT(DISTINCT "${SAMPLE_ID_COLUMN}") AS samples,
+            COUNT(DISTINCT "${PATIENT_ID_COLUMN}") AS patients
+          FROM ${TABLE_NAME}
+          ${whereSql}
+          GROUP BY term
+          `,
+          params: renamedParams,
+        };
+      }
+      return {
+        sql: `
         SELECT
           '${label}' AS column_name,
           "${column}" AS term,
           COUNT(*) AS count,
-          COUNT(DISTINCT "${SAMPLE_ID_COLUMN}") AS samples,
-          COUNT(DISTINCT "${PATIENT_ID_COLUMN}") AS patients
-        FROM filtered
-        GROUP BY term
-        `;
-    }
-    return `
-      SELECT
-        '${label}' AS column_name,
-        "${column}" AS term,
-        COUNT(*) AS count,
-        NULL AS samples,
-        NULL AS patients
-      FROM filtered
-      GROUP BY term`;
-  });
+          NULL AS samples,
+          NULL AS patients
+        FROM ${TABLE_NAME}
+        ${whereSql}
+        GROUP BY term`,
+        params: renamedParams,
+      };
+    },
+  );
 
   const query = `
-    WITH filtered AS (
-      SELECT * FROM ${TABLE_NAME} ${whereSql}
-    )
     SELECT column_name, term, count, samples, patients
-    FROM (${subQueries.join(' UNION ALL ')})
+    FROM (${subQueries.map((s) => s.sql).join(' UNION ALL ')})
     ORDER BY column_name, count DESC
   `
     .replace(/\s+/g, ' ')
     .trim();
+
+  const params = subQueries.reduce(
+    (acc, s) => Object.assign(acc, s.params),
+    {},
+  );
 
   const sources = {};
   const aggs = {};
@@ -335,6 +366,7 @@ export const getSummaryDataSources = async (filters = {}) => {
     `
       .replace(/\s+/g, ' ')
       .trim();
+
     try {
       const puckConnection = await getConnection();
       log.debug('Querying source metadata:', sourceQuery, sourceIds);
@@ -360,7 +392,7 @@ export const getSummaryDataSources = async (filters = {}) => {
           aggregations: {
             samples: stats.samples,
             patients: stats.patients,
-          }
+          },
         });
       }
     } catch (error) {
