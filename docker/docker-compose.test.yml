@@ -8,15 +8,15 @@ services:
         HOST_GID: ${HOST_GID:-1002}
         PORT_MAPPING: ${PORT_MAPPING:-3003}
         DUCK_DB_PATH: ${DUCK_DB_PATH}
+        DUCK_DB_PUCK_PERMS_PATH: ${DUCK_DB_PUCK_PERMS_PATH}
     container_name: bcrf-ui-test
     hostname: bcrf-ui-test
-    image: dbmi/bcrf-ui-test:${VERSION}
+    image: sennet/bcrf-ui-test:${VERSION}
     restart: unless-stopped
     platform: linux/amd64
     init: true
     volumes:
       - '../public/content/banner.json:/usr/src/app/public/content/banner.json'
-      - '../public/content/summary-data-sources.json:/usr/src/app/public/content/summary-data-sources.json'
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:${PORT_MAPPING}']
       interval: 1m30s
@@ -32,3 +32,4 @@ services:
       options:
         awslogs-region: us-east-1
         awslogs-group: ${BCRF_UI_CLOUDWATCH_LOG_GROUP:?err}
+        awslogs-stream: ${BCRF_UI_CLOUDWATCH_LOG_STREAM:?err}

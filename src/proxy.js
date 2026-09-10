@@ -2,7 +2,7 @@ import { getCurrentUser } from '@/lib/auth/services';
 import { hasCurrentUserGlobalReadPermission } from '@/lib/permission/services';
 import { NextResponse } from 'next/server';
 
-const PUBLIC_PATHS = ['/', '/login', '/about'];
+const PUBLIC_PATHS = ['/', '/login', '/about', '/unauthorized'];
 
 export async function proxy(request) {
   const pathname = request.nextUrl.pathname;

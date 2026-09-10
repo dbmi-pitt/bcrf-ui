@@ -6,7 +6,7 @@ import { applyFiltersToSearchParams } from '@/lib/urlFilters';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
@@ -145,6 +145,20 @@ export default function GridLayout({
     acc[chartId] = TAG_COLOR_PALETTE[index % TAG_COLOR_PALETTE.length];
     return acc;
   }, {});
+
+  const updateParamFilters = useEffectEvent(() => {
+    const query = new URLSearchParams(window.location.search);
+    const tag = query.get('tag')
+    const value = query.get('value')
+    if (tag && value) {
+      setFilters({[tag.toDashedCase()]: value.trim().split(',')})
+    }
+    
+  })
+
+  useEffect(() => {
+    updateParamFilters()
+  }, []);
 
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
