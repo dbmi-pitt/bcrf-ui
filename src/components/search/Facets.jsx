@@ -1,12 +1,18 @@
 import SearchContext from '@/context/SearchContext';
-import { getSummaryDataSources } from '@/lib/sources/actions';
+import { getSummaryDataAggregations } from '@/lib/sources/actions';
 import { ConfigProvider, Tree } from 'antd';
-import { useContext, useMemo } from 'react';
+import { useContext } from 'react';
 import log from 'xac-loglevel';
 
 function Facets({}) {
-  const { config, facets, setFacets, selectedFacets, setSelectedFacets } =
-    useContext(SearchContext);
+  const {
+    config,
+    facets,
+    setFacets,
+    selectedFacets,
+    setSelectedFacets,
+    setActiveSources,
+  } = useContext(SearchContext);
 
   /**
    * Filters checked keys by aggregations
@@ -35,7 +41,7 @@ function Facets({}) {
    * @param {array} checkedKeys
    */
   const filterSources = (filters, checkedKeys) => {
-    getSummaryDataSources(filters).then(async (response) => {
+    getSummaryDataAggregations(filters).then(async (response) => {
       if (!response.success) {
         log.error(
           'Facets: onCheck: Error fetching filtered sources',
@@ -45,7 +51,7 @@ function Facets({}) {
         return;
       }
 
-      config.setCards(response.sources);
+      setActiveSources(response.sources);
       setFacets(response.aggregations);
       filtedCheckedKeys(response.aggregations, checkedKeys);
       config.setIsBusy(false);
@@ -104,7 +110,7 @@ function Facets({}) {
     return treeData;
   };
 
-  const treeData = useMemo(() => getTreeData(), [facets]);
+  const treeData = getTreeData();
 
   return (
     <ConfigProvider

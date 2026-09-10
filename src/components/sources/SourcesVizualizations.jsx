@@ -1,45 +1,45 @@
-import React, {useEffect, useContext, useState, useEffectEvent} from 'react'
-import GroupedColumn from '../charts/GroupedColumn';
+import AppSpinner from '@/components/AppSpinner';
 import SearchContext from '@/context/SearchContext';
-import AppSpinner from '../AppSpinner';
-import log from 'xac-loglevel'
+import dynamic from 'next/dynamic';
+import { useContext } from 'react';
+import log from 'xac-loglevel';
+
+const GroupedColumn = dynamic(
+  () => import('@/components/charts/GroupedColumn'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="text-center c-sourcesVizualizations__spinner">
+        <AppSpinner fullscreen={false} />
+      </div>
+    ),
+  },
+);
 
 function SourcesVizualizations() {
-  const {config} = useContext(SearchContext);
-  const [chartData, setChartData] = useState(null);
-
-  const prepareChartData = useEffectEvent(() => { 
-    const groups = ['patients', 'samples'];
-    const groupData = {};
-    for (const group of groups) {
-      if (!groupData[group]) {
-        groupData[group] = [];
+  const { activeSources } = useContext(SearchContext);
+  const chartData = ['patients', 'samples'].reduce((groupData, group) => {
+    groupData[group] = activeSources.reduce((values, source) => {
+      if (source[group]) {
+        values.push({
+          x: source.source,
+          y: Number(source[group]),
+        });
       }
-      config.cards.forEach((card) => {
-        if (card[group]) {
-          groupData[group].push({
-            x: card.source,
-            y: Number(card.aggregations[group]),
-          });
-        }
-      });
-    }
-    log.debug('SourcesVizualizations: prepareChartData', groupData)
-    setChartData(groupData);
-  });
+      return values;
+    }, []);
+    return groupData;
+  }, {});
 
-  useEffect(() => {
-    prepareChartData();
-  }, [config]);
+  log.debug('SourcesVizualizations: chart data', chartData);
 
   return (
     <div className="c-sourcesVizualizations">
       <div className="c-sourcesVizualizations__wrap">
-        {chartData && <GroupedColumn data={chartData} />}
-        {!chartData && <div className='text-center c-sourcesVizualizations__spinner'><AppSpinner fullscreen={false} /></div>}
+        <GroupedColumn data={chartData} />
       </div>
     </div>
-  )
+  );
 }
 
-export default SourcesVizualizations
+export default SourcesVizualizations;

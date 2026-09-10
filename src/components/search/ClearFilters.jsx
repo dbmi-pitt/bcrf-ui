@@ -1,22 +1,27 @@
-import React, {useContext} from 'react'
-import SearchContext from '@/context/SearchContext'
+import SearchContext from '@/context/SearchContext';
+import { useContext } from 'react';
 import log from 'xac-loglevel';
 
 function ClearFilters() {
-  const { config, setSelectedFacets, setFacets } = useContext(SearchContext)
-  const handleClearFilters = () => {
+  const { config, setActiveSources, setSelectedFacets, setFacets } =
+    useContext(SearchContext);
 
-    log.debug('ClearFilters: handleClearFilters', config)
-    setSelectedFacets(undefined)
-    setFacets(config.summary.aggregations)
-    config.setCards(config.summary.sources)
-    
-  }
+  const handleClearFilters = () => {
+    log.debug('ClearFilters: handleClearFilters', config);
+    setSelectedFacets(undefined);
+    setFacets(config.aggregations);
+    setActiveSources(config.activeSources);
+  };
   return (
-    <div><button className="c-btn c-btn--primary rounded-0 d-block w-100 mb-2" onClick={handleClearFilters}>
-      <span>Clear Filters</span>
-    </button></div>
-  )
+    <div>
+      <button
+        className="c-btn c-btn--primary rounded-0 d-block w-100 mb-2"
+        onClick={handleClearFilters}
+      >
+        <span>Clear Filters</span>
+      </button>
+    </div>
+  );
 }
 
-export default ClearFilters
+export default ClearFilters;
