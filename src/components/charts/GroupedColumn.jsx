@@ -87,7 +87,7 @@ function GroupedColumn({
   return (
     <div className="c-chart__groupedColumn d-flex justify-content-start">
       <VictoryChart
-        key={JSON.stringify(data)}
+        key={new Date().getTime()}
         theme={VictoryTheme.clean}
         minDomain={style.minDomain}
         maxDomain={style.maxDomain}
