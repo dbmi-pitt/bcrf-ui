@@ -19,18 +19,19 @@ const GroupedColumn = dynamic(
 function SourcesVizualizations() {
   const { activeSources, config } = useContext(SearchContext);
   const sourceTotals = new Map(
-    config.sources.map(({ source, patients, samples }) => [
+    config.sources.map(({ source, name, patients, samples }) => [
       source,
-      { patients, samples },
+      { name, patients, samples },
     ]),
   );
   const chartData = ['patients', 'samples'].reduce((groupData, group) => {
     groupData[group] = activeSources.reduce((values, source) => {
-      const total = sourceTotals.get(source.source)?.[group];
+      const sourceTotal = sourceTotals.get(source.source);
+      const total = sourceTotal?.[group];
       if (source[group] && total) {
         values.push({
           total,
-          x: source.source,
+          x: sourceTotal.name || source.source,
           y: (Number(source[group]) / Number(total)) * 100,
           value: Number(source[group]),
         });
