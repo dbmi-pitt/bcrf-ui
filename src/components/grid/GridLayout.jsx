@@ -5,6 +5,7 @@ import { getSourceChartData } from '@/lib/sources/actions';
 import { applyFiltersToSearchParams } from '@/lib/urlFilters';
 import { CloseOutlined } from '@ant-design/icons';
 import { Button, Tag } from 'antd';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';

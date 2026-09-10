@@ -1,24 +1,38 @@
-import ENVS from '@/lib/envs';
-import { createContext, useEffect, useState } from 'react';
-import log from 'xac-loglevel';
+import { createContext, useState } from 'react';
 
 const SearchContext = createContext({});
 
-export const SearchProvider = ({ children, config }) => {
-  const [facets, setFacets] = useState(config.summary?.aggregations || {}); 
+export const SearchProvider = ({ children, config, aggregations }) => {
+  const [facets, setFacets] = useState(config.aggregations || {});
   const [selectedFacets, setSelectedFacets] = useState(undefined);
+  const [activeSources, setActiveSources] = useState(
+    config.activeSources || config.sources.map(({ source }) => source),
+  );
 
-  useEffect(() => {
+  const updateActiveSources = (sourceNames) => {
+    setActiveSources(sourceNames);
+    const activeNames = new Set(sourceNames.map(({ source }) => source));
+    const filteredNames = config.sources.filter(({ source }) =>
+      activeNames.has(source),
+    );
+    config.setCards(filteredNames);
+  };
 
-  }, []);
-
-  return <SearchContext.Provider value={{
-    config,
-    facets,
-    setFacets,
-    selectedFacets,
-    setSelectedFacets,
-  }}>{children}</SearchContext.Provider>;
+  return (
+    <SearchContext.Provider
+      value={{
+        config,
+        facets,
+        setFacets,
+        selectedFacets,
+        setSelectedFacets,
+        activeSources,
+        setActiveSources: updateActiveSources,
+      }}
+    >
+      {children}
+    </SearchContext.Provider>
+  );
 };
 
 export default SearchContext;

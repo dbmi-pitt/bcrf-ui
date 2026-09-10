@@ -26,6 +26,9 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params, searchParams }) {
   const { dataSource } = await params;
+  const resolvedSearchParams = await searchParams;
+  const initialFilters = parseFiltersFromSearchParams(resolvedSearchParams);
+
   const currentUser = await getCurrentUser();
   const user = await getUserByEmail(currentUser.username);
   const resolvedSearchParams = await searchParams;

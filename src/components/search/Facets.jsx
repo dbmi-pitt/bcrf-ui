@@ -1,19 +1,25 @@
-import React, { useContext, useMemo, useState } from 'react';
 import SearchContext from '@/context/SearchContext';
-import { Tree, ConfigProvider } from 'antd';
+import { getSummaryDataAggregations } from '@/lib/sources/actions';
+import { ConfigProvider, Tree } from 'antd';
+import { useContext } from 'react';
 import log from 'xac-loglevel';
-import URLS from '@/lib/urls';
 
 function Facets({}) {
-  const { config, facets, setFacets, selectedFacets, setSelectedFacets } = useContext(SearchContext);
- 
-  
+  const {
+    config,
+    facets,
+    setFacets,
+    selectedFacets,
+    setSelectedFacets,
+    setActiveSources,
+  } = useContext(SearchContext);
+
   /**
-   * Filters checked keys by aggregations 
+   * Filters checked keys by aggregations
    * Avoids antd `Tree missing follow keys:`
    *
-   * @param {*} aggregations 
-   * @param {*} checkedKeys 
+   * @param {*} aggregations
+   * @param {*} checkedKeys
    */
   const filtedCheckedKeys = (aggregations, checkedKeys) => {
     const _checkedKKeys = [];
@@ -31,18 +37,12 @@ function Facets({}) {
   /**
    * Calls the API to filter sources based on the provided filters and updates the state with the filtered sources and aggregated facets.
    *
-   * @param {object} filters 
+   * @param {object} filters
    * @param {array} checkedKeys
    */
   const filterSources = (filters, checkedKeys) => {
-    fetch(URLS.api.local('sources/aggs'), {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ filters }),
-    }).then(async (response) => {
-      if (!response.ok) {
+    getSummaryDataAggregations(filters).then(async (response) => {
+      if (!response.success) {
         log.error(
           'Facets: onCheck: Error fetching filtered sources',
           response.statusText,
@@ -50,22 +50,19 @@ function Facets({}) {
         config.setIsBusy(false);
         return;
       }
-      const result = await response.json();
-      if (result.success) {
-        config.setCards(result.sources);
-        setFacets(result.aggregations);
-        filtedCheckedKeys(result.aggregations, checkedKeys);
-      }
+
+      setActiveSources(response.sources);
+      setFacets(response.aggregations);
+      filtedCheckedKeys(response.aggregations, checkedKeys);
       config.setIsBusy(false);
     });
   };
 
-  
   /**
    * Handles a user's facet selection and filters sources
    *
-   * @param {array} checkedKeys 
-   * @param {object} info 
+   * @param {array} checkedKeys
+   * @param {object} info
    */
   const onCheck = (checkedKeys, info) => {
     log.debug('Facets: onCheck', checkedKeys, info);
@@ -91,31 +88,29 @@ function Facets({}) {
     filterSources(filters, checkedKeys);
   };
 
-
   const getTreeData = () => {
     if (!facets) return [];
     const treeData = Object.entries(facets).map(([facet, values], index) => {
-        return {
-          title: facet,
-          field: facet,
-          key: facet.toDashedCase(),
-          children: values.map((value, valueIndex) => {
-            let key = `${facet.toDashedCase()}-${value.term.toDashedCase()}`;
-            return {
-              title: `${value.term} (${value.count})`,
-              field: value.term,
-              key,
-              parent: facet,
-            };
-          }),
-        };
-      });
+      return {
+        title: facet,
+        field: facet,
+        key: facet.toDashedCase(),
+        children: values.map((value, valueIndex) => {
+          let key = `${facet.toDashedCase()}-${value.term.toDashedCase()}`;
+          return {
+            title: `${value.term} (${value.count})`,
+            field: value.term,
+            key,
+            parent: facet,
+          };
+        }),
+      };
+    });
 
-    
     return treeData;
   };
 
-  const treeData = useMemo(() => getTreeData(), [facets]);
+  const treeData = getTreeData();
 
   return (
     <ConfigProvider
