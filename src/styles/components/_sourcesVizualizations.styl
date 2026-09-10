@@ -7,4 +7,16 @@
   .VictoryContainer
     width initial !important
     tspan
-      font-size 16px !important
+      &.axisValue
+        opacity 0
+        animation fadeIn 500ms ease-in forwards
+        animation-delay 550ms
+      &:not(.axisValue)
+        font-size 16px !important
+      
+
+@keyframes fadeIn 
+	from
+    opacity 0
+  to 
+    opacity 1

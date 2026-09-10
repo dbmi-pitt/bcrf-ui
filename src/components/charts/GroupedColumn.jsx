@@ -24,7 +24,7 @@ const DoubleLabel = (props) => {
         fill={'#333'}
         style={{ fontSize: 12, fontWeight: 'bold' }}
       >
-        {datum.value}
+        <tspan className='axisValue'>{datum.value}</tspan>
       </text>
       <text
         x={x}
@@ -33,7 +33,7 @@ const DoubleLabel = (props) => {
         fill={'#333'}
         style={{ fontSize: 12, fontWeight: 'bold' }}
       >
-        {datum.total}
+        <tspan className='axisValue'>{datum.total}</tspan>
       </text>
     </g>
   );
