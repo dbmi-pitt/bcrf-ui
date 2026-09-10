@@ -1,7 +1,7 @@
 'use server';
 
 import { connection } from '@/lib/data/database';
-import { PERMISSION } from '@/lib/permission/constants';
+import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
 import {
   hasCurrentUserGlobalReadPermission,
   hasCurrentUserPermission,
@@ -272,7 +272,8 @@ export const getSummaryDataAggregations = async (filters = {}) => {
       const sourceCounts = isSourceColumn
         ? `
           COUNT(DISTINCT "Patient ID") AS patients,
-          COUNT(DISTINCT "Source Record ID") AS samples`
+          COUNT(DISTINCT "Source Record ID") AS samples
+        `
         : 'NULL AS patients, NULL AS samples';
 
       return {
@@ -315,6 +316,7 @@ export const getSummaryDataAggregations = async (filters = {}) => {
     const rows = await result.getRowObjectsJson();
     for (const row of rows) {
       if (row.column_name === SOURCE_COLUMN) {
+        if (row.term === GLOBAL_SOURCE) continue;
         sources.push({
           source: row.term,
           patients: row.patients,

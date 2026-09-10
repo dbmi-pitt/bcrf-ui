@@ -6,7 +6,7 @@ import 'server-only';
 export const getSummaryDataSources = async () => {
   const conn = await getConnection();
   const result = await conn.run(
-    'SELECT source, name, description, data FROM sources',
+    'SELECT source, name, description, data FROM sources WHERE virtual = FALSE',
   );
   const rows = await result.getRowObjectsJson();
 
@@ -21,7 +21,7 @@ export const getSummaryDataSources = async () => {
 export const getSummaryDataSource = async (dataSource) => {
   const conn = await getConnection();
   const result = await conn.run(
-    'SELECT source, name, description, data FROM sources WHERE source = $source',
+    'SELECT source, name, description, data FROM sources WHERE source = $source AND virtual = FALSE',
     { source: dataSource },
   );
   const rows = await result.getRowObjectsJson();
