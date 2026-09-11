@@ -44,7 +44,7 @@ CREATE TABLE sources (
     data_table_name   VARCHAR(128)  NOT NULL, -- name of the data table in the duck database
     key_column        VARCHAR(128)  NOT NULL, -- primary key column for the data table
     config            JSON          NOT NULL, -- chart configuration
-    virtual           BOOLEAN       NOT NULL DEFAULT FALSE,
+    `virtual`         BOOLEAN       NOT NULL DEFAULT FALSE,
     created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -56,7 +56,7 @@ VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all
 -- ----------------------------------------------------------------------------
 -- groups
 -- ----------------------------------------------------------------------------
-CREATE TABLE groups (
+CREATE TABLE `groups` (
     uuid          CHAR(36)      NOT NULL PRIMARY KEY,
     name          VARCHAR(255)  NOT NULL, -- human-readable name for the group
     source        VARCHAR(64)   NOT NULL, -- source to which the group belongs
