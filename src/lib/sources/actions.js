@@ -1,8 +1,7 @@
 'use server';
 
 import { connection } from '@/lib/data/database';
-import { getConnection } from '@/lib/data/database-puck';
-import { PERMISSION } from '@/lib/permission/constants';
+import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
 import {
   hasCurrentUserGlobalReadPermission,
   hasCurrentUserPermission,
@@ -183,8 +182,6 @@ const EXCLUDED_FROM_AGGREGATIONS = new Set([
 ]);
 
 const SOURCE_COLUMN = 'Source';
-const SAMPLE_ID_COLUMN = 'Source Record ID';
-const PATIENT_ID_COLUMN = 'Patient ID';
 
 let allColumnsCache = null;
 
@@ -214,19 +211,12 @@ async function getAllColumns() {
  *   | {
  *       success: true,
  *       aggregations: Object.<string, { term: string, count: number }[]>,
- *       sources: {
- *         source: string,
- *         samples: number,
- *         patients: number,
- *         name: string,
- *         description?: string,
- *         [key: string]: any
- *       }[]
+ *       sources: { source: string, patients: number, samples: number }[]
  *     }
  *   | { success: false, error: string }
  * >}
  */
-export const getSummaryDataSources = async (filters = {}) => {
+export const getSummaryDataAggregations = async (filters = {}) => {
   const authorized = await hasCurrentUserGlobalReadPermission();
   if (!authorized) {
     log.error(`User does not have global read permission for summary data`);
@@ -254,45 +244,67 @@ export const getSummaryDataSources = async (filters = {}) => {
     mappedFilters[key] = { type: 'term', values: value };
   }
 
-  const { clause, params } = buildFilterClause(mappedFilters);
-  const whereSql = clause ? `WHERE ${clause}` : '';
-  const subQueries = [SOURCE_COLUMN, ...aggregationColumns].map((column) => {
-    const label = column.replace(/'/g, "''");
-    if (column === SOURCE_COLUMN) {
-      return `
+  // Build a separate subquery per facet column, exclude that column's own
+  // filter so a facet is never filtered by its own selected values.
+  const subQueries = [SOURCE_COLUMN, ...aggregationColumns].map(
+    (column, idx) => {
+      const label = column.replace(/'/g, "''");
+
+      const filtersForColumn = { ...mappedFilters };
+      delete filtersForColumn[column];
+      const { clause, params: columnParams } =
+        buildFilterClause(filtersForColumn);
+
+      const renamedParams = {};
+      let renamedClause = clause;
+      for (const [name, value] of Object.entries(columnParams)) {
+        const uniqueName = `q${idx}_${name}`;
+        renamedParams[uniqueName] = value;
+        renamedClause = renamedClause.replace(
+          new RegExp(`\\$${name}\\b`, 'g'),
+          `$${uniqueName}`,
+        );
+      }
+
+      const whereSql = renamedClause ? `WHERE ${renamedClause}` : '';
+
+      const isSourceColumn = column === SOURCE_COLUMN;
+      const sourceCounts = isSourceColumn
+        ? `
+          COUNT(DISTINCT "Patient ID") AS patients,
+          COUNT(DISTINCT "Source Record ID") AS samples
+        `
+        : 'NULL AS patients, NULL AS samples';
+
+      return {
+        sql: `
         SELECT
           '${label}' AS column_name,
           "${column}" AS term,
           COUNT(*) AS count,
-          COUNT(DISTINCT "${SAMPLE_ID_COLUMN}") AS samples,
-          COUNT(DISTINCT "${PATIENT_ID_COLUMN}") AS patients
-        FROM filtered
-        GROUP BY term
-        `;
-    }
-    return `
-      SELECT
-        '${label}' AS column_name,
-        "${column}" AS term,
-        COUNT(*) AS count,
-        NULL AS samples,
-        NULL AS patients
-      FROM filtered
-      GROUP BY term`;
-  });
+          ${sourceCounts}
+        FROM ${TABLE_NAME}
+        ${whereSql}
+        GROUP BY term`,
+        params: renamedParams,
+      };
+    },
+  );
 
   const query = `
-    WITH filtered AS (
-      SELECT * FROM ${TABLE_NAME} ${whereSql}
-    )
-    SELECT column_name, term, count, samples, patients
-    FROM (${subQueries.join(' UNION ALL ')})
+    SELECT column_name, term, count, patients, samples
+    FROM (${subQueries.map((s) => s.sql).join(' UNION ALL ')})
     ORDER BY column_name, count DESC
   `
     .replace(/\s+/g, ' ')
     .trim();
 
-  const sources = {};
+  const params = subQueries.reduce(
+    (acc, s) => Object.assign(acc, s.params),
+    {},
+  );
+
+  const sources = [];
   const aggs = {};
   for (const column of aggregationColumns) {
     aggs[column] = [];
@@ -304,11 +316,12 @@ export const getSummaryDataSources = async (filters = {}) => {
     const rows = await result.getRowObjectsJson();
     for (const row of rows) {
       if (row.column_name === SOURCE_COLUMN) {
-        sources[row.term] = {
-          count: row.count,
-          samples: row.samples,
+        if (row.term === GLOBAL_SOURCE) continue;
+        sources.push({
+          source: row.term,
           patients: row.patients,
-        };
+          samples: row.samples,
+        });
       } else {
         aggs[row.column_name].push({ term: row.term, count: row.count });
       }
@@ -318,60 +331,9 @@ export const getSummaryDataSources = async (filters = {}) => {
     return { success: false, error: 'Failed to query aggregations' };
   }
 
-  const activeSources = {};
-  for (const [source, stats] of Object.entries(sources)) {
-    if (stats.count > 0) {
-      const { count, ...rest } = stats;
-      activeSources[source] = { source, ...rest };
-    }
-  }
-
-  const sourceIds = Object.keys(activeSources);
-  if (sourceIds.length > 0) {
-    const placeholders = sourceIds.map(() => '?').join(', ');
-    const sourceQuery = `
-      SELECT source, name, description, data FROM sources
-      WHERE source IN (${placeholders}) AND NOT virtual
-    `
-      .replace(/\s+/g, ' ')
-      .trim();
-    try {
-      const puckConnection = await getConnection();
-      log.debug('Querying source metadata:', sourceQuery, sourceIds);
-      const puckResult = await puckConnection.run(sourceQuery, sourceIds);
-      const puckRows = await puckResult.getRowObjectsJson();
-      for (const row of puckRows) {
-        const stats = activeSources[row.source];
-        let metadata = row.data;
-        if (typeof metadata === 'string') {
-          try {
-            metadata = JSON.parse(metadata);
-          } catch (parseError) {
-            log.error(
-              `Invalid metadata JSON for source ${row.source}:`,
-              parseError,
-            );
-            metadata = {};
-          }
-        }
-        Object.assign(stats, metadata, {
-          name: row.name,
-          description: row.description,
-          aggregations: {
-            samples: stats.samples,
-            patients: stats.patients,
-          }
-        });
-      }
-    } catch (error) {
-      log.error('Error querying source metadata:', error);
-      return { success: false, error: 'Failed to query source metadata' };
-    }
-  }
-
   return {
     success: true,
     aggregations: aggs,
-    sources: Object.values(activeSources),
+    sources: sources,
   };
 };

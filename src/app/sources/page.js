@@ -1,12 +1,21 @@
 import Sources from '@/components/sources/Sources';
-import { getSummaryDataSources } from '@/lib/sources/actions.js';
+import { getSummaryDataAggregations } from '@/lib/sources/actions';
+import { getSummaryDataSources } from '@/lib/sources/services.js';
 import log from 'xac-loglevel';
 
 export const metadata = { title: 'Data Sources' };
 
 export default async function SourcesPage() {
-  const summary = await getSummaryDataSources();
-  log.debug('SourcesPage summary:', summary.aggregations);
+  const sources = await getSummaryDataSources();
+  const aggregations = await getSummaryDataAggregations();
 
-  return <Sources summary={summary} />;
+  log.debug('SourcesPage sources:', sources, aggregations);
+
+  return (
+    <Sources
+      sources={sources}
+      aggregations={aggregations.aggregations}
+      activeSources={aggregations.sources}
+    />
+  );
 }

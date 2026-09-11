@@ -1,48 +1,55 @@
-import React, {useEffect, useContext, useState, useEffectEvent} from 'react'
-import GroupedColumn from '../charts/GroupedColumn';
+import AppSpinner from '@/components/AppSpinner';
 import SearchContext from '@/context/SearchContext';
-import AppSpinner from '../AppSpinner';
-import log from 'xac-loglevel'
+import dynamic from 'next/dynamic';
+import { useContext } from 'react';
+import log from 'xac-loglevel';
+
+const GroupedColumn = dynamic(
+  () => import('@/components/charts/GroupedColumn'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="text-center c-sourcesVizualizations__spinner">
+        <AppSpinner fullscreen={false} />
+      </div>
+    ),
+  },
+);
 
 function SourcesVizualizations() {
-  const {config} = useContext(SearchContext);
-  const [chartData, setChartData] = useState(null);
-
-  const prepareChartData = useEffectEvent(() => { 
-    const groups = ['patients', 'samples'];
-    const groupData = {};
-    for (const group of groups) {
-      if (!groupData[group]) {
-        groupData[group] = [];
+  const { activeSources, config } = useContext(SearchContext);
+  const sourceTotals = new Map(
+    config.sources.map(({ source, name, patients, samples }) => [
+      source,
+      { name, patients, samples },
+    ]),
+  );
+  const chartData = ['patients', 'samples'].reduce((groupData, group) => {
+    groupData[group] = activeSources.reduce((values, source) => {
+      const sourceTotal = sourceTotals.get(source.source);
+      const total = sourceTotal?.[group];
+      if (source[group] && total) {
+        values.push({
+          total,
+          x: sourceTotal.name || source.source,
+          y: (Number(source[group]) / Number(total)) * 100,
+          value: Number(source[group]),
+        });
       }
-      config.cards.forEach((card) => {
-        if (card[group]) {
-          const source = config.summary.sources.filter((s) => card.source === s.source)
-          groupData[group].push({
-            total: source[0][group],
-            x: card.source,
-            y: (Number(card.aggregations[group]) / Number(source[0][group])) * 100,
-            value: Number(card.aggregations[group]),
-          });
-        }
-      });
-    }
-    log.debug('SourcesVizualizations: prepareChartData', groupData)
-    setChartData(groupData);
-  });
+      return values;
+    }, []);
+    return groupData;
+  }, {});
 
-  useEffect(() => {
-    prepareChartData();
-  }, [config]);
+  log.debug('SourcesVizualizations: chart data', chartData);
 
   return (
     <div className="c-sourcesVizualizations">
       <div className="c-sourcesVizualizations__wrap">
-        {chartData && <GroupedColumn data={chartData} />}
-        {!chartData && <div className='text-center c-sourcesVizualizations__spinner'><AppSpinner fullscreen={false} /></div>}
+        <GroupedColumn data={chartData} />
       </div>
     </div>
-  )
+  );
 }
 
-export default SourcesVizualizations
+export default SourcesVizualizations;

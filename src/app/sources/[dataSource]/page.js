@@ -12,6 +12,7 @@ import {
   getSourceClinicalData,
   getSummaryDataSource,
 } from '@/lib/sources/services';
+import { parseFiltersFromSearchParams } from '@/lib/urlFilters';
 import { notFound } from 'next/navigation';
 import { getCurrentUser } from '@/lib/auth/services';
 import { getUserByEmail } from '@/lib/users/services';
@@ -22,8 +23,11 @@ export async function generateMetadata({ params }) {
   return { title: config.name || ' - Data Source' };
 }
 
-export default async function Page({ params }) {
+export default async function Page({ params, searchParams }) {
   const { dataSource } = await params;
+  const resolvedSearchParams = await searchParams;
+  const initialFilters = parseFiltersFromSearchParams(resolvedSearchParams);
+
   const currentUser = await getCurrentUser();
   const user = await getUserByEmail(currentUser.username);
   const summaryDataSource = await getSummaryDataSource(dataSource);
@@ -37,7 +41,7 @@ export default async function Page({ params }) {
   );
 
   const config = await getSourceChartConfig(dataSource);
-  const chartData = await getSourceChartData(dataSource);
+  const chartData = await getSourceChartData(dataSource, initialFilters);
   const clinicalData = await getSourceClinicalData(dataSource);
 
   const header = (
@@ -67,6 +71,8 @@ export default async function Page({ params }) {
           dataSource={dataSource}
           charts={config.charts}
           initialData={chartData.data}
+          initialFilters={chartData.success ? chartData.filters : {}}
+          initialTags={chartData.success ? chartData.tags : []}
           header={header}
         />
       ),
