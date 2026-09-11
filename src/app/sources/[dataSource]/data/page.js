@@ -29,14 +29,14 @@ export default async function Page({ params }) {
   const dlLinks = downloadLinksDemo[dataSource];
 
   return (
-    <BasicLayout fluid={true}>
+    <BasicLayout fluid={true} classNameMain="c-main--dataSets">
       <SourceNavbar dataSource={dataSource} />
 
       {dlLinks.map((link) => (
         <div className="my-2" key={link.name}>
           <Button size="" href={link.url} target="_blank">
             <DownloadIcon />
-            {link.name}
+            <span>{link.name}</span>
           </Button>{' '}
           - <Badge bg="info">{link.count ?? link.fileCount}</Badge>{' '}
           {link.description}
