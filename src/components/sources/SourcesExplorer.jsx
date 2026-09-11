@@ -5,6 +5,7 @@ import ClearFilters from '@/components/search/ClearFilters';
 import Facets from '@/components/search/Facets';
 import SummaryCard from '@/components/sources/SummaryCard';
 import { SearchProvider } from '@/context/SearchContext';
+import { filtersToQueryString } from '@/lib/urlFilters';
 import { Masonry } from 'antd';
 import { useState } from 'react';
 import SourcesVizualizations from './SourcesVizualizations';
@@ -21,7 +22,10 @@ export default function SourcesExplorer({
   const [isBusy, setIsBusy] = useState(false);
 
   const onCardTagClick = ({ data, tag, value }) => {
-    window.location = `/sources/${data.source}?tag=${encodeURIComponent(tag.name)}&value=${encodeURIComponent(value)}`;
+    if (!tag.id) return;
+
+    const query = filtersToQueryString({ [tag.id]: [value] });
+    window.location = `/sources/${data.source}${query}`;
   };
 
   return (

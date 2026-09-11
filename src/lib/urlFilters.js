@@ -33,3 +33,9 @@ export function applyFiltersToSearchParams(params, filters) {
 
   return params;
 }
+
+export function filtersToQueryString(filters) {
+  const params = applyFiltersToSearchParams(new URLSearchParams(), filters);
+  const query = params.toString();
+  return query ? `?${query}` : '';
+}
