@@ -50,9 +50,9 @@ export default async function Page({ params, searchParams }) {
         <h1 className="fs-4">{summaryDataSource.name}</h1>
         <p>{summaryDataSource.description}</p>
       </div>
-      {summaryDataSource?.terms_of_use && (
+      {summaryDataSource?.termsOfUse && (
         <TermsOfUse
-          termsText={summaryDataSource.terms_of_use}
+          termsText={summaryDataSource.termsOfUse}
           authorizedToViewData={authorizedToViewData}
           summaryDataSourceName={summaryDataSource.name}
           user={user}
