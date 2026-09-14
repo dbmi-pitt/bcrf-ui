@@ -1,0 +1,34 @@
+//// Bootstrap AntD Nav Tabs Override
+
+.nav-tabs .nav-link,
+.ant-tabs-tab
+  color $col-dk-grey
+  text-transform uppercase
+  border none
+  border-radius 0
+  background transparent
+  padding .75rem 1rem
+  transition color .2s ease
+
+// Shared active color
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-link:hover,
+.ant-tabs-tab:hover,
+.ant-tabs-tab-active .ant-tabs-tab-btn
+  color $col-primary-accent !important
+
+// Bootstrap indicator
+.nav-tabs .nav-link.active
+  border-bottom 3px solid $col-primary-accent
+  background transparent
+
+// Ant indicator
+.ant-tabs-ink-bar
+  color $col-primary-accent
+  background $col-primary-accent !important
+
+.ant-tabs-tab:active
+  color $col-primary-accent !important
+
+.ant-tabs-tab-btn:active
+  color $col-primary-accent !important
