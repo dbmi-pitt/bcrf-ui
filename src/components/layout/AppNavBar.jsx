@@ -1,7 +1,6 @@
 'use client';
 
-import LogInIcon from '@/components/icons/LogInIcon';
-import LogOutIcon from '@/components/icons/LogOutIcon';
+import UserIcon from '@/components/icons/UserIcon';
 import RegisterIcon from '@/components/icons/RegisterIcon';
 import AuthContext from '@/context/AuthContext';
 import Image from 'next/image';
@@ -10,9 +9,10 @@ import { useContext } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Dropdown from 'react-bootstrap/Dropdown'
 
 function AppNavBar() {
-  const { isAuthenticated, logOut } = useContext(AuthContext);
+  const { isAuthenticated, logOut, user } = useContext(AuthContext);
 
   return (
     <Navbar sticky={'top'} variant={'light'} expand="lg" className="c-navbar">
@@ -47,16 +47,33 @@ function AppNavBar() {
               {/*  </Link>*/}
               {/*</Nav>*/}
               <Nav className={'me-0'}>
-                <button
-                  type="button"
-                  className="c-navbar__link-button"
-                  onClick={async () => {
-                    await logOut();
-                  }}
-                >
-                  <span className="me-1">LOG OUT</span>
-                  <LogOutIcon className="align-baseline" />
-                </button>
+                <Dropdown className="c-navbar__user">
+                  <Dropdown.Toggle
+                    className="c-navbar__link-button"
+                    id="user-menu"
+                  >
+                    <UserIcon className="align-baseline" />
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu>
+                    <Dropdown.Item disabled>
+                      <span
+                        className="me-1 text-truncate text-muted"
+                        title={user.email}
+                      >
+                        {user.email}
+                      </span>
+                    </Dropdown.Item>
+                    <Dropdown.Item href="/users">User Directory</Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={async () => {
+                        await logOut();
+                      }}
+                    >
+                      Log out
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </Nav>
             </>
           )}
@@ -64,7 +81,7 @@ function AppNavBar() {
             <Nav className={'me-0'}>
               <a href="/login">
                 <span className="me-1">LOG IN</span>
-                <LogInIcon className="align-baseline" />
+                <UserIcon className="align-baseline" />
               </a>
             </Nav>
           )}

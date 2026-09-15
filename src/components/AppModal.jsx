@@ -29,6 +29,7 @@ function AppModal({ modal, setModal, handleModalOk, id, children }) {
       onCancel={closeModal}
       onOk={handleModalOk || closeModal}
       okButtonProps={modal.okButtonProps}
+      centered
     >
       {modal.body}
       {children}
