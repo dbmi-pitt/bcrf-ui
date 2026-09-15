@@ -60,7 +60,7 @@ function AppNavBar() {
                 </button> */}
                 <Dropdown className='c-navbar__user'>
                   <Dropdown.Toggle className="c-navbar__link-button" id="user-menu">
-                    <span className="me-1 text-truncate">{user.email}
+                    <span className="me-1 text-truncate" title={user.email}>{user.email}
                     </span>
                     <UserIcon className="align-baseline" />
                   </Dropdown.Toggle>
