@@ -1,6 +1,5 @@
 'use client';
 
-import LogInIcon from '@/components/icons/LogInIcon';
 import UserIcon from '@/components/icons/UserIcon';
 import RegisterIcon from '@/components/icons/RegisterIcon';
 import AuthContext from '@/context/AuthContext';
@@ -82,7 +81,7 @@ function AppNavBar() {
             <Nav className={'me-0'}>
               <a href="/login">
                 <span className="me-1">LOG IN</span>
-                <LogInIcon className="align-baseline" />
+                <UserIcon className="align-baseline" />
               </a>
             </Nav>
           )}

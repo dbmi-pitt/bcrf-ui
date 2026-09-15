@@ -34,6 +34,14 @@
 
     
   &-modal.ant-modal
-    &--hero
-      .ant-modal-title
-        h3()
+    a
+      color $col-primary-accent
+    .ant-modal-title
+      h3()
+    .ant-btn-primary
+      border-radius 0
+      background-color $col-primary-accent
+      &:hover 
+        background-color white !important
+        border solid 1px $col-primary-accent !important
+        color $col-primary-accent !important
