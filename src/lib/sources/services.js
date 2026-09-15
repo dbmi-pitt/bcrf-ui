@@ -1,3 +1,4 @@
+import { getConnection } from '@/lib/data/database';
 import { getSource, getSources } from '@/lib/database/sources';
 import { sourceMap } from '@/lib/sources/charts';
 import 'server-only';
@@ -73,6 +74,7 @@ export const getSourceClinicalData = async (source) => {
   }
 
   const tableName = row.data_table_name;
+  const connection = await getConnection();
   const result = await connection.run('SELECT * FROM ' + tableName);
   const rows = await result.getRowObjectsJson();
 

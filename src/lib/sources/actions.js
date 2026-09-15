@@ -1,6 +1,6 @@
 'use server';
 
-import { connection } from '@/lib/data/database';
+import { getConnection } from '@/lib/data/database';
 import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
 import {
   hasCurrentUserGlobalReadPermission,
@@ -153,6 +153,7 @@ export const getSourceChartData = async (sourceId, filters = {}) => {
     const query = chart.query(clause).replace(/\s+/g, ' ').trim();
     log.debug(`Querying chart ${chart.id}:`, query, params);
     try {
+      const connection = await getConnection();
       const result = await connection.run(query, params);
       const rows = await result.getRowObjectsJson();
       data[chart.id] = rows;
@@ -188,6 +189,7 @@ let allColumnsCache = null;
 async function getAllColumns() {
   if (allColumnsCache) return allColumnsCache;
 
+  const connection = await getConnection();
   const result = await connection.run(
     `
     SELECT column_name FROM information_schema.columns
