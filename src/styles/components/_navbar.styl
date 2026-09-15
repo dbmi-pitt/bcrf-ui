@@ -1,6 +1,30 @@
 .c-navbar
   background-color white
 
+  &__user 
+    .text-truncate 
+      display inline-block 
+      vertical-align bottom 
+      max-width 200px
+
+    .dropdown-toggle::after
+      display none 
+
+    .dropdown-menu
+      left inherit
+      right 0
+      
+      
+  .dropdown-menu
+    border-radius 0 
+    a
+      border-bottom solid 1px #eee
+      &:last-child 
+        border none
+      &:hover 
+        color $col-primary-accent
+        background-color transparent 
+
   &.navbar-light
     a, .c-navbar__link-button
       font()
