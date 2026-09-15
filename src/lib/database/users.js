@@ -1,5 +1,5 @@
+import { getDatabasePool } from '@/lib/database/index';
 import { buildSelectClause, resolveColumns } from '@/lib/database/utils';
-import { getDatabasePool } from '@/lib/db';
 import 'server-only';
 
 // Whitelist of columns that are actually allowed to be selected.

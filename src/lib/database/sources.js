@@ -1,5 +1,5 @@
+import { getDatabasePool } from '@/lib/database/index';
 import { buildSelectClause, resolveColumns } from '@/lib/database/utils';
-import { getDatabasePool } from '@/lib/db';
 import 'server-only';
 
 // Whitelist of columns that are actually allowed to be selected.
@@ -39,7 +39,7 @@ export async function getSources(columns) {
 
   const [rows] = await pool.query(
     `SELECT ${selectClause} FROM sources
-     WHERE virtual = false`,
+     WHERE \`virtual\` = false`,
   );
   return rows;
 }
@@ -53,7 +53,7 @@ export async function getSources(columns) {
  *
  * @returns {Promise<Object|null>} - the source object if found, otherwise null.
  */
-export async function getSourceById(sourceId, columns) {
+export async function getSource(sourceId, columns) {
   const pool = getDatabasePool();
   const selectedColumns = resolveColumns(
     columns,
@@ -64,7 +64,7 @@ export async function getSourceById(sourceId, columns) {
 
   const [rows] = await pool.query(
     `SELECT ${selectClause} FROM sources
-     WHERE source = ? AND virtual = false
+     WHERE source = ? AND \`virtual\` = false
      LIMIT 1`,
     [sourceId],
   );

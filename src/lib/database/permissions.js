@@ -1,4 +1,4 @@
-import { getDatabasePool } from '@/lib/db';
+import { getDatabasePool } from '@/lib/database/index';
 import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
 import 'server-only';
 
