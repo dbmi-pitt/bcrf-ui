@@ -43,15 +43,14 @@ CREATE TABLE sources (
     sample_count      INT           NOT NULL DEFAULT 0, -- number of total samples
     data_table_name   VARCHAR(128)  NOT NULL, -- name of the data table in the duck database
     key_column        VARCHAR(128)  NOT NULL, -- primary key column for the data table
-    config            JSON          NOT NULL, -- chart configuration
     `virtual`         BOOLEAN       NOT NULL DEFAULT FALSE,
     created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- "virtual source" so "Global Read" and "Global Admin" groups can be created
-INSERT INTO sources (source, name, description, patient_count, sample_count, data_table_name, key_column, config, virtual)
-VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all sources.', 0, 0, '', 'id', JSON_OBJECT(), TRUE);
+INSERT INTO sources (source, name, description, patient_count, sample_count, data_table_name, key_column, virtual)
+VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all sources.', 0, 0, '', 'id', TRUE);
 
 -- ----------------------------------------------------------------------------
 -- groups

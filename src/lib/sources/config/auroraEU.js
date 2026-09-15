@@ -1,7 +1,5 @@
 export const CONFIG = {
-  id: 'aurora-eu',
-  table: 'aurora_eu',
-  keyColumn: 'ssid',
+  dataTypes: ['TGS', 'OncoScan CNA', 'RNASeq', 'H&E Slides', 'CNV'],
   charts: [
     {
       id: 'type',

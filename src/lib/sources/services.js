@@ -1,50 +1,63 @@
-import { getConnection } from '@/lib/data/database-puck.js';
-import { connection } from '@/lib/data/database.js';
-import { sourceMap } from '@/lib/sources/charts.js';
+import { getSource, getSources } from '@/lib/database/sources';
+import { sourceMap } from '@/lib/sources/charts';
 import 'server-only';
 
 export const getSummaryDataSources = async () => {
-  const conn = await getConnection();
-  const result = await conn.run(
-    'SELECT source, name, description, data FROM sources WHERE virtual = FALSE',
-  );
-  const rows = await result.getRowObjectsJson();
+  const sources = await getSources([
+    'source',
+    'name',
+    'description',
+    'patient_count',
+    'sample_count',
+  ]);
 
-  return rows.map((row) => ({
-    ...JSON.parse(row.data),
+  return sources.map(
+    ({ source, name, description, patient_count, sample_count }) => ({
+      source: source,
+      name: name,
+      description: description,
+      patientCount: patient_count,
+      sampleCount: sample_count,
+      dataTypes: sourceMap[source]?.dataTypes || [],
+      tags: [],
+    }),
+  );
+};
+
+export const getSummaryDataSource = async (source) => {
+  const row = await getSource(source, [
+    'source',
+    'name',
+    'description',
+    'patient_count',
+    'sample_count',
+  ]);
+  const charts = sourceMap[source];
+  if (!row || !charts) {
+    return null;
+  }
+
+  return {
     source: row.source,
     name: row.name,
     description: row.description,
-  }));
-};
-
-export const getSummaryDataSource = async (dataSource) => {
-  const conn = await getConnection();
-  const result = await conn.run(
-    'SELECT source, name, description, data FROM sources WHERE source = $source AND virtual = FALSE',
-    { source: dataSource },
-  );
-  const rows = await result.getRowObjectsJson();
-  if (rows.length === 0) {
-    return null;
-  }
-  return {
-    ...JSON.parse(rows[0].data),
-    source: rows[0].source,
-    name: rows[0].name,
-    description: rows[0].description,
+    patientCount: row.patient_count,
+    sampleCount: row.sample_count,
+    dataTypes: charts.dataTypes || [],
+    tags: [],
   };
 };
 
-export const getSourceChartConfig = async (sourceId) => {
-  const config = sourceMap[sourceId];
-  if (!config) {
+export const getSourceChartConfig = async (source) => {
+  const row = await getSource(source, ['name']);
+  const config = sourceMap[source];
+  if (!row || !row.name || !config) {
     return null;
   }
 
   // return non-client, non-data fields from charts array in config
   return {
-    title: config.title,
+    title: row.name,
     charts: config.charts.map(({ filter, query, data, ...rest }) => ({
       ...rest,
       isFilterable: Boolean(filter),
@@ -53,18 +66,18 @@ export const getSourceChartConfig = async (sourceId) => {
   };
 };
 
-export const getSourceClinicalData = async (sourceId) => {
-  const config = sourceMap[sourceId];
-  if (!config) {
+export const getSourceClinicalData = async (source) => {
+  const row = await getSource(source, ['data_table_name', 'key_column']);
+  if (!row || !row.data_table_name || !row.key_column) {
     return null;
   }
 
-  const tableName = config.table;
+  const tableName = row.data_table_name;
   const result = await connection.run('SELECT * FROM ' + tableName);
   const rows = await result.getRowObjectsJson();
 
   return {
     data: rows,
-    key: config.keyColumn,
+    key: row.key_column,
   };
 };
