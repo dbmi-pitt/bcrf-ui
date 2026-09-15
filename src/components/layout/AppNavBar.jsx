@@ -25,9 +25,11 @@ function AppNavBar() {
             height="105"
             alt="BCRF logo"
           />{' '}
+          <span className='c-navbar__divider'></span>
           <span className="c-navbar__tagline">
-            A partnership between BCRF <br />
-            and the University of Pittsburgh
+            <span className='font--Inter--ExtraBold text-uppercase'>Global Data Hub</span><br />
+            <span className='font--Inter--Medium'>A partnership between BCRF <br />
+            and the University of Pittsburgh</span>
           </span>
         </a>
         <Navbar.Toggle />

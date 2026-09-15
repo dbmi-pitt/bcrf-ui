@@ -11,15 +11,16 @@ function AppFooter() {
             <div className="col col-lg-6 col-xl-5 mx-auto my-3">
               <div className="c-footer__logos">
                 <Image
-                  src="/imgs/bcrf-logo-white-text.png"
+                  src="/imgs/bcrf-logo-pink-white-text.png"
                   className="w-fixed"
                   alt="BCRF Logo"
                   width={159}
                   height={101}
                 />
+                <span className='c-footer__divider'></span>
                 <Image
                   src="/imgs/upitt-logo-white-text.png"
-                  className="w-fixed"
+                  className="w-fixed c-footer__logo--Pitt"
                   alt="U-Pitt Logo"
                   width={229}
                   height={101}
