@@ -17,27 +17,38 @@ const GroupedColumn = dynamic(
 );
 
 function SourcesVizualizations() {
-  const { config } = useContext(SearchContext);
+  const { cards } = useContext(SearchContext);
   const groups = [
-    { key: 'patients', valueField: 'patientCount', totalField: 'totalPatientCount' },
-    { key: 'samples', valueField: 'sampleCount', totalField: 'totalSampleCount' },
+    {
+      key: 'patients',
+      valueField: 'patientCount',
+      totalField: 'totalPatientCount',
+    },
+    {
+      key: 'samples',
+      valueField: 'sampleCount',
+      totalField: 'totalSampleCount',
+    },
   ];
-  const chartData = groups.reduce((groupData, { key, valueField, totalField }) => {
-    groupData[key] = config.cards.reduce((values, source) => {
-      const total = source[totalField];
-      const value = source[valueField];
-      if (value && total) {
-        values.push({
-          total,
-          x: source.name || source.source,
-          y: (Number(value) / Number(total)) * 100,
-          value: Number(value),
-        });
-      }
-      return values;
-    }, []);
-    return groupData;
-  }, {});
+  const chartData = groups.reduce(
+    (groupData, { key, valueField, totalField }) => {
+      groupData[key] = cards.reduce((values, source) => {
+        const total = source[totalField];
+        const value = source[valueField];
+        if (value && total) {
+          values.push({
+            total,
+            x: source.name || source.source,
+            y: (Number(value) / Number(total)) * 100,
+            value: Number(value),
+          });
+        }
+        return values;
+      }, []);
+      return groupData;
+    },
+    {},
+  );
 
   log.debug('SourcesVizualizations: chart data', chartData);
 

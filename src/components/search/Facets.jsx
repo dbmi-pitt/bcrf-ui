@@ -1,56 +1,10 @@
 import SearchContext from '@/context/SearchContext';
-import { getAllSummaryDataAggregations } from '@/lib/sources/actions';
 import { ConfigProvider, Tree } from 'antd';
 import { useContext } from 'react';
 import log from 'xac-loglevel';
 
 function Facets({}) {
-  const { config, facets, setFacets, selectedFacets, setSelectedFacets } =
-    useContext(SearchContext);
-
-  /**
-   * Filters checked keys by aggregations
-   * Avoids antd `Tree missing follow keys:`
-   *
-   * @param {*} aggregations
-   * @param {*} checkedKeys
-   */
-  const filtedCheckedKeys = (aggregations, checkedKeys) => {
-    const _checkedKKeys = [];
-    for (const key in aggregations) {
-      for (const values of aggregations[key]) {
-        let _key = `${key.toDashedCase()}-${values.term.toDashedCase()}`;
-        if (checkedKeys.indexOf(_key) !== -1) {
-          _checkedKKeys.push(_key);
-        }
-      }
-    }
-    setSelectedFacets(_checkedKKeys);
-  };
-
-  /**
-   * Calls the API to filter sources based on the provided filters and updates the state with the filtered sources and aggregated facets.
-   *
-   * @param {object} filters
-   * @param {array} checkedKeys
-   */
-  const filterSources = (filters, checkedKeys) => {
-    getAllSummaryDataAggregations(filters).then(async (response) => {
-      if (!response.success) {
-        log.error(
-          'Facets: onCheck: Error fetching filtered sources',
-          response.error,
-        );
-        config.setIsBusy(false);
-        return;
-      }
-
-      config.setCards(response.sources);
-      setFacets(response.aggregations);
-      filtedCheckedKeys(response.aggregations, checkedKeys);
-      config.setIsBusy(false);
-    });
-  };
+  const { facets, selectedFacets, applyFilters } = useContext(SearchContext);
 
   /**
    * Handles a user's facet selection and filters sources
@@ -60,8 +14,6 @@ function Facets({}) {
    */
   const onCheck = (checkedKeys, info) => {
     log.debug('Facets: onCheck', checkedKeys, info);
-    //setSelectedFacets(checkedKeys);
-    config.setIsBusy(true);
 
     const checkedFacets = info.checkedNodes.filter(
       (node) => node.children === undefined,
@@ -79,7 +31,7 @@ function Facets({}) {
       }
     }
 
-    filterSources(filters, checkedKeys);
+    applyFilters(filters, checkedKeys);
   };
 
   const getTreeData = () => {
