@@ -48,20 +48,31 @@ function AppNavBar() {
               {/*  </Link>*/}
               {/*</Nav>*/}
               <Nav className={'me-0'}>
-                
-                <Dropdown className='c-navbar__user'>
-                  <Dropdown.Toggle className="c-navbar__link-button" id="user-menu">
-                    <span className="me-1 text-truncate" title={user.email}>{user.email}
-                    </span>
+                <Dropdown className="c-navbar__user">
+                  <Dropdown.Toggle
+                    className="c-navbar__link-button"
+                    id="user-menu"
+                  >
                     <UserIcon className="align-baseline" />
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
-     
+                    <Dropdown.Item disabled>
+                      <span
+                        className="me-1 text-truncate text-muted"
+                        title={user.email}
+                      >
+                        {user.email}
+                      </span>
+                    </Dropdown.Item>
                     <Dropdown.Item href="/users">User Directory</Dropdown.Item>
-                    <Dropdown.Item  onClick={async () => {
-                    await logOut();
-                  }}>Log out</Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={async () => {
+                        await logOut();
+                      }}
+                    >
+                      Log out
+                    </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </Nav>
