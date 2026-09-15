@@ -38,7 +38,7 @@ export default async function Page({ params }) {
             <DownloadIcon />
             <span>{link.name}</span>
           </Button>{' '}
-          - <Badge bg="info">{link.count ?? link.fileCount}</Badge>{' '}
+          - <Badge className='bg--blue--primary'>{link.count ?? link.fileCount}</Badge>{' '}
           {link.description}
         </div>
       ))}
