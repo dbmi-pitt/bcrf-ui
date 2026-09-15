@@ -78,12 +78,18 @@ export async function getSource(sourceId, columns) {
  * @param {string[]} sourceIds - the 'source' primary key values to fetch.
  * @param {string[]} [columns] - subset of ALLOWED_SOURCE_COLUMNS to return.
  *                                Defaults to all columns if omitted.
+ * @param {string} [orderBy] - column to sort results by. Must be one of
+ *                              ALLOWED_SOURCE_COLUMNS. Defaults to 'name'.
  *
  * @returns {Promise<Object[]>} - an array of source objects.
  */
-export async function getSourcesByIds(sourceIds, columns) {
+export async function getSourcesByIds(sourceIds, columns, orderBy = 'name') {
   if (!sourceIds || sourceIds.length === 0) {
     return [];
+  }
+
+  if (!ALLOWED_SOURCE_COLUMNS.includes(orderBy)) {
+    throw new Error(`Invalid orderBy column requested: ${orderBy}`);
   }
 
   const pool = getDatabasePool();
@@ -93,10 +99,12 @@ export async function getSourcesByIds(sourceIds, columns) {
     DEFAULT_SOURCE_COLUMNS,
   );
   const selectClause = buildSelectClause(pool, selectedColumns);
+  const orderByClause = pool.escapeId(orderBy);
 
   const [rows] = await pool.query(
     `SELECT ${selectClause} FROM sources
-     WHERE source IN (?) AND \`virtual\` = false`,
+     WHERE source IN (?) AND \`virtual\` = false
+     ORDER BY ${orderByClause} ASC`,
     [sourceIds],
   );
   return rows;

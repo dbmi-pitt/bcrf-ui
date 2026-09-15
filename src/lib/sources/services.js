@@ -19,8 +19,6 @@ export const getSummaryDataSources = async () => {
       description: description,
       patientCount: patient_count,
       sampleCount: sample_count,
-      dataTypes: sourceMap[source]?.dataTypes || [],
-      tags: [],
     }),
   );
 };
@@ -44,8 +42,6 @@ export const getSummaryDataSource = async (source) => {
     description: row.description,
     patientCount: row.patient_count,
     sampleCount: row.sample_count,
-    dataTypes: charts.dataTypes || [],
-    tags: [],
   };
 };
 
