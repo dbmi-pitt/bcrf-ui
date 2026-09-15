@@ -34,7 +34,7 @@ export async function updatePuckData(source, data) {
     `INSERT INTO puckdata (source, data)
      VALUES (?, ?)
      ON DUPLICATE KEY UPDATE data = ?`,
-    [source, data, data],
+    [source, JSON.stringify(data), JSON.stringify(data)],
   );
 
   return result.affectedRows > 0;

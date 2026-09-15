@@ -1,6 +1,6 @@
 'use server';
 
-import { updatePuckDataInDb } from '@/lib/database/puckdata';
+import { updatePuckData as updatePuckDataInDb } from '@/lib/database/puckdata';
 import { PERMISSION } from '@/lib/permission/constants';
 import { hasCurrentUserPermission } from '@/lib/permission/services';
 import log from 'xac-loglevel';
