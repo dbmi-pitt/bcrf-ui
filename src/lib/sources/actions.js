@@ -270,9 +270,10 @@ const getSourceTags = async (source, tableName) => {
   }
 
   const tagColumns = config.charts
-    .map(({ filter, title }) => {
+    .map(({ id, filter, title }) => {
       if (filter && filter.type === 'term') {
         return {
+          id: id,
           title: title,
           column: filter.column,
         };
@@ -286,10 +287,10 @@ const getSourceTags = async (source, tableName) => {
   }
 
   // One subquery per column, unioned together so this is a single query
-  const subQueries = tagColumns.map(({ title, column }) => {
-    const label = title.replace(/'/g, "''");
+  const subQueries = tagColumns.map(({ id, column }) => {
+    const label = id.replace(/'/g, "''");
     return `
-      SELECT '${label}' AS title, "${column}" AS tag
+      SELECT '${label}' AS id, "${column}" AS tag
       FROM ${tableName}
       WHERE "${column}" IS NOT NULL
       GROUP BY tag
@@ -297,16 +298,16 @@ const getSourceTags = async (source, tableName) => {
   });
 
   const query = `
-    SELECT title, tag
+    SELECT id, tag
     FROM (${subQueries.join(' UNION ALL ')})
-    ORDER BY title, tag
+    ORDER BY id, tag
   `
     .replace(/\s+/g, ' ')
     .trim();
 
   const tags = {};
-  for (const { title } of tagColumns) {
-    tags[title] = [];
+  for (const { id, title } of tagColumns) {
+    tags[id] = { title: title, values: [] };
   }
 
   try {
@@ -314,7 +315,7 @@ const getSourceTags = async (source, tableName) => {
     const result = await connection.run(query);
     const rows = await result.getRowObjectsJson();
     for (const row of rows) {
-      tags[row.title].push(row.tag);
+      tags[row.id].values.push(row.tag);
     }
   } catch (error) {
     log.error(`Error querying tags for source ${source}:`, error);

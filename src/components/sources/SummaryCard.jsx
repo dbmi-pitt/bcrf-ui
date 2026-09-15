@@ -13,14 +13,14 @@ function SummaryCard({ data, onTagClick }) {
   };
 
   const getTags = () => {
-    return Object.entries(data.tags || {}).map(([title, values]) => (
-      <p key={title}>
+    return Object.entries(data.tags || {}).map(([id, { title, values }]) => (
+      <p key={id}>
         <strong>{title}</strong>
         {values.map((v) => (
           <Tag
             className="c-tag"
             key={v}
-            onClick={(e) => handleTagClick(e, title, v)}
+            onClick={(e) => handleTagClick(e, id, v)}
             style={{ cursor: 'pointer' }}
           >
             {v}
@@ -46,7 +46,11 @@ function SummaryCard({ data, onTagClick }) {
     <Card
       onClick={handleHeaderAreaClick}
       className="c-summaryCard"
-      title={<span onClick={(e) => goToSource(e, data)}><span className="p2">{data.name}</span></span>}
+      title={
+        <span onClick={(e) => goToSource(e, data)}>
+          <span className="p2">{data.name}</span>
+        </span>
+      }
       extra={
         <>
           <span key={`patients-${data.source}`} className="mx-3">
@@ -71,15 +75,10 @@ function SummaryCard({ data, onTagClick }) {
       style={{ width: '100%' }}
       actions={[]}
     >
-      <div  style={{ maxHeight: 550, overflowY: 'auto' }}>
+      <div style={{ maxHeight: 550, overflowY: 'auto' }}>
         <p onClick={(e) => goToSource(e, data)}>{data.description}</p>
-      <div
-        className="c-summaryCard__tags"
-      >
-        {getTags()}
+        <div className="c-summaryCard__tags">{getTags()}</div>
       </div>
-      </div>
-      
     </Card>
   );
 }
