@@ -1,6 +1,17 @@
 .c-navbar
   background-color white
 
+  &__divider
+    position absolute 
+    height 80%
+    display inline-block 
+    width 1px 
+    background-color $col-primary-accent
+    left 200px
+    +md-max()
+      hide()
+
+
   &__user 
     .text-truncate 
       display inline-block 
@@ -37,6 +48,13 @@
           color $col-bcrf-blue
 
   &__tagline
+    span 
+      &:first-child 
+        color black 
+        
+      &:last-child 
+        color $col-primary-accent
+    margin-left 30px
     +md-max()
       hide()
 
