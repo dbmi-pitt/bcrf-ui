@@ -3,14 +3,13 @@ import { useContext } from 'react';
 import log from 'xac-loglevel';
 
 function ClearFilters() {
-  const { config, setActiveSources, setSelectedFacets, setFacets } =
-    useContext(SearchContext);
+  const { config, setSelectedFacets, setFacets } = useContext(SearchContext);
 
   const handleClearFilters = () => {
     log.debug('ClearFilters: handleClearFilters', config);
     setSelectedFacets(undefined);
     setFacets(config.aggregations);
-    setActiveSources(config.activeSources);
+    config.setCards(config.sources);
   };
   return (
     <div>

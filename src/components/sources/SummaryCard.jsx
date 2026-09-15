@@ -2,7 +2,6 @@
 
 import THEME from '@/lib/theme';
 import { Badge, Card, Tag } from 'antd';
-import Accordion from 'react-bootstrap/Accordion';
 
 function SummaryCard({ data, onTagClick }) {
   const handleTagClick = (e, tag, value) => {
@@ -13,35 +12,22 @@ function SummaryCard({ data, onTagClick }) {
     }
   };
 
-  const getHighlightedTags = () => {
-    const list = [];
-    let tags = [];
-
-    for (const tag of data.tags || []) {
-      if (tag.display_type !== 'collapsed') {
-        tags = [];
-        for (const v of tag.values) {
-          tags.push(
-            <Tag
-              className="c-tag"
-              key={v}
-              onClick={(e) => handleTagClick(e, tag, v)}
-              style={{ cursor: 'pointer' }}
-            >
-              {v === true ? 'yes' : v === false ? 'no' : v.toString()}
-            </Tag>,
-          );
-        }
-        list.push(
-          <p key={tag.name}>
-            <strong>{tag.name}</strong>
-            {tags}
-          </p>,
-        );
-      }
-    }
-
-    return list;
+  const getTags = () => {
+    return Object.entries(data.tags || {}).map(([title, values]) => (
+      <p key={title}>
+        <strong>{title}</strong>
+        {values.map((v) => (
+          <Tag
+            className="c-tag"
+            key={v}
+            onClick={(e) => handleTagClick(e, title, v)}
+            style={{ cursor: 'pointer' }}
+          >
+            {v}
+          </Tag>
+        ))}
+      </p>
+    ));
   };
 
   const goToSource = (e, d) => {
@@ -66,7 +52,7 @@ function SummaryCard({ data, onTagClick }) {
           <span key={`patients-${data.source}`} className="mx-3">
             {' '}
             <Badge
-              count={data.patients}
+              count={data.totalPatientCount}
               overflowCount={THEME.badge.overflow}
               color={THEME.colors.patients}
             />{' '}
@@ -74,7 +60,7 @@ function SummaryCard({ data, onTagClick }) {
           </span>
           <span key={`samples-${data.source}`}>
             <Badge
-              count={data.samples}
+              count={data.totalSampleCount}
               overflowCount={THEME.badge.overflow}
               color={THEME.colors.samples}
             />{' '}
@@ -90,35 +76,7 @@ function SummaryCard({ data, onTagClick }) {
       <div
         className="c-summaryCard__tags"
       >
-        {getHighlightedTags()}
-      </div>
-      <div
-        className="c-summaryCard__collapsed"
-      >
-        <Accordion>
-          {(data.tags || [])
-            .filter((tag) => tag.display_type === 'collapsed')
-            .map((tag) => (
-              <Accordion.Item
-                eventKey={`${data.source}-${tag.name}`}
-                key={`${data.source}-${tag.name}`}
-              >
-                <Accordion.Header>{tag.name}</Accordion.Header>
-                <Accordion.Body>
-                  {tag.values.map((value) => (
-                    <Tag
-                      className="c-tag"
-                      key={value}
-                      onClick={(e) => handleTagClick(e, tag, value)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      {value}
-                    </Tag>
-                  ))}
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-        </Accordion>
+        {getTags()}
       </div>
       </div>
       

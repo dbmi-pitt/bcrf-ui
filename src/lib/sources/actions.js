@@ -1,6 +1,7 @@
 'use server';
 
 import { getConnection } from '@/lib/data/database';
+import { getSourcesByIds } from '@/lib/database/sources';
 import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
 import {
   hasCurrentUserGlobalReadPermission,
@@ -202,6 +203,128 @@ async function getAllColumns() {
   return allColumnsCache;
 }
 
+export const getAllSummaryDataAggregations = async (filters = {}) => {
+  const authorized = await hasCurrentUserGlobalReadPermission();
+  if (!authorized) {
+    log.error(`User does not have global read permission for summary data`);
+    return {
+      success: false,
+      error: 'User does not have permission to view summary data',
+    };
+  }
+
+  const result = await getSummaryDataAggregations(filters);
+  if (!result.success) {
+    return result;
+  }
+
+  const countsBySource = new Map(result.sources.map((s) => [s.source, s]));
+
+  // only fetch sources that have samples matching the current filters
+  const activeSourceIds = result.sources
+    .filter((s) => s.samples > 0)
+    .map((s) => s.source);
+
+  const dbSources = await getSourcesByIds(activeSourceIds, [
+    'source',
+    'name',
+    'description',
+    'patient_count',
+    'sample_count',
+    'data_table_name',
+  ]);
+
+  const sources = [];
+  for (const s of dbSources) {
+    const counts = countsBySource.get(s.source);
+
+    sources.push({
+      source: s.source,
+      name: s.name,
+      description: s.description,
+      totalPatientCount: s.patient_count,
+      totalSampleCount: s.sample_count,
+      patientCount: counts?.patients ?? 0,
+      sampleCount: counts?.samples ?? 0,
+      tags: await getSourceTags(s.source, s.data_table_name),
+    });
+  }
+
+  return {
+    success: true,
+    aggregations: result.aggregations,
+    sources: sources,
+  };
+};
+
+const sourceTagsCache = new Map();
+
+const getSourceTags = async (source, tableName) => {
+  if (sourceTagsCache.has(source)) {
+    return sourceTagsCache.get(source);
+  }
+
+  const config = sourceMap[source];
+  if (!config) {
+    return {};
+  }
+
+  const tagColumns = config.charts
+    .map(({ filter, title }) => {
+      if (filter && filter.type === 'term') {
+        return {
+          title: title,
+          column: filter.column,
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  if (tagColumns.length === 0) {
+    return {};
+  }
+
+  // One subquery per column, unioned together so this is a single query
+  const subQueries = tagColumns.map(({ title, column }) => {
+    const label = title.replace(/'/g, "''");
+    return `
+      SELECT '${label}' AS title, "${column}" AS tag
+      FROM ${tableName}
+      WHERE "${column}" IS NOT NULL
+      GROUP BY tag
+    `;
+  });
+
+  const query = `
+    SELECT title, tag
+    FROM (${subQueries.join(' UNION ALL ')})
+    ORDER BY title, tag
+  `
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const tags = {};
+  for (const { title } of tagColumns) {
+    tags[title] = [];
+  }
+
+  try {
+    const connection = await getConnection();
+    const result = await connection.run(query);
+    const rows = await result.getRowObjectsJson();
+    for (const row of rows) {
+      tags[row.title].push(row.tag);
+    }
+  } catch (error) {
+    log.error(`Error querying tags for source ${source}:`, error);
+    return {};
+  }
+
+  sourceTagsCache.set(source, tags);
+  return tags;
+};
+
 /**
  * Returns term aggregations for combined data sources.
  *
@@ -218,16 +341,7 @@ async function getAllColumns() {
  *   | { success: false, error: string }
  * >}
  */
-export const getSummaryDataAggregations = async (filters = {}) => {
-  const authorized = await hasCurrentUserGlobalReadPermission();
-  if (!authorized) {
-    log.error(`User does not have global read permission for summary data`);
-    return {
-      success: false,
-      error: 'User does not have permission to view summary data',
-    };
-  }
-
+const getSummaryDataAggregations = async (filters = {}) => {
   let allColumns;
   try {
     allColumns = await getAllColumns();
@@ -314,6 +428,7 @@ export const getSummaryDataAggregations = async (filters = {}) => {
 
   log.debug('Querying summary aggregations:', query, params);
   try {
+    const connection = await getConnection();
     const result = await connection.run(query, params);
     const rows = await result.getRowObjectsJson();
     for (const row of rows) {
@@ -321,11 +436,14 @@ export const getSummaryDataAggregations = async (filters = {}) => {
         if (row.term === GLOBAL_SOURCE) continue;
         sources.push({
           source: row.term,
-          patients: row.patients,
-          samples: row.samples,
+          patients: Number(row.patients),
+          samples: Number(row.samples),
         });
       } else {
-        aggs[row.column_name].push({ term: row.term, count: row.count });
+        aggs[row.column_name].push({
+          term: row.term,
+          count: Number(row.count),
+        });
       }
     }
   } catch (error) {

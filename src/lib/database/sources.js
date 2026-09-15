@@ -71,3 +71,33 @@ export async function getSource(sourceId, columns) {
 
   return rows[0] ?? null;
 }
+
+/**
+ * Get sources matching a set of 'source' identifiers.
+ *
+ * @param {string[]} sourceIds - the 'source' primary key values to fetch.
+ * @param {string[]} [columns] - subset of ALLOWED_SOURCE_COLUMNS to return.
+ *                                Defaults to all columns if omitted.
+ *
+ * @returns {Promise<Object[]>} - an array of source objects.
+ */
+export async function getSourcesByIds(sourceIds, columns) {
+  if (!sourceIds || sourceIds.length === 0) {
+    return [];
+  }
+
+  const pool = getDatabasePool();
+  const selectedColumns = resolveColumns(
+    columns,
+    ALLOWED_SOURCE_COLUMNS,
+    DEFAULT_SOURCE_COLUMNS,
+  );
+  const selectClause = buildSelectClause(pool, selectedColumns);
+
+  const [rows] = await pool.query(
+    `SELECT ${selectClause} FROM sources
+     WHERE source IN (?) AND \`virtual\` = false`,
+    [sourceIds],
+  );
+  return rows;
+}

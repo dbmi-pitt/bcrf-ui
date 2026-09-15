@@ -1,18 +1,12 @@
 import SearchContext from '@/context/SearchContext';
-import { getSummaryDataAggregations } from '@/lib/sources/actions';
+import { getAllSummaryDataAggregations } from '@/lib/sources/actions';
 import { ConfigProvider, Tree } from 'antd';
 import { useContext } from 'react';
 import log from 'xac-loglevel';
 
 function Facets({}) {
-  const {
-    config,
-    facets,
-    setFacets,
-    selectedFacets,
-    setSelectedFacets,
-    setActiveSources,
-  } = useContext(SearchContext);
+  const { config, facets, setFacets, selectedFacets, setSelectedFacets } =
+    useContext(SearchContext);
 
   /**
    * Filters checked keys by aggregations
@@ -41,17 +35,17 @@ function Facets({}) {
    * @param {array} checkedKeys
    */
   const filterSources = (filters, checkedKeys) => {
-    getSummaryDataAggregations(filters).then(async (response) => {
+    getAllSummaryDataAggregations(filters).then(async (response) => {
       if (!response.success) {
         log.error(
           'Facets: onCheck: Error fetching filtered sources',
-          response.statusText,
+          response.error,
         );
         config.setIsBusy(false);
         return;
       }
 
-      setActiveSources(response.sources);
+      config.setCards(response.sources);
       setFacets(response.aggregations);
       filtedCheckedKeys(response.aggregations, checkedKeys);
       config.setIsBusy(false);

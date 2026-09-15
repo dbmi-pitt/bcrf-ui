@@ -9,19 +9,12 @@ import { Masonry } from 'antd';
 import { useState } from 'react';
 import SourcesVizualizations from './SourcesVizualizations';
 
-export default function SourcesExplorer({
-  sources,
-  aggregations,
-  activeSources,
-}) {
-  const [cards, setCards] = useState(() => {
-    const activeNames = new Set(activeSources.map(({ source }) => source));
-    return sources.filter(({ source }) => activeNames.has(source));
-  });
+export default function SourcesExplorer({ sources, aggregations }) {
+  const [cards, setCards] = useState(sources);
   const [isBusy, setIsBusy] = useState(false);
 
   const onCardTagClick = ({ data, tag, value }) => {
-    window.location = `/sources/${data.source}?tag=${encodeURIComponent(tag.name)}&value=${encodeURIComponent(value)}`;
+    window.location = `/sources/${data.source}?tag=${encodeURIComponent(tag)}&value=${encodeURIComponent(value)}`;
   };
 
   return (
@@ -31,7 +24,6 @@ export default function SourcesExplorer({
           config={{
             sources,
             aggregations,
-            activeSources,
             cards,
             setCards,
             setIsBusy,
