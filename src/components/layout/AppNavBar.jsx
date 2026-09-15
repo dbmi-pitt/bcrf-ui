@@ -48,16 +48,7 @@ function AppNavBar() {
               {/*  </Link>*/}
               {/*</Nav>*/}
               <Nav className={'me-0'}>
-                {/* <button
-                  type="button"
-                  className="c-navbar__link-button"
-                  onClick={async () => {
-                    await logOut();
-                  }}
-                >
-                  <span className="me-1">LOG OUT</span>
-                  <UserIcon className="align-baseline" />
-                </button> */}
+                
                 <Dropdown className='c-navbar__user'>
                   <Dropdown.Toggle className="c-navbar__link-button" id="user-menu">
                     <span className="me-1 text-truncate" title={user.email}>{user.email}
