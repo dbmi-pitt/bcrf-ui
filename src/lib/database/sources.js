@@ -12,7 +12,6 @@ const ALLOWED_SOURCE_COLUMNS = [
   'sample_count',
   'data_table_name',
   'key_column',
-  'data_types',
   'virtual',
   'created_at',
   'updated_at',
