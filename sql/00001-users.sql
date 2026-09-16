@@ -38,13 +38,13 @@ INSERT INTO permissions (permission_key, description) VALUES
 -- ----------------------------------------------------------------------------
 CREATE TABLE sources (
     source            VARCHAR(64)   NOT NULL PRIMARY KEY, -- unique identifier for the source (aurora-us, aurora-eu, etc...)
-    name              VARCHAR(255)  NOT NULL, -- human-readable name for the source
-    description       VARCHAR(1024) NOT NULL, -- description of the source
-    terms_of_use      TEXT,                   -- terms of use for the source
-    patient_count     INT           NOT NULL DEFAULT 0, -- number of total patients
-    sample_count      INT           NOT NULL DEFAULT 0, -- number of total samples
-    data_table_name   VARCHAR(128)  NOT NULL, -- name of the data table in the duck database
-    key_column        VARCHAR(128)  NOT NULL, -- primary key column for the data table
+    name              VARCHAR(255)  NOT NULL,             -- human-readable name for the source
+    description       VARCHAR(1024) NOT NULL,             -- description of the source
+    terms_of_use      TEXT,                               -- terms of use for the source
+    patient_count     INT           NOT NULL DEFAULT 0,   -- number of total patients
+    sample_count      INT           NOT NULL DEFAULT 0,   -- number of total samples
+    data_table_name   VARCHAR(128)  NOT NULL,             -- name of the data table in the duck database
+    key_column        VARCHAR(128)  NOT NULL,             -- column in the duck database that distinguishes samples
     `virtual`         BOOLEAN       NOT NULL DEFAULT FALSE,
     created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -61,9 +61,9 @@ VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all
 -- ----------------------------------------------------------------------------
 CREATE TABLE `groups` (
     uuid          CHAR(36)      NOT NULL PRIMARY KEY,
-    name          VARCHAR(255)  NOT NULL, -- human-readable name for the group
-    source        VARCHAR(64)   NOT NULL, -- source to which the group belongs
-    description   VARCHAR(2048), -- description of the group
+    name          VARCHAR(255)  NOT NULL,             -- human-readable name for the group
+    source        VARCHAR(64)   NOT NULL,             -- source to which the group belongs
+    description   VARCHAR(2048),                      -- description of the group
     created_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
