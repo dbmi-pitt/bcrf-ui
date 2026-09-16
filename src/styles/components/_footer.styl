@@ -3,11 +3,23 @@
   color white
   position inherit
 
+  &__divider 
+    vertical-divider()
+    height 100px
+    margin-left 5px
+    position relative 
+    align-self bottom 
+
+  &__logo
+    &--Pitt
+      margin-left 20px
+    
   &__logos
+    position relative
     display flex
     +md-max()
-      flex none
-      display block
+      justify-content center
+      align-items center
 
   hr
     hide()
