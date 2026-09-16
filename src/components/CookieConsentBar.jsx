@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Space, Typography } from 'antd';
-
-const { Link } = Typography;
+import { Space } from 'antd';
 
 export const CookieConsentBar = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -35,9 +33,9 @@ export const CookieConsentBar = () => {
         <p className='c-cookieConsentBar__body'>
           We use cookies to improve your experience and analyze site traffic. 
           By clicking "Accept All", you consent to our use of cookies. Read our{' '}
-          <Link href="/privacy-policy" target="_blank">
+          <a href="/privacy-policy" target="_blank">
             Privacy Policy
-          </Link> for details.
+          </a> for details.
         </p>
       </Space>
 
