@@ -75,18 +75,18 @@ export const getSourceChartConfig = async (source) => {
 };
 
 export const getSourceClinicalData = async (source) => {
-  const row = await getSource(source, ['data_table_name', 'key_column']);
-  if (!row || !row.data_table_name || !row.key_column) {
+  const row = await getSource(source, ['source']);
+  const config = sourceMap[source];
+  if (!row || !config) {
     return null;
   }
 
-  const tableName = row.data_table_name;
   const connection = await getConnection();
-  const result = await connection.run('SELECT * FROM ' + tableName);
+  const result = await connection.run('SELECT * FROM ' + config.table);
   const rows = await result.getRowObjectsJson();
 
   return {
     data: rows,
-    key: row.key_column,
+    key: config.keyColumn,
   };
 };

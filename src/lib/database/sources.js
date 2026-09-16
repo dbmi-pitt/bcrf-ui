@@ -11,8 +11,6 @@ const ALLOWED_SOURCE_COLUMNS = [
   'terms_of_use',
   'patient_count',
   'sample_count',
-  'data_table_name',
-  'key_column',
   'virtual',
   'created_at',
   'updated_at',

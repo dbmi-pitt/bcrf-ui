@@ -1,4 +1,6 @@
 export const CONFIG = {
+  table: 'aurora_us',
+  keyColumn: 'Sample ID',
   dataTypes: ['Methylation', 'RNASeq', 'H&E Slides', 'WES', 'WGS'],
   charts: [
     {

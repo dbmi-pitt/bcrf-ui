@@ -232,6 +232,8 @@ function main() {
   const fileSource = `export const CONFIG = {
     id: '${fileId}',
     table: '${tableName}',
+    keyColumn: 'UNIQUE_SAMPLE_IDENTIFIER_COLUMN',
+    dataTypes: [],
     charts: [
       ${chartsSource}
     ]

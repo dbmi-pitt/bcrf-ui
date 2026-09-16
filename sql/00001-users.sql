@@ -43,8 +43,6 @@ CREATE TABLE sources (
     terms_of_use      TEXT,                               -- terms of use for the source
     patient_count     INT           NOT NULL DEFAULT 0,   -- number of total patients
     sample_count      INT           NOT NULL DEFAULT 0,   -- number of total samples
-    data_table_name   VARCHAR(128)  NOT NULL,             -- name of the data table in the duck database
-    key_column        VARCHAR(128)  NOT NULL,             -- column in the duck database that distinguishes samples
     `virtual`         BOOLEAN       NOT NULL DEFAULT FALSE,
     created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -53,8 +51,8 @@ CREATE TABLE sources (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- "virtual source" so "Global Read" and "Global Admin" groups can be created
-INSERT INTO sources (source, name, description, patient_count, sample_count, data_table_name, key_column, virtual)
-VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all sources.', 0, 0, '', 'id', TRUE);
+INSERT INTO sources (source, name, description, patient_count, sample_count, virtual)
+VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all sources.', 0, 0, TRUE);
 
 -- ----------------------------------------------------------------------------
 -- groups

@@ -231,7 +231,6 @@ export const getAllSummaryDataAggregations = async (filters = {}) => {
     'description',
     'patient_count',
     'sample_count',
-    'data_table_name',
   ]);
 
   const sources = [];
@@ -246,7 +245,7 @@ export const getAllSummaryDataAggregations = async (filters = {}) => {
       totalSampleCount: s.sample_count,
       patientCount: counts?.patients ?? 0,
       sampleCount: counts?.samples ?? 0,
-      tags: await getSourceTags(s.source, s.data_table_name),
+      tags: await getSourceTags(s.source),
     });
   }
 
@@ -259,7 +258,7 @@ export const getAllSummaryDataAggregations = async (filters = {}) => {
 
 const sourceTagsCache = new Map();
 
-const getSourceTags = async (source, tableName) => {
+const getSourceTags = async (source) => {
   if (sourceTagsCache.has(source)) {
     return sourceTagsCache.get(source);
   }
@@ -291,7 +290,7 @@ const getSourceTags = async (source, tableName) => {
     const label = id.replace(/'/g, "''");
     return `
       SELECT '${label}' AS id, "${column}" AS tag
-      FROM ${tableName}
+      FROM ${config.table}
       WHERE "${column}" IS NOT NULL
       GROUP BY tag
     `;
