@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Space, Typography } from 'antd';
 
-const { Text, Link } = Typography;
+const { Link } = Typography;
 
 export const CookieConsentBar = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -14,7 +14,8 @@ export const CookieConsentBar = () => {
     }
   }, []);
 
-  const handleConsent = (choice) => {
+  const handleConsent = (e, choice) => {
+    e.preventDefault()
     // 'accepted' | 'declined'
     localStorage.setItem('cookie-consent', choice);
     setIsVisible(false);
@@ -31,13 +32,13 @@ export const CookieConsentBar = () => {
       {/* Left side: Information text */}
       <Space align="start" size="middle" style={{ flex: '1 1 300px' }}>
         <span className='p2'><i className="bi bi-shield-exclamation"></i></span>
-        <Text style={{ fontSize: '18px', lineHeight: '1.5' }}>
+        <p className='c-cookieConsentBar__body'>
           We use cookies to improve your experience and analyze site traffic. 
           By clicking "Accept All", you consent to our use of cookies. Read our{' '}
           <Link href="/privacy-policy" target="_blank">
             Privacy Policy
           </Link> for details.
-        </Text>
+        </p>
       </Space>
 
       {/* Right side: Action Buttons */}
@@ -45,15 +46,15 @@ export const CookieConsentBar = () => {
         size="small" 
         className='c-cookieConsentBar__btns'>
         <a 
-          className='c-btn c-btn--primary'
+          className='c-btn c-btn--outline c-btn--outline--black'
           type="text" 
-          onClick={() => handleConsent('declined')}
+          onClick={(e) => handleConsent(e, 'declined')}
         >
           Decline
         </a>
         <a 
           className='c-btn c-btn--secondary'
-          onClick={() => handleConsent('accepted')}
+          onClick={(e) => handleConsent(e, 'accepted')}
         >
           Accept All
         </a>
