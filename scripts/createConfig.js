@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * tsv-to-config.js
+ * createConfig.js
  *
  * Reads a TSV file and generates a JavaScript config file in the shape:
  *
@@ -15,7 +15,7 @@
  * a DuckDB query for that chart following the templates in notes.md.
  *
  * Usage:
- *   node tsv-to-config.js <input.tsv> [output.js]
+ *   node createConfig.js <input.tsv> [output.js]
  *
  * If [output.js] is omitted, the output is written next to the input file
  * using the same base name, e.g. "my-data.tsv" -> "my-data.config.js".
