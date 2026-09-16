@@ -9,6 +9,7 @@ services:
         PORT_MAPPING: ${PORT_MAPPING:-3003}
         DUCK_DB_PATH: ${DUCK_DB_PATH}
         DUCK_DB_PUCK_PERMS_PATH: ${DUCK_DB_PUCK_PERMS_PATH}
+        ASSETMANAGER_DB_PATH: ${ASSETMANAGER_DB_PATH}
     container_name: bcrf-ui
     hostname: bcrf-ui
     image: dbmi/bcrf-ui:${VERSION}
