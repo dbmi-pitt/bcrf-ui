@@ -37,17 +37,18 @@ INSERT INTO permissions (permission_key, description) VALUES
 -- sources
 -- ----------------------------------------------------------------------------
 CREATE TABLE sources (
-    source            VARCHAR(64)   NOT NULL PRIMARY KEY, -- unique identifier for the source (aurora-us, aurora-eu, etc...)
-    name              VARCHAR(255)  NOT NULL,             -- human-readable name for the source
-    description       VARCHAR(1024) NOT NULL,             -- description of the source
-    terms_of_use      TEXT,                               -- terms of use for the source
-    patient_count     INT           NOT NULL DEFAULT 0,   -- number of total patients
-    sample_count      INT           NOT NULL DEFAULT 0,   -- number of total samples
-    `virtual`         BOOLEAN       NOT NULL DEFAULT FALSE,
+    source            VARCHAR(64)   NOT NULL PRIMARY KEY,     -- unique identifier for the source (aurora-us, aurora-eu, etc...)
+    name              VARCHAR(255)  NOT NULL,                 -- human-readable name for the source
+    description       VARCHAR(1024) NOT NULL,                 -- description of the source
+    terms_of_use      TEXT,                                   -- terms of use for the source
+    patient_count     INT           NOT NULL DEFAULT 0,       -- number of total patients
+    sample_count      INT           NOT NULL DEFAULT 0,       -- number of total samples
+    public            BOOLEAN       NOT NULL DEFAULT FALSE,   -- whether the source is public
+    `virtual`         BOOLEAN       NOT NULL DEFAULT FALSE,   -- whether the source is virtual
     created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    INDEX idx_sources_virtual (`virtual`)
+    INDEX idx_sources_virtual_public (`virtual`, `public`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- "virtual source" so "Global Read" and "Global Admin" groups can be created

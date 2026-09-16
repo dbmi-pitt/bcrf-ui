@@ -12,6 +12,7 @@ const ALLOWED_SOURCE_COLUMNS = [
   'patient_count',
   'sample_count',
   'virtual',
+  'public',
   'created_at',
   'updated_at',
 ];
@@ -37,7 +38,7 @@ export async function getSources(columns) {
 
   const [rows] = await pool.query(
     `SELECT ${selectClause} FROM sources
-     WHERE \`virtual\` = false`,
+     WHERE \`virtual\` = false AND \`public\` = true`,
   );
   return rows;
 }
@@ -62,7 +63,7 @@ export async function getSource(sourceId, columns) {
 
   const [rows] = await pool.query(
     `SELECT ${selectClause} FROM sources
-     WHERE source = ? AND \`virtual\` = false
+     WHERE source = ? AND \`virtual\` = false AND \`public\` = true
      LIMIT 1`,
     [sourceId],
   );
@@ -101,7 +102,7 @@ export async function getSourcesByIds(sourceIds, columns, orderBy = 'name') {
 
   const [rows] = await pool.query(
     `SELECT ${selectClause} FROM sources
-     WHERE source IN (?) AND \`virtual\` = false
+     WHERE source IN (?) AND \`virtual\` = false AND \`public\` = true
      ORDER BY ${orderByClause} ASC`,
     [sourceIds],
   );
