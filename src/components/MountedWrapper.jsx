@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import useGoogleTagManager from '@/hooks/useGoogleTagManager';
 import '@/lib/general';
 import { App } from 'antd';
+import { CookieConsentBar } from './CookieConsentBar';
 
 function MountedWrapper({ gtmId, user, children }) {
   useGoogleTagManager(gtmId);
@@ -13,6 +14,7 @@ function MountedWrapper({ gtmId, user, children }) {
     <App>
       <AuthProvider user={user}>
         <AppProvider>{children}</AppProvider>
+        <CookieConsentBar />
       </AuthProvider>
     </App>
   );
