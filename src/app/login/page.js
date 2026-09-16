@@ -24,7 +24,7 @@ export default async function LogIn({ searchParams }) {
           <hr />
           <form action={logInWithGlobus}>
             <input type="hidden" name="from" value={from} />
-            <button className={'c-btn c-btn--secondary'} style={{outline: 'none', border: 'none'}} type="submit">Log in with Globus</button>
+            <button className={'c-btn c-btn--primary'} style={{outline: 'none', border: 'none'}} type="submit">Log in with Globus</button>
           </form>
         </Alert>
       </Container>

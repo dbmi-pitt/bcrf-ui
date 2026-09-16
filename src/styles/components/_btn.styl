@@ -8,6 +8,9 @@
   padding .5em 1.5em
   text-transform uppercase
   p3()
+  &--sm 
+    p4()
+    padding .3em 1em
   &--lg
     p2()
     padding .7em 2em
@@ -43,14 +46,16 @@
       p6()
 
     &--pink
-      background-color $col-primary-accent
       border-color $col-primary-accent
-      color white
+      background-color transparent
+      color $col-primary-accent
 
-      &:hover, &:focus, &:active, &:visited
+      &:hover, &:focus, &:active
+        background-color $col-primary-accent
+        color white !important
+      
+      &:visited
         color $col-primary-accent
-        background-color white
-        border-color $col-primary-accent
 
     &--black
       background-color $col-lgt-grey
@@ -62,7 +67,7 @@
         border-color black
         background-color white
 
-  &--primary
+  &--secondary
     background-color $col-bcrf-blue
     border-color darken($col-bcrf-blue, 0.3)
 
@@ -78,9 +83,9 @@
     &::after
       background-color $col-primary-accent
 
-  &--secondary
+  &--primary
     background-color $col-primary-accent
-    border-color $col-primary-dark
+    border-color $col-primary-accent
     color white
 
     &:hover

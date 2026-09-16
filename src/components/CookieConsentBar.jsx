@@ -51,7 +51,7 @@ export const CookieConsentBar = () => {
           Decline
         </a>
         <a 
-          className='c-btn c-btn--secondary'
+          className='c-btn c-btn--primary'
           onClick={(e) => handleConsent(e, 'accepted')}
         >
           Accept All

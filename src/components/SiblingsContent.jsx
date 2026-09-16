@@ -27,7 +27,7 @@ const SiblingsContent = ({content}) => {
                 <LinkButton
                   href={section.btn.href}
                   className=" text-white mt-4"
-                  variant="secondary"
+                  variant="primary"
                 >
                   {section.btn.text}
                 </LinkButton>
