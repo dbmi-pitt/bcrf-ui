@@ -16,7 +16,7 @@ export async function getPermissionsForUserAndSource(userEmail, source) {
   const [rows] = await pool.query(
     `SELECT DISTINCT gg.permission_key
      FROM \`groups\` g
-     JOIN group_membership gm ON gm.group_uuid = g.uuid
+     JOIN group_memberships gm ON gm.group_uuid = g.uuid
      JOIN group_grants gg ON gg.group_uuid = g.uuid
      WHERE gm.user_email = ?
        AND (g.source = ? OR g.source = ?)`,
@@ -38,7 +38,7 @@ export async function hasGlobalReadPermission(userEmail) {
 
   const [rows] = await pool.query(
     `SELECT 1
-     FROM group_membership gm
+     FROM group_memberships gm
      JOIN groups g ON g.uuid = gm.group_uuid
      JOIN group_grants gg ON gg.group_uuid = g.uuid
      WHERE gm.user_email = ?
@@ -64,7 +64,7 @@ export async function hasSuperAdminPermission(userEmail) {
 
   const [rows] = await pool.query(
     `SELECT 1
-     FROM group_membership gm
+     FROM group_memberships gm
      JOIN groups g ON g.uuid = gm.group_uuid
      JOIN group_grants gg ON gg.group_uuid = g.uuid
      WHERE gm.user_email = ?

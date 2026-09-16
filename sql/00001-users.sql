@@ -63,7 +63,7 @@ CREATE TABLE `groups` (
     created_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    FOREIGN KEY (source) REFERENCES sources(source),
+    FOREIGN KEY (source) REFERENCES sources(source) ON UPDATE CASCADE ON DELETE CASCADE,
     INDEX idx_groups_source (source)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -79,8 +79,8 @@ CREATE TABLE group_grants (
     permission_key   VARCHAR(64)   NOT NULL,
 
     PRIMARY KEY (group_uuid, permission_key),
-    FOREIGN KEY (group_uuid) REFERENCES groups(uuid) ON DELETE CASCADE,
-    FOREIGN KEY (permission_key) REFERENCES permissions(permission_key) ON DELETE CASCADE,
+    FOREIGN KEY (group_uuid) REFERENCES groups(uuid) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (permission_key) REFERENCES permissions(permission_key) ON UPDATE CASCADE ON DELETE CASCADE,
 
     INDEX idx_group_grants_permission_key (permission_key) -- for reverse lookup: "which groups grant this permission?"
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -90,17 +90,17 @@ INSERT INTO group_grants (group_uuid, permission_key) VALUES
     ('d2416ff1-84ff-4087-8632-cd5a46be5a34', 'SUPER_ADMIN');
 
 -- ----------------------------------------------------------------------------
--- group_membership
+-- group_memberships
 -- ----------------------------------------------------------------------------
-CREATE TABLE group_membership (
+CREATE TABLE group_memberships (
     group_uuid   CHAR(36)      NOT NULL,
     user_email   VARCHAR(255)  NOT NULL,
 
     PRIMARY KEY (group_uuid, user_email),
-    FOREIGN KEY (group_uuid) REFERENCES groups(uuid) ON DELETE CASCADE,
-    FOREIGN KEY (user_email) REFERENCES users(email) ON DELETE CASCADE,
+    FOREIGN KEY (group_uuid) REFERENCES groups(uuid) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (user_email) REFERENCES users(email) ON UPDATE CASCADE ON DELETE CASCADE,
 
-    INDEX idx_group_membership_user_email (user_email) -- for reverse lookup: "which groups does this user belong to?"
+    INDEX idx_group_memberships_user_email (user_email) -- for reverse lookup: "which groups does this user belong to?"
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;
