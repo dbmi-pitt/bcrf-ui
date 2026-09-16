@@ -8,6 +8,7 @@ const ALLOWED_SOURCE_COLUMNS = [
   'source',
   'name',
   'description',
+  'terms_of_use',
   'patient_count',
   'sample_count',
   'data_table_name',

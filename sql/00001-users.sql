@@ -40,6 +40,7 @@ CREATE TABLE sources (
     source            VARCHAR(64)   NOT NULL PRIMARY KEY, -- unique identifier for the source (aurora-us, aurora-eu, etc...)
     name              VARCHAR(255)  NOT NULL, -- human-readable name for the source
     description       VARCHAR(1024) NOT NULL, -- description of the source
+    terms_of_use      TEXT,                   -- terms of use for the source
     patient_count     INT           NOT NULL DEFAULT 0, -- number of total patients
     sample_count      INT           NOT NULL DEFAULT 0, -- number of total samples
     data_table_name   VARCHAR(128)  NOT NULL, -- name of the data table in the duck database

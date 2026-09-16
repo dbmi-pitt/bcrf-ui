@@ -10,15 +10,24 @@ export const getSummaryDataSources = async () => {
     'description',
     'patient_count',
     'sample_count',
+    'terms_of_use',
   ]);
 
   return sources.map(
-    ({ source, name, description, patient_count, sample_count }) => ({
+    ({
+      source,
+      name,
+      description,
+      patient_count,
+      sample_count,
+      terms_of_use,
+    }) => ({
       source: source,
       name: name,
       description: description,
       patientCount: patient_count,
       sampleCount: sample_count,
+      termsOfUse: terms_of_use,
     }),
   );
 };
@@ -30,6 +39,7 @@ export const getSummaryDataSource = async (source) => {
     'description',
     'patient_count',
     'sample_count',
+    'terms_of_use',
   ]);
   const charts = sourceMap[source];
   if (!row || !charts) {
@@ -42,6 +52,7 @@ export const getSummaryDataSource = async (source) => {
     description: row.description,
     patientCount: row.patient_count,
     sampleCount: row.sample_count,
+    termsOfUse: row.terms_of_use,
   };
 };
 
