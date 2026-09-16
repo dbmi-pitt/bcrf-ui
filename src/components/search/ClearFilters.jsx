@@ -15,7 +15,7 @@ function ClearFilters() {
   return (
     <div>
       <button
-        className="c-btn c-btn--primary rounded-0 d-block w-100 mb-2"
+        className="c-btn c-btn--secondary rounded-0 d-block w-100 mb-2"
         onClick={handleClearFilters}
       >
         <span>Clear Filters</span>

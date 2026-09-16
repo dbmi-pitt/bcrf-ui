@@ -38,7 +38,7 @@ const Hero = ({ content }) => {
                 <>
                   <LinkButton
                     className=" text-white mt-4"
-                    variant='secondary c-btn--lg'
+                    variant='primary c-btn--lg'
                     onClick={content.btns[0].modal ? handleShow : undefined}
                   >
                     {content.btns[0].text}
@@ -66,7 +66,7 @@ const Hero = ({ content }) => {
               {isAuthenticated && content.btns[1] && (
                 <LinkButton
                   className="text-white mt-4"
-                  variant='secondary c-btn--lg'
+                  variant='primary c-btn--lg'
                   href={content.btns[1].href}
                 >
                   {content.btns[1].text}

@@ -71,7 +71,7 @@ export default function TermsOfUse({
             cancelText="No"
           >
             <buton
-              className="c-btn c-btn--primary rounded-0 text-white d-block mb-2"
+              className="c-btn c-btn--secondary rounded-0 text-white d-block mb-2"
               style={{ alignSelf: 'flex-start', cursor: 'pointer' }}
             >
               Request Access

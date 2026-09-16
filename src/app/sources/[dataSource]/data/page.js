@@ -6,8 +6,8 @@ import { PERMISSION } from '@/lib/permission/constants';
 import { hasCurrentUserPermission } from '@/lib/permission/services';
 import { getSummaryDataSource } from '@/lib/sources/services';
 import { DownloadIcon } from 'lucide-react';
+import Link from 'next/link';
 import { Badge } from 'react-bootstrap';
-import Button from 'react-bootstrap/Button';
 
 export async function generateMetadata({ params }) {
   const { dataSource } = await params;
@@ -34,10 +34,10 @@ export default async function Page({ params }) {
 
       {dlLinks.map((link) => (
         <div className="my-2" key={link.name}>
-          <Button size="" className='rounded-0 c-btn--outline--pink' href={link.url} target="_blank">
+          <Link size="" className='rounded-0 c-btn c-btn--sm c-btn--primary btn' href={link.url} target="_blank">
             <DownloadIcon />
             <span>{link.name}</span>
-          </Button>{' '}
+          </Link>{' '}
           - <Badge className='bg--blue--primary'>{link.count ?? link.fileCount}</Badge>{' '}
           {link.description}
         </div>
