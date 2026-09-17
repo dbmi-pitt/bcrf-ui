@@ -6,6 +6,9 @@ import 'server-only';
 
 export const getBannerContent = async () => {
   const url = URLS.content.banner;
+  if (!url) {
+    return null;
+  }
   const results = await fetch(url, { method: 'GET' });
   if (!results.ok) {
     return null;
