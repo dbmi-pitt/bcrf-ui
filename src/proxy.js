@@ -1,19 +1,12 @@
+import { isProtectedPath } from '@/lib/auth/paths';
 import { getCurrentUser } from '@/lib/auth/services';
-import { hasCurrentUserGlobalReadPermission } from '@/lib/permission/services';
+import { hasCurrentUserGlobalReadPermission } from '@/lib/permission/actions';
 import { NextResponse } from 'next/server';
-
-const PUBLIC_PATHS = ['/', '/login', '/about', '/unauthorized'];
 
 export async function proxy(request) {
   const pathname = request.nextUrl.pathname;
 
-  const isProtected = !PUBLIC_PATHS.some((path) => {
-    if (path === '/') {
-      return pathname === '/';
-    }
-    return pathname === path || pathname.startsWith(`${path}/`);
-  });
-
+  const isProtected = isProtectedPath(pathname);
   if (isProtected) {
     const user = await getCurrentUser(request);
     if (!user) {

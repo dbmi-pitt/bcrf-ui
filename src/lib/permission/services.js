@@ -1,13 +1,33 @@
 import { getCurrentUser } from '@/lib/auth/services';
 import { getPermissionsForUserAndSource } from '@/lib/database/permissions';
-import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
+import { PERMISSION } from '@/lib/permission/constants';
 import 'server-only';
 
+/**
+ * Gets the current user's permissions for a source.
+ *
+ * @param {string} sourceId
+ *
+ * @returns {Promise<string[]>}
+ */
 export const getCurrentUserPermissions = async (sourceId) => {
-  const { username } = await getCurrentUser();
+  const currentUser = await getCurrentUser();
+  if (!currentUser) {
+    return [];
+  }
+
+  const { username } = currentUser;
   return getPermissionsForUserAndSource(username, sourceId);
 };
 
+/**
+ * Checks whether the current user has one of the requested permissions.
+ *
+ * @param {string} sourceId
+ * @param {string|string[]} requiredPerms
+ *
+ * @returns {Promise<boolean>}
+ */
 export const hasCurrentUserPermission = async (sourceId, requiredPerms) => {
   const permissionSet = await getCurrentUserPermissions(sourceId);
   const required = Array.isArray(requiredPerms)
@@ -19,16 +39,4 @@ export const hasCurrentUserPermission = async (sourceId, requiredPerms) => {
     permissionSet.includes(PERMISSION.SUPER_ADMIN) ||
     required.some((perm) => permissionSet.includes(perm))
   );
-};
-
-/**
- * Checks whether the currently authenticated user has global read permission.
- *
- * @async
- * @function hasCurrentUserGlobalReadPermission
- * @returns {Promise<boolean>} `true` if the user has the permission,
- *   `false` otherwise.
- */
-export const hasCurrentUserGlobalReadPermission = async () => {
-  return hasCurrentUserPermission(GLOBAL_SOURCE, PERMISSION.READ);
 };

@@ -2,11 +2,9 @@
 
 import { getConnection } from '@/lib/data/database';
 import { getSourcesByIds } from '@/lib/database/sources';
+import { hasCurrentUserGlobalReadPermission } from '@/lib/permission/actions';
 import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
-import {
-  hasCurrentUserGlobalReadPermission,
-  hasCurrentUserPermission,
-} from '@/lib/permission/services';
+import { hasCurrentUserPermission } from '@/lib/permission/services';
 import { sourceMap } from '@/lib/sources/charts';
 import { buildFilterClause } from '@/lib/sources/filter';
 import log from 'xac-loglevel';
