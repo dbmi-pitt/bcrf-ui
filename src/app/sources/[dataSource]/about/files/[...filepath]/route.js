@@ -4,6 +4,7 @@ import { getObjectBuffer } from '@/lib/assetmanager/storage';
 import { getFileByPath } from '@/lib/database/files';
 import { getSource } from '@/lib/database/sources';
 import { NextResponse } from 'next/server';
+import log from 'xac-loglevel';
 
 /**
  * @param {Request} req
@@ -13,7 +14,7 @@ export async function GET(req, { params }) {
   const { dataSource, filepath } = await params;
   const source = await getSource(dataSource, ['source']);
   if (!source) {
-    console.log('!source', source, dataSource);
+    log.debug('!source', source, dataSource);
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
@@ -22,18 +23,18 @@ export async function GET(req, { params }) {
   // key. They are never concatenated onto a real filesystem/storage path.
   const virtualPath = normalizeVirtualPath((filepath ?? []).join('/'));
   if (!virtualPath) {
-    console.log('!virtualPath');
+    log.debug('!virtualPath');
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
   const record = await getFileByPath(dataSource, virtualPath.toLowerCase());
   if (!record) {
-    console.log('!record');
+    log.debug('!record');
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
   if (!record.public) {
-    console.log('!record.is_public');
+    log.debug('!record.is_public');
     const usp = await getUserSourcePerms(req);
     if (!usp || !userCanView(usp, record)) {
       // 404 rather than 403 to avoid confirming the existence of private
@@ -46,7 +47,7 @@ export async function GET(req, { params }) {
   try {
     buffer = await getObjectBuffer(record.storage_key);
   } catch {
-    console.log('buffer issue');
+    log.debug('buffer issue');
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
