@@ -1,22 +1,23 @@
-import { notFound } from "next/navigation";
-import { getUserSourcePerms } from "@/lib/assetmanager/auth";
-import { getDirectoryListing } from "@/lib/assetmanager/files";
-import FileBrowser from "./file-browser";
-
+import { getUserSourcePerms } from '@/lib/assetmanager/auth';
+import { getDirectoryListing } from '@/lib/assetmanager/files';
+import { notFound } from 'next/navigation';
+import FileBrowser from './file-browser';
 
 /**
  * @param {{ params: { dataSource: string, dirpath?: string[] } }} props
  */
 export default async function BrowsePage({ params }) {
-  const {dataSource, dirpath } = await params;
-  
-  const currentPath = (dirpath ?? []).join("/");
+  const { dataSource, dirpath } = await params;
+
+  const currentPath = (dirpath ?? []).join('/');
   const usp = await getUserSourcePerms(dataSource);
-  const listing = await getDirectoryListing(dataSource, currentPath, usp.id ?? null);
-  
+  const listing = await getDirectoryListing(dataSource, currentPath, usp);
+
   // Deliberately 404 rather than 403 for unauthorized/nonexistent sources,
   // so we don't confirm existence of private sources to anonymous users.
-  if (!listing) notFound();
+  if (!listing) {
+    notFound();
+  }
 
   return (
     <FileBrowser

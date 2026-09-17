@@ -39,3 +39,13 @@ export function resolveColumns(
 export function buildSelectClause(pool, columns) {
   return columns.map((col) => pool.escapeId(col)).join(', ');
 }
+
+/**
+ * Escapes SQL LIKE wildcard characters for queries using ESCAPE '\\'.
+ *
+ * @param {string} value
+ * @returns {string}
+ */
+export function escapeLike(value) {
+  return value.replace(/[\\%_]/g, (match) => `\\${match}`);
+}

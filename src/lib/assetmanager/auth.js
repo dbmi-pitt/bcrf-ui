@@ -22,10 +22,12 @@ export async function userCanUploadTo(user) {
 
 /**
  * @param {{ id: string, perms: []string }} user
- * @param {{ is_public: 0 | 1, uploaded_by: string | null }} file
+ * @param {{ public?: 0 | 1, is_public?: 0 | 1, uploaded_by: string | null }} file
  */
 export async function userCanView(user, file) {
-  if (file.is_public) return true;
+  if (file.public ?? file.is_public) {
+    return true;
+  }
   return (
     user.perms.includes(PERMISSION.SOURCE_ADMIN) ||
     user.perms.includes(PERMISSION.SUPER_ADMIN) ||
@@ -35,10 +37,12 @@ export async function userCanView(user, file) {
 
 /**
  * @param {{ id: string, perms: []string }} user
- * @param {{ is_public: 0 | 1 }} source
+ * @param {{ public?: 0 | 1, is_public?: 0 | 1 }} source
  */
 export async function userCanViewSource(user, source) {
-  if (source.is_public) return true;
+  if (source.public ?? source.is_public) {
+    return true;
+  }
   return (
     user.perms.includes(PERMISSION.SOURCE_ADMIN) ||
     user.perms.includes(PERMISSION.SUPER_ADMIN) ||
