@@ -1,20 +1,22 @@
-import { getConnection } from '@/lib/data/database-puck.js';
+import { getPuckData as getPuckDataFromDb } from '@/lib/database/puckdata.js';
 import { getSummaryDataSource } from '@/lib/sources/services.js';
 import 'server-only';
 import log from 'xac-loglevel';
 
-export const getPuckData = async (sourceId) => {
-  const conn = await getConnection();
-  const result = await conn.run('SELECT data FROM puckdata WHERE source = $s', {
-    s: sourceId,
-  });
-  const rows = await result.getRowObjectsJson();
-  if (rows.length === 0) {
-    log.debug(`No puckdata found for ${sourceId}, returning default`);
-    return await getDefaultPuckData(sourceId);
+/**
+ * Get the puck data for a given source.
+ *
+ * @param {string} source - the source identifier.
+ *
+ * @returns {Promise<Object>}
+ */
+export const getPuckData = async (source) => {
+  const puckDataFromDb = await getPuckDataFromDb(source);
+  if (!puckDataFromDb) {
+    log.debug(`No puckdata found for ${source}, returning default`);
+    return await getDefaultPuckData(source);
   }
-
-  return JSON.parse(rows[0].data);
+  return puckDataFromDb;
 };
 
 const getDefaultPuckData = async (sourceId) => {
