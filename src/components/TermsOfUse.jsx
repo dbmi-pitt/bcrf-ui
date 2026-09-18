@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
 import { message, Popconfirm } from 'antd';
+import log from 'xac-loglevel';
 
 export default function TermsOfUse({
   termsText,
@@ -29,7 +29,7 @@ export default function TermsOfUse({
     });
   };
   const confirm = async (e) => {
-    console.log(e);
+    log.debug(e);
 
     try {
       const response = await sendEmail();
@@ -49,7 +49,7 @@ export default function TermsOfUse({
   };
 
   const cancel = (e) => {
-    console.log(e);
+    log.debug(e);
   };
   return (
     <div key="terms-of-use" className="card bg--warning px-4 pt-3 mb-2">
