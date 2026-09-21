@@ -59,7 +59,7 @@ export default function TermsOfUse({
           __html: termsText,
         }}
       />
-      {authorizedToViewData && (
+      {!authorizedToViewData && (
         <>
           {holder}
           <Popconfirm
