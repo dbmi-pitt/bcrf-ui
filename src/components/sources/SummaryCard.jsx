@@ -44,6 +44,7 @@ function SummaryCard({ data, onTagClick }) {
 
   return (
     <Card
+      hoverable={true}
       onClick={handleHeaderAreaClick}
       className="c-summaryCard"
       title={
@@ -53,22 +54,24 @@ function SummaryCard({ data, onTagClick }) {
       }
       extra={
         <>
-          <span key={`patients-${data.source}`} className="mx-3">
+          <span key={`patients-${data.source}`} className="mx-1">
             {' '}
             <Badge
+              title={`${data.totalPatientCount} patients`}
               count={data.totalPatientCount}
               overflowCount={THEME.badge.overflow}
               color={THEME.colors.patients}
             />{' '}
-            patients
+            {/*patients*/}
           </span>
           <span key={`samples-${data.source}`}>
             <Badge
+              title={`${data.totalSampleCount} samples`}
               count={data.totalSampleCount}
               overflowCount={THEME.badge.overflow}
               color={THEME.colors.samples}
             />{' '}
-            samples{' '}
+            {/*samples{' '}*/}
           </span>
         </>
       }

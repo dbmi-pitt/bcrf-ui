@@ -1,7 +1,7 @@
 const THEME = {
   isLgScreen: () => window.innerWidth > 992,
   badge: {
-    overflow: 999,
+    overflow: 99999,
   },
   colors: {
     plum: '#6B2C5D',

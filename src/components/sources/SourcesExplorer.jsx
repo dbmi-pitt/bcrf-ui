@@ -24,6 +24,15 @@ function SourcesExplorerBody() {
         <div className="c-sourcesExplorer__vizualizations">
           <SourcesVizualizations />
         </div>
+        {/*TODO: Add Manifest export that works with Globus CLI*/}
+        <div className="row">
+          <div className="col-lg-2 offset-lg-10">
+            <button className="c-btn c-btn--primary rounded-0 mb-2 d-block float-end">
+              <span>Manifest </span>
+              <i className="text-white bi bi-download"></i>
+            </button>
+          </div>
+        </div>
         <div className="row">
           <div className="col-lg-2">
             <ClearFilters />
