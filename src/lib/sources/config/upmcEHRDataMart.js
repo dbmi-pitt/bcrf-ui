@@ -174,7 +174,7 @@ export const CONFIG = {
     },
     {
       id: 'site-spec1-er',
-      title: 'CS Site-Specific Factor 1',
+      title: 'ER',
       types: ['pie', 'table'],
       filter: {
         column: 'SiteSpec1-ER',
@@ -202,7 +202,7 @@ export const CONFIG = {
     },
     {
       id: 'site-spec2-pr',
-      title: 'CS Site-Specific Factor 2',
+      title: 'PR',
       types: ['pie', 'table'],
       filter: {
         column: 'SiteSpec2-PR',
@@ -229,7 +229,7 @@ export const CONFIG = {
       },
     },
     {
-      id: 'site-spec15-her2',
+      id: 'HER2',
       title: 'CS Site-Specific Factor 15',
       types: ['pie', 'table'],
       filter: {
