@@ -148,16 +148,15 @@ export default function GridLayout({
 
   const updateParamFilters = useEffectEvent(() => {
     const query = new URLSearchParams(window.location.search);
-    const tag = query.get('tag')
-    const value = query.get('value')
+    const tag = query.get('tag');
+    const value = query.get('value');
     if (tag && value) {
-      setFilters({[tag.toDashedCase()]: value.trim().split(',')})
+      setFilters({ [tag.toDashedCase()]: value.trim().split(',') });
     }
-    
-  })
+  });
 
   useEffect(() => {
-    updateParamFilters()
+    updateParamFilters();
   }, []);
 
   useEffect(() => {
@@ -259,6 +258,11 @@ export default function GridLayout({
     });
   };
 
+  const handleReset = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setLayout(createLayout(charts));
+  };
+
   // Update the layout for visible widgets, do not lose position of hidden widgets
   const handleLayoutChange = (newLayout) => {
     if (!loadedRef.current) return;
@@ -329,38 +333,46 @@ export default function GridLayout({
       </div>
 
       {mounted && gridWidth > 0 && (
-        <ReactGridLayout
-          dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
-          width={gridWidth}
-          layout={visibleLayout}
-          cols={12}
-          margin={margin}
-          rowHeight={rowHeightPx}
-          onLayoutChange={handleLayoutChange}
-        >
-          {widgetItems
-            .filter((item) => !hiddenKeys.has(item.key))
-            .map((item) => (
-              <div key={item.key}>
-                <GridWidget
-                  title={item.title}
-                  widgetKey={item.key}
-                  chart={item}
-                  onChartTypeChange={(widgetKey, chartType) =>
-                    handleChartTypeChange(widgetKey, chartType)
-                  }
-                  layout={getWidgetLayout(item.key)}
-                  onRemove={() => handleRemoveItem(item.key)}
-                  isFilterable={item.isFilterable}
-                  activeFilters={filters[item.key] ?? []}
-                  onAddFilter={handleAddFilter}
-                  onRemoveFilter={handleRemoveFilter}
-                  legend={legend}
-                  setLegend={setLegend}
-                />
-              </div>
-            ))}
-        </ReactGridLayout>
+        <>
+          <button
+            className="ms-2 c-btn c-btn--primary rounded-0 text-white d-block mb-2"
+            onClick={handleReset}
+          >
+            Reset Layout
+          </button>
+          <ReactGridLayout
+            dragConfig={{ enabled: true, handle: '.drag-header-handle' }}
+            width={gridWidth}
+            layout={visibleLayout}
+            cols={12}
+            margin={margin}
+            rowHeight={rowHeightPx}
+            onLayoutChange={handleLayoutChange}
+          >
+            {widgetItems
+              .filter((item) => !hiddenKeys.has(item.key))
+              .map((item) => (
+                <div key={item.key}>
+                  <GridWidget
+                    title={item.title}
+                    widgetKey={item.key}
+                    chart={item}
+                    onChartTypeChange={(widgetKey, chartType) =>
+                      handleChartTypeChange(widgetKey, chartType)
+                    }
+                    layout={getWidgetLayout(item.key)}
+                    onRemove={() => handleRemoveItem(item.key)}
+                    isFilterable={item.isFilterable}
+                    activeFilters={filters[item.key] ?? []}
+                    onAddFilter={handleAddFilter}
+                    onRemoveFilter={handleRemoveFilter}
+                    legend={legend}
+                    setLegend={setLegend}
+                  />
+                </div>
+              ))}
+          </ReactGridLayout>
+        </>
       )}
     </div>
   );

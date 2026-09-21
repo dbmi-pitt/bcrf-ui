@@ -378,15 +378,15 @@ export const CONFIG = {
       },
     },
     {
-      id: 'histrology-grade',
-      title: 'Histrology Grade',
+      id: 'histology-grade',
+      title: 'Histology Grade',
       types: ['pie', 'table'],
       filter: {
-        column: 'HISTROLOGY_GRADE',
+        column: 'HISTOLOGY_GRADE',
         type: 'term',
       },
       labels: {
-        x: 'Histrology Grade',
+        x: 'Histology Grade',
         y: 'Count',
         freq: 'Frequency',
       },
@@ -395,7 +395,10 @@ export const CONFIG = {
         // Cast y to integer to avoid returning a string value for count
         return `
                 SELECT
-                  "HISTROLOGY_GRADE" AS x,
+                  COALESCE(
+                    NULLIF(TRIM("HISTOLOGY_GRADE"), ''),
+                    'Unknown/Not Reported'
+                  ) AS x,
                   CAST(COUNT(*) AS INTEGER) AS y,
                   ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
                 FROM upmc_ehr_bc_data_mart
