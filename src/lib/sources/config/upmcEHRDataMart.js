@@ -181,7 +181,7 @@ export const CONFIG = {
         type: 'term',
       },
       labels: {
-        x: 'CS Site-Specific Factor 1',
+        x: 'ER',
         y: 'Count',
         freq: 'Frequency',
       },
@@ -209,7 +209,7 @@ export const CONFIG = {
         type: 'term',
       },
       labels: {
-        x: 'CS Site-Specific Factor 2',
+        x: 'PR',
         y: 'Count',
         freq: 'Frequency',
       },
@@ -229,15 +229,15 @@ export const CONFIG = {
       },
     },
     {
-      id: 'HER2',
-      title: 'CS Site-Specific Factor 15',
+      id: 'site-spec15-her2',
+      title: 'HER2',
       types: ['pie', 'table'],
       filter: {
         column: 'SiteSpec15-HER2',
         type: 'term',
       },
       labels: {
-        x: 'CS Site-Specific Factor 15',
+        x: 'HER2',
         y: 'Count',
         freq: 'Frequency',
       },
