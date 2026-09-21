@@ -174,14 +174,14 @@ export const CONFIG = {
     },
     {
       id: 'site-spec1-er',
-      title: 'CS Site-Specific Factor 1',
+      title: 'ER',
       types: ['pie', 'table'],
       filter: {
         column: 'SiteSpec1-ER',
         type: 'term',
       },
       labels: {
-        x: 'CS Site-Specific Factor 1',
+        x: 'ER',
         y: 'Count',
         freq: 'Frequency',
       },
@@ -202,14 +202,14 @@ export const CONFIG = {
     },
     {
       id: 'site-spec2-pr',
-      title: 'CS Site-Specific Factor 2',
+      title: 'PR',
       types: ['pie', 'table'],
       filter: {
         column: 'SiteSpec2-PR',
         type: 'term',
       },
       labels: {
-        x: 'CS Site-Specific Factor 2',
+        x: 'PR',
         y: 'Count',
         freq: 'Frequency',
       },
@@ -230,14 +230,14 @@ export const CONFIG = {
     },
     {
       id: 'site-spec15-her2',
-      title: 'CS Site-Specific Factor 15',
+      title: 'HER2',
       types: ['pie', 'table'],
       filter: {
         column: 'SiteSpec15-HER2',
         type: 'term',
       },
       labels: {
-        x: 'CS Site-Specific Factor 15',
+        x: 'HER2',
         y: 'Count',
         freq: 'Frequency',
       },
@@ -378,15 +378,15 @@ export const CONFIG = {
       },
     },
     {
-      id: 'histrology-grade',
-      title: 'Histrology Grade',
+      id: 'histology-grade',
+      title: 'Histology Grade',
       types: ['pie', 'table'],
       filter: {
-        column: 'HISTROLOGY_GRADE',
+        column: 'HISTOLOGY_GRADE',
         type: 'term',
       },
       labels: {
-        x: 'Histrology Grade',
+        x: 'Histology Grade',
         y: 'Count',
         freq: 'Frequency',
       },
@@ -395,7 +395,10 @@ export const CONFIG = {
         // Cast y to integer to avoid returning a string value for count
         return `
                 SELECT
-                  "HISTROLOGY_GRADE" AS x,
+                  COALESCE(
+                    NULLIF(TRIM("HISTOLOGY_GRADE"), ''),
+                    'Unknown/Not Reported'
+                  ) AS x,
                   CAST(COUNT(*) AS INTEGER) AS y,
                   ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) AS freq
                 FROM upmc_ehr_bc_data_mart
