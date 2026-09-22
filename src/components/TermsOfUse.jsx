@@ -64,7 +64,13 @@ export default function TermsOfUse({
           {holder}
           <Popconfirm
             title="Request Access"
-            description="Do you want to request access to this data source's data sets?"
+            description="Are you sure you want to request access to this data source's data sets?"
+            okButtonProps={{
+              className: 'c-btn c-btn--primary rounded-0 text-white',
+            }}
+            cancelButtonProps={{
+              className: 'c-btn c-btn--secondary rounded-0 text-white',
+            }}
             onConfirm={confirm}
             onCancel={cancel}
             okText="Yes"

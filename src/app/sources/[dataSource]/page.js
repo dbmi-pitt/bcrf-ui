@@ -78,7 +78,10 @@ export default async function Page({ params, searchParams }) {
         />
       ),
     },
-    {
+  ];
+
+  if (dataSource !== 'upmc-ehr-bc-data-mart') {
+    items.push({
       label: 'Tabular View',
       key: 'table',
       children: (
@@ -92,8 +95,8 @@ export default async function Page({ params, searchParams }) {
           }
         />
       ),
-    },
-  ];
+    });
+  }
 
   return (
     <BasicLayout fluid={true}>
