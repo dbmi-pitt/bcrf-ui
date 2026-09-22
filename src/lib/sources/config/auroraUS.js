@@ -79,6 +79,10 @@ export const CONFIG = {
       id: 'number-of-samples-per-patient',
       title: 'Number of Samples Per Patient',
       types: ['pie', 'table'],
+      filter: {
+        column: 'Number of Samples Per Patient',
+        type: 'term',
+      },
       labels: {
         x: 'Number of Samples',
         y: 'Count',
