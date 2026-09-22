@@ -1,56 +1,63 @@
-"use server"
-import { NextResponse } from "next/server";
-import { randomUUID, createHash } from "crypto";
-import { fileTypeFromBuffer } from "file-type";
-import { getUserSourcePerms, userCanUploadTo } from "@/lib/assetmanager/auth";
-import { normalizeVirtualPath } from "@/lib/assetmanager/path-utils";
-import { findFileByPath, createFileRecord, searchFiles } from "@/lib/assetmanager/files";
-import { putObject } from "@/lib/assetmanager/storage";
+import { getUserSourcePerms, userCanUploadTo } from '@/lib/assetmanager/auth';
+import { normalizeVirtualPath } from '@/lib/assetmanager/path-utils';
+import { putObject } from '@/lib/assetmanager/storage';
+import {
+  getFileByPath,
+  insertFile,
+  searchFilesByPath,
+} from '@/lib/database/files';
+import { createHash, randomUUID } from 'crypto';
+import { fileTypeFromBuffer } from 'file-type';
+import { NextResponse } from 'next/server';
 
 const MAX_SIZE = 25 * 1024 * 1024; // 25MB
 
 // Allow-list, not deny-list. Add types deliberately, never subtract from a
 // "blocked" list.
-const ALLOWED_TYPES = new Set(["image/png", "image/jpeg", "image/webp", "application/pdf", "text/csv"]);
+const ALLOWED_TYPES = new Set([
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'application/pdf',
+  'text/csv',
+]);
 
 /**
  * @param {Request} req
  * @param {{ params: { sourceId: string } }} context
  */
 export async function POST(req, { params }) {
-
-
-  const {sourceId} = await params
+  const { sourceId } = await params;
   const usp = await getUserSourcePerms(sourceId);
 
   if (!usp || !userCanUploadTo(usp)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   let formData;
   try {
     formData = await req.formData();
   } catch {
-    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid form data' }, { status: 400 });
   }
 
-  const file = formData.get("file");
+  const file = formData.get('file');
   if (!(file instanceof File)) {
-    return NextResponse.json({ error: "No file provided" }, { status: 400 });
+    return NextResponse.json({ error: 'No file provided' }, { status: 400 });
   }
 
   if (file.size > MAX_SIZE) {
-    return NextResponse.json({ error: "File too large" }, { status: 413 });
+    return NextResponse.json({ error: 'File too large' }, { status: 413 });
   }
 
   // The uploader can optionally specify a "path" field (e.g.
   // "images/team-photo.png") to control folder placement; otherwise fall
   // back to the raw filename. Either way it goes through the same strict
   // validation before it's trusted for anything.
-  const rawPath = formData.get("path") ?? file.name;
+  const rawPath = formData.get('path') ?? file.name;
   const virtualPath = normalizeVirtualPath(rawPath);
   if (!virtualPath) {
-    return NextResponse.json({ error: "Invalid file path" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid file path' }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -60,12 +67,18 @@ export async function POST(req, { params }) {
   const detected = await fileTypeFromBuffer(buffer);
   const detectedType = detected?.mime;
   if (!detectedType || !ALLOWED_TYPES.has(detectedType)) {
-    return NextResponse.json({ error: "Unsupported or unverifiable file type" }, { status: 415 });
+    return NextResponse.json(
+      { error: 'Unsupported or unverifiable file type' },
+      { status: 415 },
+    );
   }
 
-  const existing = await findFileByPath(sourceId, virtualPath);
+  const existing = await getFileByPath(sourceId, virtualPath.toLowerCase());
   if (existing) {
-    return NextResponse.json({ error: "A file already exists at this path" }, { status: 409 });
+    return NextResponse.json(
+      { error: 'A file already exists at this path' },
+      { status: 409 },
+    );
   }
 
   // Storage key is always server-generated (uuid-based) — the virtual path
@@ -75,18 +88,19 @@ export async function POST(req, { params }) {
 
   await putObject(storageKey, buffer);
 
-  const checksum = createHash("sha256").update(buffer).digest("hex");
+  const checksum = createHash('sha256').update(buffer).digest('hex');
 
-  const recordId = await createFileRecord({
-    sourceId: sourceId,
-    virtualPath,
+  const recordId = await insertFile({
+    source: sourceId,
+    path: virtualPath,
+    pathLower: virtualPath.toLowerCase(),
     storageKey,
-    originalName: virtualPath.split("/").pop() || file.name,
+    originalName: virtualPath.split('/').pop() || file.name,
     mimeType: detectedType,
     size: buffer.length,
     checksum,
     uploadedBy: usp.id,
-    isPublic: true, // wire this up to a real visibility control as needed
+    public: true, // wire this up to a real visibility control as needed
   });
 
   return NextResponse.json({
@@ -95,9 +109,6 @@ export async function POST(req, { params }) {
     url: `/sources/${sourceId}/about/files/${virtualPath}`,
   });
 }
-
-
-
 
 function toPickerShape(sourceId, record) {
   return {
@@ -123,25 +134,29 @@ function toPickerShape(sourceId, record) {
  * @param {{ params: { sourceId: string } }} context
  */
 export async function GET(req, { params }) {
-  const {sourceId} = await params;
+  const { sourceId } = await params;
   const usp = await getUserSourcePerms(sourceId);
   if (!usp || !userCanUploadTo(usp)) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 
   const { searchParams } = new URL(req.url);
-  const exactPath = searchParams.get("path");
+  const exactPath = searchParams.get('path');
 
   if (exactPath !== null) {
     const virtualPath = normalizeVirtualPath(exactPath);
     if (!virtualPath) {
       return NextResponse.json({ file: null });
     }
-    const record = await findFileByPath(sourceId, virtualPath);
-    return NextResponse.json({ file: record ? toPickerShape(sourceId, record) : null });
+    const record = await getFileByPath(sourceId, virtualPath.toLowerCase());
+    return NextResponse.json({
+      file: record ? toPickerShape(sourceId, record) : null,
+    });
   }
 
-  const q = searchParams.get("q") || "";
-  const records = await searchFiles(sourceId, q, 50);
-  return NextResponse.json({ files: records.map((r) => toPickerShape(sourceId, r)) });
+  const q = searchParams.get('q') || '';
+  const records = await searchFilesByPath(sourceId, q.trim().toLowerCase(), 50);
+  return NextResponse.json({
+    files: records.map((r) => toPickerShape(sourceId, r)),
+  });
 }
