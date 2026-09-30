@@ -34,7 +34,7 @@ export default async function Page({ params }) {
 
       {dlLinks.map((link) => (
         <div className="my-2" key={link.name}>
-          <Link size="" className='rounded-0 c-btn c-btn--sm c-btn--primary btn' href={link.url} target="_blank">
+          <Link size="" className='rounded-0 c-btn c-btn--sm c-btn--outline c-btn--primary--outline btn' href={link.url} target="_blank">
             <DownloadIcon />
             <span>{link.name}</span>
           </Link>{' '}
