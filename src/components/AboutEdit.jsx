@@ -227,6 +227,22 @@ const AboutEdit = ({ dataSourceId, data }) => {
         config={config}
         data={data ?? {}}
         onPublish={handlePublish}
+        overrides={{
+        headerActions: ({ children }) => (
+          <>
+            {/* 1. Render children to keep the default Publish button */}
+            {children} 
+            
+            {/* 2. Add your custom button */}
+            <button 
+              onClick={() => alert("Custom action clicked!")}
+              className="c-btn c-btn--primary c-btn--sm"
+            >
+              Upload Assets
+            </button>
+          </>
+        ),
+      }}
       />
     </div>
   );
