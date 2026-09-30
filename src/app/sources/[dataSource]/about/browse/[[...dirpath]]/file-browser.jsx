@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { FolderOutlined, FileOutlined, UpOutlined  } from "@ant-design/icons";
+import { FileOutlined, FolderOutlined, UpOutlined } from '@ant-design/icons';
+import Link from 'next/link';
 
 /**
  * @param {{
@@ -19,11 +19,11 @@ import { FolderOutlined, FileOutlined, UpOutlined  } from "@ant-design/icons";
  * }} props
  */
 export default function FileBrowser({ sourceId, currentPath, folders, files }) {
-  const segments = currentPath ? currentPath.split("/") : [];
+  const segments = currentPath ? currentPath.split('/') : [];
   const browseBase = `/sources/${sourceId}/about/browse`;
   const filesBase = `/sources/${sourceId}/about/files`;
 
-  const parentPath = segments.slice(0, -1).join("/");
+  const parentPath = segments.slice(0, -1).join('/');
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -33,11 +33,14 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
           root
         </Link>
         {segments.map((seg, i) => {
-          const segPath = segments.slice(0, i + 1).join("/");
+          const segPath = segments.slice(0, i + 1).join('/');
           return (
             <span key={segPath} className="flex items-center gap-1">
               <span>/</span>
-              <Link href={`${browseBase}/${segPath}`} className="hover:underline">
+              <Link
+                href={`${browseBase}/${segPath}`}
+                className="hover:underline"
+              >
                 {seg}
               </Link>
             </span>
@@ -87,7 +90,7 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
           })}
 
           {files.map((file) => {
-            const name = file.path.split("/").pop();
+            const name = file.path.split('/').pop();
             return (
               <tr key={file.id} className="border-b border-gray-100">
                 <td className="py-2">
@@ -125,7 +128,7 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
 /** @param {number} bytes */
 function formatSize(bytes) {
   if (bytes < 1024) return `${bytes} B`;
-  const units = ["KB", "MB", "GB"];
+  const units = ['KB', 'MB', 'GB'];
   let size = bytes;
   let i = -1;
   do {

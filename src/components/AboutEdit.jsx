@@ -1,6 +1,6 @@
 'use client';
 
-import { savePuckData } from '@/lib/puck/actions';
+import { updatePuckData } from '@/lib/puck/actions';
 import { Puck } from '@puckeditor/core';
 import { Alert } from 'antd';
 import { useEffect, useState } from 'react';
@@ -179,7 +179,7 @@ const AboutEdit = ({ dataSourceId, data }) => {
   const handlePublish = async (publishedData) => {
     log.debug(JSON.stringify(publishedData));
 
-    const result = await savePuckData(dataSourceId, publishedData);
+    const result = await updatePuckData(dataSourceId, publishedData);
 
     if (result.success) {
       setSaveStatus({ type: 'success', message: 'Saved successfully.' });

@@ -28,8 +28,6 @@ COPY src ./src
 
 # Copy prebuilt databases
 COPY duckdb.db ./duckdb.db
-COPY bcrf_data.db ./bcrf_data.db
-COPY assetmanager.sqlite.db ./assetmanager.sqlite.db
 
 # Compile stylus css
 RUN pnpm exec stylus --include-css --compress src/styles/main.styl -o src/app/main.css
@@ -37,10 +35,7 @@ RUN pnpm exec stylus --include-css --compress src/styles/main.styl -o src/app/ma
 ENV NODE_ENV=production
 ARG DUCK_DB_PATH
 ENV DUCK_DB_PATH=$DUCK_DB_PATH
-ARG DUCK_DB_PUCK_PERMS_PATH
-ENV DUCK_DB_PUCK_PERMS_PATH=$DUCK_DB_PUCK_PERMS_PATH
-ARG ASSETMANAGER_DB_PATH
-ENV ASSETMANAGER_DB_PATH=$ASSETMANAGER_DB_PATH
+
 RUN pnpm build
 
 # Final
@@ -64,8 +59,6 @@ RUN addgroup --system --gid $HOST_GID codcc \
 
 # Standalone output bundles only what is needed at runtime
 COPY --from=builder --chown=codcc:codcc /usr/src/app/duckdb.db ./duckdb.db
-COPY --from=builder --chown=codcc:codcc /usr/src/app/bcrf_data.db ./bcrf_data.db
-COPY --from=builder --chown=codcc:codcc /usr/src/app/assetmanager.sqlite.db ./assetmanager.sqlite.db
 COPY --from=builder --chown=codcc:codcc /usr/src/app/public ./public
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/standalone ./
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/static ./.next/static

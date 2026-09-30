@@ -25,11 +25,11 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params, searchParams }) {
   const { dataSource } = await params;
+  const currentUser = await getCurrentUser();
+  const user = await getUserByEmail(currentUser.username);
   const resolvedSearchParams = await searchParams;
   const initialFilters = parseFiltersFromSearchParams(resolvedSearchParams);
 
-  const currentUser = await getCurrentUser();
-  const user = await getUserByEmail(currentUser.username);
   const summaryDataSource = await getSummaryDataSource(dataSource);
   if (!summaryDataSource) {
     notFound();
@@ -77,7 +77,10 @@ export default async function Page({ params, searchParams }) {
         />
       ),
     },
-    {
+  ];
+
+  if (dataSource !== 'upmc-ehr-bc-data-mart') {
+    items.push({
       label: 'Tabular View',
       key: 'table',
       children: (
@@ -91,8 +94,8 @@ export default async function Page({ params, searchParams }) {
           }
         />
       ),
-    },
-  ];
+    });
+  }
 
   return (
     <BasicLayout fluid={true}>

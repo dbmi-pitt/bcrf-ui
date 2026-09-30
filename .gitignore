@@ -64,3 +64,4 @@ puck_perms.puckdata
 *.tsv
 *.wal
 *.puckdata
+assets/

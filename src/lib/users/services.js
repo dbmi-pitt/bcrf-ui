@@ -1,41 +1,33 @@
-import { getConnection } from '@/lib/data/database-puck.js';
+import {
+  getUserByEmail as getUserByEmailFromDb,
+  getUsers as getUsersFromDb,
+} from '@/lib/database/users';
 import 'server-only';
 
 /**
- * Retrieves all users from the database.
+ * @typedef {Object} User
+ * @property {string} uuid - Unique identifier for the user.
+ * @property {string} email - The user's email address.
+ * @property {string} name - The user's display name.
+ * @property {string} [organization] - The user's organization, if set.
+ */
+
+/**
+ * Retrieve all users from the database.
  *
- * @async
- * @function getUsers
- * @returns {Promise<Array<{uuid: string, name: string, email: string, organization: string}>>}
+ * @returns {Promise<User[]>}
  */
 export const getUsers = async () => {
-  const conn = await getConnection();
-
-  const reader = await conn.runAndReadAll(
-    'SELECT uuid, name, email, organization FROM users',
-  );
-  const rows = reader.getRowObjects();
-  return rows;
+  return getUsersFromDb(['uuid', 'name', 'email', 'organization']);
 };
 
 /**
- * Retrieves a single user by their email address.
+ * Retrieve a single user by their email address.
  *
- * @async
- * @function getUserByEmail
- * @param {string} email - The email address to look up. Must be a
- *   non-empty string.
- * @returns {Promise<{uuid: string, email: string, name: string, organization: string} | null>}
+ * @param {string} email - The email address to look up
+ *
+ * @returns {Promise<User | null>}
  */
 export const getUserByEmail = async (email) => {
-  const conn = await getConnection();
-
-  const reader = await conn.runAndReadAll(
-    'SELECT uuid, name, email, organization  FROM users WHERE email = ?', [email],
-  );
-  const rows = reader.getRowObjects();
-  if (rows.length === 0) {
-    return null;
-  }
-  return rows[0];
+  return getUserByEmailFromDb(email, ['uuid', 'name', 'email', 'organization']);
 };

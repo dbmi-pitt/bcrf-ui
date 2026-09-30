@@ -1,11 +1,10 @@
 'use server';
 
-import { connection } from '@/lib/data/database';
+import { getConnection } from '@/lib/data/database';
+import { getSourcesByIds } from '@/lib/database/sources';
+import { hasCurrentUserGlobalReadPermission } from '@/lib/permission/actions';
 import { GLOBAL_SOURCE, PERMISSION } from '@/lib/permission/constants';
-import {
-  hasCurrentUserGlobalReadPermission,
-  hasCurrentUserPermission,
-} from '@/lib/permission/services';
+import { hasCurrentUserPermission } from '@/lib/permission/services';
 import { sourceMap } from '@/lib/sources/charts';
 import { buildFilterClause } from '@/lib/sources/filter';
 import log from 'xac-loglevel';
@@ -153,6 +152,7 @@ export const getSourceChartData = async (sourceId, filters = {}) => {
     const query = chart.query(clause).replace(/\s+/g, ' ').trim();
     log.debug(`Querying chart ${chart.id}:`, query, params);
     try {
+      const connection = await getConnection();
       const result = await connection.run(query, params);
       const rows = await result.getRowObjectsJson();
       data[chart.id] = rows;
@@ -188,6 +188,7 @@ let allColumnsCache = null;
 async function getAllColumns() {
   if (allColumnsCache) return allColumnsCache;
 
+  const connection = await getConnection();
   const result = await connection.run(
     `
     SELECT column_name FROM information_schema.columns
@@ -199,6 +200,128 @@ async function getAllColumns() {
   allColumnsCache = rows.map((row) => row.column_name);
   return allColumnsCache;
 }
+
+export const getAllSummaryDataAggregations = async (filters = {}) => {
+  const authorized = await hasCurrentUserGlobalReadPermission();
+  if (!authorized) {
+    log.error(`User does not have global read permission for summary data`);
+    return {
+      success: false,
+      error: 'User does not have permission to view summary data',
+    };
+  }
+
+  const result = await getSummaryDataAggregations(filters);
+  if (!result.success) {
+    return result;
+  }
+
+  const countsBySource = new Map(result.sources.map((s) => [s.source, s]));
+
+  // only fetch sources that have samples matching the current filters
+  const activeSourceIds = result.sources
+    .filter((s) => s.samples > 0)
+    .map((s) => s.source);
+
+  const dbSources = await getSourcesByIds(activeSourceIds, [
+    'source',
+    'name',
+    'description',
+    'patient_count',
+    'sample_count',
+  ]);
+
+  const sources = [];
+  for (const s of dbSources) {
+    const counts = countsBySource.get(s.source);
+
+    sources.push({
+      source: s.source,
+      name: s.name,
+      description: s.description,
+      totalPatientCount: s.patient_count,
+      totalSampleCount: s.sample_count,
+      patientCount: counts?.patients ?? 0,
+      sampleCount: counts?.samples ?? 0,
+      tags: await getSourceTags(s.source),
+    });
+  }
+
+  return {
+    success: true,
+    aggregations: result.aggregations,
+    sources: sources,
+  };
+};
+
+const sourceTagsCache = new Map();
+
+const getSourceTags = async (source) => {
+  if (sourceTagsCache.has(source)) {
+    return sourceTagsCache.get(source);
+  }
+
+  const config = sourceMap[source];
+  if (!config) {
+    return {};
+  }
+
+  const tagColumns = config.charts
+    .map(({ id, filter, title }) => {
+      if (filter && filter.type === 'term') {
+        return {
+          id: id,
+          title: title,
+          column: filter.column,
+        };
+      }
+      return null;
+    })
+    .filter(Boolean);
+
+  if (tagColumns.length === 0) {
+    return {};
+  }
+
+  // One subquery per column, unioned together so this is a single query
+  const subQueries = tagColumns.map(({ id, column }) => {
+    const label = id.replace(/'/g, "''");
+    return `
+      SELECT '${label}' AS id, "${column}" AS tag
+      FROM ${config.table}
+      WHERE "${column}" IS NOT NULL
+      GROUP BY tag
+    `;
+  });
+
+  const query = `
+    SELECT id, tag
+    FROM (${subQueries.join(' UNION ALL ')})
+    ORDER BY id, tag
+  `
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  const tags = {};
+  for (const { id, title } of tagColumns) {
+    tags[id] = { title: title, values: [] };
+  }
+
+  try {
+    const connection = await getConnection();
+    const result = await connection.run(query);
+    const rows = await result.getRowObjectsJson();
+    for (const row of rows) {
+      tags[row.id].values.push(row.tag);
+    }
+  } catch (error) {
+    log.error(`Error querying tags for source ${source}:`, error);
+    return {};
+  }
+
+  sourceTagsCache.set(source, tags);
+  return tags;
+};
 
 /**
  * Returns term aggregations for combined data sources.
@@ -216,16 +339,7 @@ async function getAllColumns() {
  *   | { success: false, error: string }
  * >}
  */
-export const getSummaryDataAggregations = async (filters = {}) => {
-  const authorized = await hasCurrentUserGlobalReadPermission();
-  if (!authorized) {
-    log.error(`User does not have global read permission for summary data`);
-    return {
-      success: false,
-      error: 'User does not have permission to view summary data',
-    };
-  }
-
+const getSummaryDataAggregations = async (filters = {}) => {
   let allColumns;
   try {
     allColumns = await getAllColumns();
@@ -312,6 +426,7 @@ export const getSummaryDataAggregations = async (filters = {}) => {
 
   log.debug('Querying summary aggregations:', query, params);
   try {
+    const connection = await getConnection();
     const result = await connection.run(query, params);
     const rows = await result.getRowObjectsJson();
     for (const row of rows) {
@@ -319,11 +434,14 @@ export const getSummaryDataAggregations = async (filters = {}) => {
         if (row.term === GLOBAL_SOURCE) continue;
         sources.push({
           source: row.term,
-          patients: row.patients,
-          samples: row.samples,
+          patients: Number(row.patients),
+          samples: Number(row.samples),
         });
       } else {
-        aggs[row.column_name].push({ term: row.term, count: row.count });
+        aggs[row.column_name].push({
+          term: row.term,
+          count: Number(row.count),
+        });
       }
     }
   } catch (error) {

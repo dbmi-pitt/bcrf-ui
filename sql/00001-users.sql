@@ -1,64 +1,109 @@
-CREATE TABLE users (
-    email VARCHAR NOT NULL PRIMARY KEY,
-    uuid VARCHAR NOT NULL UNIQUE,
-    name VARCHAR NOT NULL,
-    organization VARCHAR
-);
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
+-- ----------------------------------------------------------------------------
+-- users
+-- ----------------------------------------------------------------------------
+CREATE TABLE users (
+    email           VARCHAR(255)    NOT NULL PRIMARY KEY,
+    uuid            CHAR(36)        NOT NULL UNIQUE,
+    name            VARCHAR(255)    NOT NULL,
+    organization    VARCHAR(255),
+    created_at      TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP       NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX idx_users_organization (organization),
+    INDEX idx_users_name (name)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- permissions
+-- ----------------------------------------------------------------------------
+CREATE TABLE permissions (
+    permission_key  VARCHAR(64)     NOT NULL PRIMARY KEY,
+    description     VARCHAR(255)    NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO permissions (permission_key, description) VALUES
+    ('READ',          'Read permission for the BCRF Data Hub'),
+    ('ABOUT_WRITE',   'Edit permission for the wiki about page.'),
+    ('ASSETS_WRITE',  'Edit permission for the assets manager.'),
+    ('GLOBUS_READ',   'Read permission for the Globus data.'),
+    ('GLOBUS_WRITE',  'Write permission for the Globus data.'),
+    ('SOURCE_ADMIN',  'Administrative access to the source.'),
+    ('SUPER_ADMIN',   'Administrative access to the entire system.');
+
+-- ----------------------------------------------------------------------------
+-- sources
+-- ----------------------------------------------------------------------------
 CREATE TABLE sources (
-    source VARCHAR PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    description VARCHAR NOT NULL,
-    data   JSON NOT NULL,
-    virtual BOOLEAN NOT NULL DEFAULT FALSE
-);
+    source            VARCHAR(64)   NOT NULL PRIMARY KEY,     -- unique identifier for the source (aurora-us, aurora-eu, etc...)
+    name              VARCHAR(255)  NOT NULL,                 -- human-readable name for the source
+    description       VARCHAR(1024) NOT NULL,                 -- description of the source
+    terms_of_use      TEXT,                                   -- terms of use for the source
+    patient_count     INT           NOT NULL DEFAULT 0,       -- number of total patients
+    sample_count      INT           NOT NULL DEFAULT 0,       -- number of total samples
+    public            BOOLEAN       NOT NULL DEFAULT FALSE,   -- whether the source is public
+    `virtual`         BOOLEAN       NOT NULL DEFAULT FALSE,   -- whether the source is virtual
+    created_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at        TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    INDEX idx_sources_virtual_public (`virtual`, `public`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- "virtual source" so "Global Read" and "Global Admin" groups can be created
-INSERT INTO sources (source, name, description, data, virtual)
-VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all sources.', '{}', TRUE);
+INSERT INTO sources (source, name, description, patient_count, sample_count, virtual)
+VALUES ('bcrf-global', 'BCRF Global', 'Virtual source representing access to all sources.', 0, 0, TRUE);
 
-CREATE TABLE permissions (
-    key VARCHAR NOT NULL PRIMARY KEY, 
-    description VARCHAR NOT NULL
-);
+-- ----------------------------------------------------------------------------
+-- groups
+-- ----------------------------------------------------------------------------
+CREATE TABLE `groups` (
+    uuid          CHAR(36)      NOT NULL PRIMARY KEY,
+    name          VARCHAR(255)  NOT NULL,             -- human-readable name for the group
+    source        VARCHAR(64)   NOT NULL,             -- source to which the group belongs
+    description   VARCHAR(2048),                      -- description of the group
+    created_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-INSERT INTO permissions (key, description) VALUES
-    ('READ', 'Read permission for the BCRF Data Hub'),
-    ('ABOUT_WRITE', 'Edit permission for the wiki about page.'),
-    ('ASSETS_WRITE', 'Edit permission for the assets manager.'),
-    ('GLOBUS_READ', 'Read permission for the Globus data.'),
-    ('GLOBUS_WRITE', 'Write permission for the Globus data.'),
-    ('SOURCE_ADMIN', 'Administrative access to the source.'),
-    ('SUPER_ADMIN', 'Administrative access to the entire system.');
-
-CREATE TABLE groups (
-    uuid VARCHAR NOT NULL PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    source VARCHAR NOT NULL,
-    description VARCHAR,
-    FOREIGN KEY (source) REFERENCES sources(source)
-);
+    FOREIGN KEY (source) REFERENCES sources(source) ON UPDATE CASCADE ON DELETE CASCADE,
+    INDEX idx_groups_source (source)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO groups (uuid, name, source, description) VALUES
-    ('21420174-8290-4dd5-87e7-0a70003402ad', 'BCRF Global Read', 'bcrf-global', 'Virtual group representing read access to all sources.'),
+    ('21420174-8290-4dd5-87e7-0a70003402ad', 'BCRF Global Read',  'bcrf-global', 'Virtual group representing read access to all sources.'),
     ('d2416ff1-84ff-4087-8632-cd5a46be5a34', 'BCRF Global Admin', 'bcrf-global', 'Virtual group representing admin access to all sources.');
+
+-- ----------------------------------------------------------------------------
+-- group_grants
+-- ----------------------------------------------------------------------------
+CREATE TABLE group_grants (
+    group_uuid       CHAR(36)      NOT NULL,
+    permission_key   VARCHAR(64)   NOT NULL,
+
+    PRIMARY KEY (group_uuid, permission_key),
+    FOREIGN KEY (group_uuid) REFERENCES groups(uuid) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (permission_key) REFERENCES permissions(permission_key) ON UPDATE CASCADE ON DELETE CASCADE,
+
+    INDEX idx_group_grants_permission_key (permission_key) -- for reverse lookup: "which groups grant this permission?"
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO group_grants (group_uuid, permission_key) VALUES
     ('21420174-8290-4dd5-87e7-0a70003402ad', 'READ'),
     ('d2416ff1-84ff-4087-8632-cd5a46be5a34', 'SUPER_ADMIN');
 
-CREATE TABLE group_membership (
-    group_uuid VARCHAR NOT NULL,
-    user_email VARCHAR NOT NULL,
-    PRIMARY KEY (group_uuid, user_email),
-    FOREIGN KEY (group_uuid) REFERENCES groups(uuid),
-    FOREIGN KEY (user_email) REFERENCES users(email)
-);
+-- ----------------------------------------------------------------------------
+-- group_memberships
+-- ----------------------------------------------------------------------------
+CREATE TABLE group_memberships (
+    group_uuid   CHAR(36)      NOT NULL,
+    user_email   VARCHAR(255)  NOT NULL,
 
-CREATE TABLE group_grants (
-    group_uuid VARCHAR NOT NULL,
-    permission_key VARCHAR NOT NULL,
-    PRIMARY KEY (group_uuid, permission_key),
-    FOREIGN KEY (group_uuid) REFERENCES groups(uuid),
-    FOREIGN KEY (permission_key) REFERENCES permissions(key)
-);
+    PRIMARY KEY (group_uuid, user_email),
+    FOREIGN KEY (group_uuid) REFERENCES groups(uuid) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (user_email) REFERENCES users(email) ON UPDATE CASCADE ON DELETE CASCADE,
+
+    INDEX idx_group_memberships_user_email (user_email) -- for reverse lookup: "which groups does this user belong to?"
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+SET FOREIGN_KEY_CHECKS = 1;

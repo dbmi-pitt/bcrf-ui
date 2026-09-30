@@ -89,12 +89,23 @@ function GroupedColumn({
       <VictoryChart
         key={new Date().getTime()}
         theme={VictoryTheme.clean}
+        width={500}
         minDomain={style.minDomain}
         maxDomain={style.maxDomain}
       >
         <VictoryGroup offset={50}>{getBars(data, style)}</VictoryGroup>
         <VictoryAxis dependentAxis tickFormat={style.tickFormat} />
-        <VictoryAxis tickLabelComponent={<VictoryLabel dy={10} />} />
+        <VictoryAxis
+          tickFormat={(text) =>
+            text.length > 9 ? `${text.slice(0, 9)}` : text
+          }
+          tickLabelComponent={
+            <VictoryLabel
+              angle={20}
+              textAnchor="start"
+              dy={10} />
+          }
+        />
       </VictoryChart>
       <VictoryLegend x={0} y={100} data={getLegendData(data)} />
     </div>

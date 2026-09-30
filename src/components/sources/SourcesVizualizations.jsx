@@ -17,29 +17,38 @@ const GroupedColumn = dynamic(
 );
 
 function SourcesVizualizations() {
-  const { activeSources, config } = useContext(SearchContext);
-  const sourceTotals = new Map(
-    config.sources.map(({ source, name, patients, samples }) => [
-      source,
-      { name, patients, samples },
-    ]),
+  const { cards } = useContext(SearchContext);
+  const groups = [
+    {
+      key: 'patients',
+      valueField: 'patientCount',
+      totalField: 'totalPatientCount',
+    },
+    {
+      key: 'samples',
+      valueField: 'sampleCount',
+      totalField: 'totalSampleCount',
+    },
+  ];
+  const chartData = groups.reduce(
+    (groupData, { key, valueField, totalField }) => {
+      groupData[key] = cards.reduce((values, source) => {
+        const total = source[totalField];
+        const value = source[valueField];
+        if (value && total) {
+          values.push({
+            total,
+            x: source.name || source.source,
+            y: (Number(value) / Number(total)) * 100,
+            value: Number(value),
+          });
+        }
+        return values;
+      }, []);
+      return groupData;
+    },
+    {},
   );
-  const chartData = ['patients', 'samples'].reduce((groupData, group) => {
-    groupData[group] = activeSources.reduce((values, source) => {
-      const sourceTotal = sourceTotals.get(source.source);
-      const total = sourceTotal?.[group];
-      if (source[group] && total) {
-        values.push({
-          total,
-          x: sourceTotal.name || source.source,
-          y: (Number(source[group]) / Number(total)) * 100,
-          value: Number(source[group]),
-        });
-      }
-      return values;
-    }, []);
-    return groupData;
-  }, {});
 
   log.debug('SourcesVizualizations: chart data', chartData);
 
