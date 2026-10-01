@@ -8,6 +8,7 @@ import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import log from 'xac-loglevel';
 import { createFileEmbedConfig } from './puck/file-embed/file-embed-config';
+import Link from 'next/link';
 
 // Create Puck component config
 const config = {
@@ -205,7 +206,7 @@ const AboutEdit = ({ dataSourceId, data }) => {
   config.components['FileChooser'] = fec;
 
   return (
-    <div style={{ position: 'relative', height: '100%' }}>
+    <div className='c-puck'>
       {saveStatus && (
         <Alert
           type={saveStatus.type}
@@ -229,18 +230,17 @@ const AboutEdit = ({ dataSourceId, data }) => {
         onPublish={handlePublish}
         overrides={{
         headerActions: ({ children }) => (
-          <>
-            {/* 1. Render children to keep the default Publish button */}
-            {children} 
-            
-            {/* 2. Add your custom button */}
-            <button 
-              onClick={() => alert("Custom action clicked!")}
-              className="c-btn c-btn--primary c-btn--sm"
+          <div className='c-puck__header'>
+            <Link 
+              href={`/sources/${dataSourceId}/about/upload`}
+              className="c-btn c-btn--secondary c-btn--sm"
             >
-              Upload Assets
-            </button>
-          </>
+              <i className="bi bi-cloud-arrow-up text-white"></i> &nbsp;
+              <span>Upload Assets</span>
+              
+            </Link>
+            {children} 
+          </div>
         ),
       }}
       />
