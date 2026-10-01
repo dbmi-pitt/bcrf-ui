@@ -1,5 +1,6 @@
 import BasicLayout from '@/components/layout/BasicLayout';
-import { Button, Result } from 'antd';
+import { Result } from 'antd';
+import Link from 'next/link';
 
 export default function NotFound() {
   return (
@@ -9,9 +10,9 @@ export default function NotFound() {
         title="Page Not Found"
         subTitle="Sorry, the page you visited does not exist."
         extra={[
-          <Button key="home" type="primary" href="/">
+          <Link className="c-btn c-btn--sm c-btn--outline c-btn--outline--pink" key="home"  href="/">
             Back Home
-          </Button>,
+          </Link>,
         ]}
       />
     </BasicLayout>
