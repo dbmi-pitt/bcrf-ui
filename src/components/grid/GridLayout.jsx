@@ -335,7 +335,7 @@ export default function GridLayout({
       {mounted && gridWidth > 0 && (
         <>
           <button
-            className="ms-2 c-btn c-btn--primary rounded-0 text-white d-block mb-2"
+            className="ms-2 c-btn c-btn--secondary rounded-0 text-white d-block mb-2"
             onClick={handleReset}
           >
             Reset Layout

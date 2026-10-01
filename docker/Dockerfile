@@ -38,6 +38,20 @@ ENV DUCK_DB_PATH=$DUCK_DB_PATH
 
 RUN pnpm build
 
+# Prepare DuckDB runtime dependencies for the standalone image
+RUN mkdir -p /duckdb-runtime/node_modules/.pnpm \
+    /duckdb-runtime/node_modules/@duckdb \
+    && cp -a node_modules/.pnpm/@duckdb+node-api@* \
+        /duckdb-runtime/node_modules/.pnpm/ \
+    && cp -a node_modules/.pnpm/@duckdb+node-bindings@* \
+        /duckdb-runtime/node_modules/.pnpm/ \
+    && cp -a node_modules/.pnpm/@duckdb+node-bindings-linux-*@* \
+        /duckdb-runtime/node_modules/.pnpm/ \
+    && cp -a node_modules/.pnpm/detect-libc@* \
+        /duckdb-runtime/node_modules/.pnpm/ \
+    && cp -a --no-dereference node_modules/@duckdb/node-api \
+        /duckdb-runtime/node_modules/@duckdb/
+
 # Final
 FROM node:22-bookworm-slim AS final
 WORKDIR /usr/src/app
@@ -60,8 +74,15 @@ RUN addgroup --system --gid $HOST_GID codcc \
 # Standalone output bundles only what is needed at runtime
 COPY --from=builder --chown=codcc:codcc /usr/src/app/duckdb.db ./duckdb.db
 COPY --from=builder --chown=codcc:codcc /usr/src/app/public ./public
+# Next.js standalone output
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/standalone ./
 COPY --from=builder --chown=codcc:codcc /usr/src/app/.next/static ./.next/static
+
+# Copy DuckDB native runtime dependencies
+COPY --from=builder --chown=codcc:codcc /duckdb-runtime/node_modules ./node_modules
+
+# Verify DuckDB native module loads successfully
+RUN node -e "import('@duckdb/node-api').catch(err => { console.error(err); process.exit(1); })"
 
 # Make app directory owned by codcc
 RUN chown -R codcc:codcc /usr/src/app

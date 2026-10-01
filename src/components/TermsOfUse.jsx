@@ -66,10 +66,10 @@ export default function TermsOfUse({
             title="Request Access"
             description="Are you sure you want to request access to this data source's data sets?"
             okButtonProps={{
-              className: 'c-btn c-btn--primary rounded-0 text-white',
+              className: 'c-btn c-btn--secondary rounded-0 text-white',
             }}
             cancelButtonProps={{
-              className: 'c-btn c-btn--secondary rounded-0 text-white',
+              className: 'c-btn c-btn--primary rounded-0 text-white',
             }}
             onConfirm={confirm}
             onCancel={cancel}
@@ -77,7 +77,7 @@ export default function TermsOfUse({
             cancelText="No"
           >
             <buton
-              className="c-btn c-btn--primary rounded-0 text-white d-block mb-2"
+              className="c-btn c-btn--secondary rounded-0 text-white d-block mb-2"
               style={{ alignSelf: 'flex-start', cursor: 'pointer' }}
             >
               Request Access

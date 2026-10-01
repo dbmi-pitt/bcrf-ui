@@ -19,9 +19,11 @@ function Tabula({
   const getColumns = () => {
     const uniqueKeys = [...new Set(data.data.flatMap(Object.keys))];
     const columns = [];
+    let title
     for (const key of uniqueKeys) {
+      title = (key == 'x' ? '' : key)
       columns.push({
-        title: data.labels[key] || (key == 'x' ? '' : key),
+        title: data.labels ? data.labels[key] || title : title,
         dataIndex: key,
         sorter: (a, b) =>
           typeof a[key] === 'string'

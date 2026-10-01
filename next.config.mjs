@@ -6,9 +6,6 @@ const nextConfig = {
   output: 'standalone',
   outputFileTracingIncludes: {
     '/**': ['./node_modules/xac-loglevel/**'],
-    '/*': [
-      './node_modules/.pnpm/@duckdb+*/**/*',
-    ],
   },
 };
 
