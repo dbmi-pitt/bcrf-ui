@@ -2,6 +2,7 @@
 
 import { FileOutlined, FolderOutlined, UpOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import Table from 'react-bootstrap/Table';
 
 /**
  * @param {{
@@ -29,7 +30,8 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
     <div className="max-w-3xl mx-auto">
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-1 text-sm mb-4 text-gray-600 flex-wrap">
-        <Link href={browseBase} className="hover:underline">
+        <h1>File Browser</h1>
+        <Link href={browseBase} className="hover:underline c-btn c-btn--outline c-btn--sm c-btn--outline--black">
           root
         </Link>
         {segments.map((seg, i) => {
@@ -48,7 +50,7 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
         })}
       </nav>
 
-      <table className="w-full text-sm border-t border-gray-200">
+      <Table striped bordered hover responsive>
         <thead>
           <tr className="text-left text-gray-500 border-b border-gray-200">
             <th className="py-2 font-medium">Name</th>
@@ -79,7 +81,7 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
                     href={`${browseBase}/${childPath}`}
                     className="flex items-center gap-2 hover:underline"
                   >
-                    <FolderOutlined size={16} className="text-gray-500" />
+                    <FolderOutlined size={16} className="text-gray-500" />&nbsp;
                     {name}
                   </Link>
                 </td>
@@ -100,7 +102,7 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <FileOutlined size={16} className="text-gray-500" />
+                    <FileOutlined size={16} className="text-gray-500" />&nbsp;
                     {name}
                   </a>
                 </td>
@@ -120,7 +122,7 @@ export default function FileBrowser({ sourceId, currentPath, folders, files }) {
             </tr>
           )}
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 }

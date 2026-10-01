@@ -2,6 +2,7 @@ import { getUserSourcePerms } from '@/lib/assetmanager/auth';
 import { getDirectoryListing } from '@/lib/assetmanager/files';
 import { notFound } from 'next/navigation';
 import FileBrowser from './file-browser';
+import BasicLayout from '@/components/layout/BasicLayout';
 
 /**
  * @param {{ params: { dataSource: string, dirpath?: string[] } }} props
@@ -20,7 +21,8 @@ export default async function BrowsePage({ params }) {
   }
 
   return (
-    <FileBrowser
+    <BasicLayout>
+      <FileBrowser
       sourceId={dataSource}
       currentPath={currentPath}
       folders={listing.folders}
@@ -33,5 +35,6 @@ export default async function BrowsePage({ params }) {
         createdAt: f.created_at,
       }))}
     />
+    </BasicLayout>
   );
 }
