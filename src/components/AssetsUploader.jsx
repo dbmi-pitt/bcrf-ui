@@ -4,6 +4,7 @@ import React from 'react';
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 const { Dragger } = Upload;
+import log from 'xac-loglevel';
 
 const AssetsUploader = ({ dataSourceId }) => {
   const [messageApi, contextHolder] = message.useMessage();
@@ -14,7 +15,7 @@ const AssetsUploader = ({ dataSourceId }) => {
     onChange(info) {
       const { status } = info.file;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        log.debug('AssetsUploader.onChange', info.file, info.fileList);
       }
       if (status === 'done') {
         messageApi.success(`${info.file.name} file uploaded successfully.`);
@@ -24,11 +25,11 @@ const AssetsUploader = ({ dataSourceId }) => {
       }
     },
     onDrop(e) {
-      console.log('Dropped files', e.dataTransfer.files);
+      log.debug('AssetsUploader.onDrop', e.dataTransfer.files);
     },
   };
   return (
-    <>
+    <div className='c-assetsUploader mt-3'>
       {contextHolder}
       <Dragger {...props}>
         <p className="ant-upload-drag-icon">
@@ -39,7 +40,7 @@ const AssetsUploader = ({ dataSourceId }) => {
           Drag files onto the box below, or click to choose files. You can select or drop multiple files at once — they&apos;ll upload in parallel.
         </p>
       </Dragger>
-    </>
+    </div>
   );
 };
 export default AssetsUploader;

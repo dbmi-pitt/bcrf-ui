@@ -1,16 +1,15 @@
-import { notFound } from "next/navigation";
-import { getUserSourcePerms, userCanUploadTo } from "@/lib/assetmanager/auth";
+import { notFound } from 'next/navigation';
+import { getUserSourcePerms, userCanUploadTo } from '@/lib/assetmanager/auth';
 import AssetsUploader from '@/components/AssetsUploader';
 import BasicLayout from '@/components/layout/BasicLayout';
-import UploadForm from "./upload-form";
-import Link from "next/link";
+import AboutH1 from '@/components/AboutH1';
 
 /**
  * @param {{ params: { dataSource: string } }} props
  */
 export default async function UploadPage({ params }) {
-  const {dataSource} = await params
-  
+  const { dataSource } = await params;
+
   const usp = await getUserSourcePerms(dataSource);
 
   // Same pattern as the browse page: 404 rather than 403, so we don't
@@ -21,12 +20,14 @@ export default async function UploadPage({ params }) {
 
   return (
     <BasicLayout fluid={true}>
-      <div className="max-w-xl mx-auto py-10 px-4">
-        <h1 className="text-lg font-semibold mb-2">Upload assets</h1>
-        <Link href={`/sources/${dataSource}/about/browse`} className="c-btn c-btn--secondary mb-3">Browse Files</Link>
-        {/* <UploadForm sourceId={dataSource} /> */}
-        <AssetsUploader dataSourceId={dataSource} />
-      </div>
+      <AboutH1
+        dataSourceId={dataSource}
+        title={'Upload assets'}
+        path={'browse'}
+        buttonTitle={'Browse Files'}
+        buttonClassName={'bi-archive'}
+      />
+      <AssetsUploader dataSourceId={dataSource} />
     </BasicLayout>
   );
 }

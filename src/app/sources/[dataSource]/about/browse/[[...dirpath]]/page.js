@@ -1,8 +1,9 @@
 import { getUserSourcePerms } from '@/lib/assetmanager/auth';
 import { getDirectoryListing } from '@/lib/assetmanager/files';
 import { notFound } from 'next/navigation';
-import FileBrowser from './file-browser';
 import BasicLayout from '@/components/layout/BasicLayout';
+import AppFileBrowser from '@/components/AppFileBrowser';
+import AboutH1 from '@/components/AboutH1';
 
 /**
  * @param {{ params: { dataSource: string, dirpath?: string[] } }} props
@@ -21,20 +22,15 @@ export default async function BrowsePage({ params }) {
   }
 
   return (
-    <BasicLayout>
-      <FileBrowser
-      sourceId={dataSource}
-      currentPath={currentPath}
-      folders={listing.folders}
-      files={listing.files.map((f) => ({
-        id: f.id,
-        path: f.path,
-        originalName: f.original_name,
-        mimeType: f.mime_type,
-        size: f.size,
-        createdAt: f.created_at,
-      }))}
-    />
+    <BasicLayout fluid={true}>
+      <AboutH1
+        dataSourceId={dataSource}
+        title={'File Browser'}
+        path={'upload'}
+        buttonTitle={'Upload Assets'}
+        buttonClassName={'bi-cloud-arrow-up'}
+      />
+      <AppFileBrowser dataSourceId={dataSource} files={listing.files} />
     </BasicLayout>
   );
 }
