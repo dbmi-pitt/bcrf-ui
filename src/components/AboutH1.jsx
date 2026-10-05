@@ -1,12 +1,12 @@
 import React from 'react'
 import Link from 'next/link';
 
-function AboutH1({ dataSourceId, title, path, buttonTitle, buttonClassName }) {
+function AboutH1({ data, title, path, buttonTitle, buttonClassName }) {
   return (
     <>
-      <h1 className='h2'>{title} / <Link href={`/sources/${dataSourceId}/about/`}>{dataSourceId}</Link></h1>
+      <h1 className='h2'>{title} / <Link href={`/sources/${data.source}/about/`}>{data.name}</Link></h1>
       <Link
-        href={`/sources/${dataSourceId}/about/${path}`}
+        href={`/sources/${data.source}/about/${path}`}
         className="c-btn c-btn--secondary c-btn--sm"
       >
         {buttonTitle} &nbsp;<i className={`bi ${buttonClassName} text-white`}></i>

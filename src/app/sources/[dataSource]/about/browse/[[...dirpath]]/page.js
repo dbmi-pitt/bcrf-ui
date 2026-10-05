@@ -4,12 +4,14 @@ import { notFound } from 'next/navigation';
 import BasicLayout from '@/components/layout/BasicLayout';
 import AppFileBrowser from '@/components/AppFileBrowser';
 import AboutH1 from '@/components/AboutH1';
+import { getSummaryDataSource } from '@/lib/sources/services';
 
 /**
  * @param {{ params: { dataSource: string, dirpath?: string[] } }} props
  */
 export default async function BrowsePage({ params }) {
   const { dataSource, dirpath } = await params;
+  const sourceDetails = await getSummaryDataSource(dataSource);
 
   const currentPath = (dirpath ?? []).join('/');
   const usp = await getUserSourcePerms(dataSource);
@@ -24,7 +26,7 @@ export default async function BrowsePage({ params }) {
   return (
     <BasicLayout fluid={true}>
       <AboutH1
-        dataSourceId={dataSource}
+        data={sourceDetails}
         title={'File Browser'}
         path={'upload'}
         buttonTitle={'Upload Assets'}

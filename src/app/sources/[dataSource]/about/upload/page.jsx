@@ -3,6 +3,7 @@ import { getUserSourcePerms, userCanUploadTo } from '@/lib/assetmanager/auth';
 import AssetsUploader from '@/components/AssetsUploader';
 import BasicLayout from '@/components/layout/BasicLayout';
 import AboutH1 from '@/components/AboutH1';
+import { getSummaryDataSource } from '@/lib/sources/services';
 
 /**
  * @param {{ params: { dataSource: string } }} props
@@ -11,6 +12,7 @@ export default async function UploadPage({ params }) {
   const { dataSource } = await params;
 
   const usp = await getUserSourcePerms(dataSource);
+  const sourceDetails = await getSummaryDataSource(dataSource);
 
   // Same pattern as the browse page: 404 rather than 403, so we don't
   // confirm to an unauthorized visitor that this source even exists.
@@ -21,7 +23,7 @@ export default async function UploadPage({ params }) {
   return (
     <BasicLayout fluid={true}>
       <AboutH1
-        dataSourceId={dataSource}
+        data={sourceDetails}
         title={'Upload assets'}
         path={'browse'}
         buttonTitle={'Browse Files'}
