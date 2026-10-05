@@ -4,13 +4,13 @@ import log from 'xac-loglevel';
 
 const SearchContext = createContext({});
 
-const selectedFacetsFromCheckedKeys = (aggregations, checkedKeys) => {
+export const selectedFacetsFromCheckedKeys = (aggregations, checkedKeys, returnKeys = true) => {
   const selected = [];
   for (const facet in aggregations) {
     for (const { term } of aggregations[facet]) {
       const key = `${facet.toDashedCase()}-${term.toDashedCase()}`;
       if (checkedKeys.indexOf(key) !== -1) {
-        selected.push(key);
+        selected.push( returnKeys ? key : {facet, term, key});
       }
     }
   }
@@ -24,6 +24,7 @@ export const SearchProvider = ({ children, config }) => {
   const [isBusy, setIsBusy] = useState(false);
 
   const applyFilters = async (filters, checkedKeys) => {
+    log.debug('SearchProvider: applyFilters', filters, checkedKeys)
     setIsBusy(true);
     const response = await getAllSummaryDataAggregations(filters);
     if (!response.success) {
