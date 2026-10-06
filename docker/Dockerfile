@@ -22,7 +22,6 @@ FROM base AS builder
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 
 COPY next.config.mjs jsconfig.json package.json pnpm-workspace.yaml ./
-COPY .env.production .env.production
 COPY public ./public
 COPY src ./src
 

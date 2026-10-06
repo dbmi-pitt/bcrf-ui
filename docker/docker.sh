@@ -28,7 +28,6 @@ fi
 case "$COMMAND" in
   build)
     echo "Extracting NEXT_PUBLIC_* variables from .env to .env.docker..."
-    grep '^NEXT_PUBLIC_' .env > .env.docker
     echo "Done. Running docker compose build..."
      case "$ENV" in
       prod|dev)

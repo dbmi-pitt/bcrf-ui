@@ -4,9 +4,23 @@ import { cookies } from 'next/headers';
 import { cache } from 'react';
 import 'server-only';
 
-const sessionKey = createHash('sha256')
-  .update(process.env.SESSION_SECRET)
-  .digest();
+let sessionKey;
+
+function getSessionKey() {
+  if (sessionKey) {
+    return sessionKey;
+  }
+
+  const secret = process.env.SESSION_SECRET;
+
+  if (!secret) {
+    throw new Error('SESSION_SECRET environment variable is not set');
+  }
+
+  sessionKey = createHash('sha256').update(secret).digest();
+
+  return sessionKey;
+}
 
 export const COOKIE_NAME = 'globus_session';
 
@@ -15,15 +29,16 @@ export async function createSession(session) {
     .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
     .setIssuedAt()
     .setExpirationTime('1d')
-    .encrypt(sessionKey);
+    .encrypt(getSessionKey());
 
   const store = await cookies();
+
   store.set(COOKIE_NAME, jwe, {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
-    maxAge: 60 * 60 * 24 * 1,
+    maxAge: 60 * 60 * 24,
   });
 }
 
@@ -36,8 +51,9 @@ export async function decryptSessionToken(raw) {
   if (!raw) {
     return null;
   }
+
   try {
-    const { payload } = await jwtDecrypt(raw, sessionKey);
+    const { payload } = await jwtDecrypt(raw, getSessionKey());
     return payload;
   } catch {
     return null;
@@ -47,5 +63,6 @@ export async function decryptSessionToken(raw) {
 export const getSession = cache(async function getSession() {
   const store = await cookies();
   const raw = store.get(COOKIE_NAME)?.value;
+
   return decryptSessionToken(raw);
 });

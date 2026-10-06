@@ -1,7 +1,23 @@
 import { Resend } from 'resend';
 import GlobusDataSetEmail from '@/components/email/GlobusDataSetEmail';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+let resend;
+
+function getResend() {
+  if (resend) {
+    return resend;
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY environment variable is not set');
+  }
+
+  resend = new Resend(apiKey);
+
+  return resend;
+}
 
 const templates = {
   globusDataSet: GlobusDataSetEmail,
@@ -19,7 +35,7 @@ export async function POST(req) {
       );
     }
 
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: 'help@bcrfglobaldatahub.org',
       to,
       subject,
