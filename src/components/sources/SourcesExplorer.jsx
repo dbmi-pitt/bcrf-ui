@@ -55,7 +55,7 @@ function SourcesExplorerBody() {
         </div>
         {/*TODO: Add Manifest export that works with Globus CLI*/}
         <div className="row">
-          <div className="col-lg-10">
+          <div className="col-lg-10 align-content-center">
             {tags.map((tag) => (
               <Tag
                 className="c-tag--filter mx-1 mb-1"
