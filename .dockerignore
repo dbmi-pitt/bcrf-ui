@@ -1,7 +1,13 @@
 .git
 .gitignore
+
 .next
 node_modules
+
+.env
+.env.*
+!.env.example
+
 pnpm-lock.yaml
 
 Dockerfile
