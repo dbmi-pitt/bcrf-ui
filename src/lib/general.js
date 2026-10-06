@@ -50,7 +50,7 @@ Object.assign(String.prototype, {
       return obj;
     }, {});
   });
-}
+  }
 });
 
 Object.assign(JSON, {
@@ -97,5 +97,18 @@ export function autoBlobDownloader(data, type, filename) {
   a.click();
   a.remove();
   window.URL.revokeObjectURL(url);
+}
+
+/** @param {number} bytes */
+export function formatSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  const units = ['KB', 'MB', 'GB'];
+  let size = bytes;
+  let i = -1;
+  do {
+    size /= 1024;
+    i++;
+  } while (size >= 1024 && i < units.length - 1);
+  return `${size.toFixed(1)} ${units[i]}`;
 }
 

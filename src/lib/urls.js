@@ -4,6 +4,7 @@ const URLS = {
    api: {
     local: (path) => `/api/${path}`,
    },
+   base: process.env.NEXT_PUBLIC_APP_BASE_URL,
    content: {
       locale: {
          base: `${process.env.NEXT_PUBLIC_APP_BASE_URL}content/locale/`,

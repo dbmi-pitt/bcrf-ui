@@ -7,7 +7,7 @@ import { Tooltip } from 'antd';
  * @param {{ children: any; text: any; title?: string; className?: string; size?: number; timeout?: number; tag?: string; }} props
  * @param {node} props.children
  * @param {string} props.text The content to be copied to clipboard
- * @param {string} [props.title='Copy SenNet ID to clipboard']
+ * @param {string} [props.title='Copy ID to clipboard']
  * @param {string} [props.className='']
  * @param {number} [props.size=12]
  * @param {number} [props.timeout=1000] Timeout before the tooltip auto closes
@@ -39,7 +39,9 @@ function ClipboardCopy({
     }
   };
 
-  const copyToClipboard = () => {
+  const copyToClipboard = (e) => {
+    e.stopPropagation()
+    e.preventDefault()
     navigator.clipboard.writeText(text);
   };
 

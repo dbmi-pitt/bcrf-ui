@@ -1,5 +1,5 @@
 .c-btn
-  overflow hidden
+  overflow clip
   position relative
   transition .2s transform ease-in-out
   will-change transform
@@ -20,18 +20,7 @@
       border-radius 2rem
 
   &::after
-    content ' '
-    display block
-    height 100%
-    width 100%
-    position absolute
-    left 0
-    top 0
-    transform translate(-100%, 0) rotate(25deg)
-    transform-origin top left
-    transition .2s transform ease-out
-    will-change transform
-    z-index -1
+    btn-liquid-sq()
 
   &:hover
     will-change transform

@@ -64,3 +64,17 @@ vertical-divider()
   display inline-block 
   width 1px 
   background-color $col-primary-accent
+
+btn-liquid-sq()
+  content ' '
+  display block
+  height 100%
+  width 100%
+  position absolute
+  left 0
+  top 0
+  transform translate(-100%, 0) rotate(25deg)
+  transform-origin top left
+  transition .2s transform ease-out
+  will-change transform
+  z-index -1

@@ -1,0 +1,28 @@
+.c-puck 
+  pos-rel()
+  width 100%
+  &__header 
+    span[class^='_Button_']
+      overflow clip
+      position relative
+      border-radius 0
+      font-size 1rem
+      background-color $col-primary-accent
+      margin-left 5px
+      text-transform uppercase
+      transition .2s transform ease-in-out
+      will-change transform
+      &::after
+        btn-liquid-sq()
+      &:hover
+        will-change transform
+        text-decoration none
+        border-color $col-bcrf-blue
+
+        &::after
+          transform translate(0, 0)
+          background-color $col-bcrf-blue
+      
+      > div 
+        line-height 1.3
+        margin-top 0
