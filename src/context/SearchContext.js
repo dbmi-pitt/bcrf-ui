@@ -25,13 +25,12 @@ export const SearchProvider = ({ children, config }) => {
 
   const updateUrl = (filters) => {
     const url = new URL(window.location.href);
-    for (const key in filters) {
-      const currentFilters = url.searchParams.get(key);
-      const currentFiltersArray = currentFilters ? currentFilters.split(',') : [];
-      const newFiltersArray = Array.isArray(filters[key]) ? filters[key] : [filters[key]];
-      const mergedFiltersArray = Array.from(new Set([...currentFiltersArray, ...newFiltersArray]));
+    for (const key of url.searchParams.keys()) {
       url.searchParams.delete(key);
-      url.searchParams.append(key, mergedFiltersArray.join(','));
+    }
+    for (const key in filters) {
+      const newFiltersArray = Array.isArray(filters[key]) ? filters[key] : [filters[key]];
+      url.searchParams.append(key, newFiltersArray.join(','));
     }
     window.history.replaceState(null, '', url.toString());
   };
