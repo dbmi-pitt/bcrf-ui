@@ -2,7 +2,7 @@ import { AntdRegistry } from '@ant-design/nextjs-registry';
 
 import MountedWrapper from '@/components/MountedWrapper';
 import { getCurrentUser } from '@/lib/auth/services';
-import ENVS from '@/lib/envs';
+import ENVS, { getLogLevel } from '@/lib/envs';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './main.css';
@@ -23,7 +23,11 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <body>
         <AntdRegistry>
-          <MountedWrapper gtmId={ENVS.gtm} user={currentUser}>
+          <MountedWrapper
+            gtmId={ENVS.gtm}
+            logLevel={getLogLevel()}
+            user={currentUser}
+          >
             {children}
           </MountedWrapper>
         </AntdRegistry>

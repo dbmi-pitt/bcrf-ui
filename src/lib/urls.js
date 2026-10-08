@@ -1,17 +1,26 @@
 import log from 'xac-loglevel';
+import { getAppBaseUrl, getContentBannerUrl } from '@/lib/envs';
 
 const URLS = {
    api: {
     local: (path) => `/api/${path}`,
    },
-   base: process.env.NEXT_PUBLIC_APP_BASE_URL,
+   get base() {
+      return getAppBaseUrl();
+   },
    content: {
       locale: {
-         base: `${process.env.NEXT_PUBLIC_APP_BASE_URL}content/locale/`,
+         get base() {
+            return `${getAppBaseUrl()}content/locale/`;
+         },
       },
-      banner: process.env.NEXT_PUBLIC_CONTENT_BANNER_URL ||
-    `${process.env.NEXT_PUBLIC_APP_BASE_URL}content/banner.json`,
-      summary: `${process.env.NEXT_PUBLIC_APP_BASE_URL}content/summary-data-sources.json`
+      get banner() {
+         return getContentBannerUrl() ||
+            `${getAppBaseUrl()}content/banner.json`;
+      },
+      get summary() {
+         return `${getAppBaseUrl()}content/summary-data-sources.json`;
+      },
    }
 };
 

@@ -1,11 +1,11 @@
 import { popReturnTo, safeCompare } from '@/lib/auth/pkce';
+import { getAppBaseUrl } from '@/lib/envs';
 import { createSession } from '@/lib/auth/session';
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 const JWKS = createRemoteJWKSet(new URL('https://auth.globus.org/jwk.json'));
-const BASE_URL = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
@@ -13,12 +13,14 @@ export async function GET(req) {
   const state = searchParams.get('state');
   const error = searchParams.get('error');
 
+  const baseUrl = getAppBaseUrl();
+
   if (error) {
     const store = await cookies();
     store.delete('globus_oauth_state');
     store.delete('globus_pkce_verifier');
     store.delete('globus_return_to');
-    return NextResponse.redirect(new URL(`/login`, BASE_URL));
+    return NextResponse.redirect(new URL(`/login`, baseUrl));
   }
 
   const store = await cookies();
@@ -35,7 +37,7 @@ export async function GET(req) {
     !verifier
   ) {
     store.delete('globus_return_to');
-    return NextResponse.redirect(new URL('/login', BASE_URL));
+    return NextResponse.redirect(new URL('/login', baseUrl));
   }
 
   // Exchange code for tokens
@@ -58,7 +60,7 @@ export async function GET(req) {
   });
 
   if (!tokenRes.ok) {
-    return NextResponse.redirect(new URL('/login', BASE_URL));
+    return NextResponse.redirect(new URL('/login', baseUrl));
   }
 
   // Format
@@ -90,5 +92,5 @@ export async function GET(req) {
 
   const returnTo = await popReturnTo('/sources');
 
-  return NextResponse.redirect(new URL(returnTo, BASE_URL));
+  return NextResponse.redirect(new URL(returnTo, baseUrl));
 }
