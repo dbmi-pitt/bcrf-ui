@@ -12,7 +12,7 @@ export const CONTENT = {
           text: 'Sign Up',
           modal: {
             title: 'Sign Up!',
-            body: '<p class="mt-3 mb-4">Thank you for your interest!</p> <p>Please contact us via <a href="mailto:BCRFGDH@pitt.edu">BCRFGDH@pitt.edu</a>.</p>',
+            body: '<p class="mt-3 mb-4">Thank you for your interest!</p> <p>Office hours will occur every Tuesday and Thursday from 1pm - 2pm EST. Please drop in at any time and ask questions pertaining to, but not limited to, gaining access to the Data Hub, issues with Globus identities, general Hub information. For any questions, please contact our Help Desk at <a href="mailto:BCRFGDH@pitt.edu">BCRFGDH@pitt.edu</a>.</p>',
           },
         },
         {
