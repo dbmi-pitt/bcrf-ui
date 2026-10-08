@@ -1,12 +1,11 @@
-import ENVS from '@/lib/envs';
 import { createContext, useEffect } from 'react';
 import log from 'xac-loglevel';
 
 const AppContext = createContext({});
 
-export const AppProvider = ({ children }) => {
+export const AppProvider = ({ logLevel, children }) => {
   const setLoglevel = async () => {
-    log.setLevel(ENVS.logLevel);
+    log.setLevel(logLevel);
   };
 
   useEffect(() => {

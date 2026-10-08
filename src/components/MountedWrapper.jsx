@@ -6,13 +6,13 @@ import useGoogleTagManager from '@/hooks/useGoogleTagManager';
 import '@/lib/general';
 import { App } from 'antd';
 
-function MountedWrapper({ gtmId, user, children }) {
+function MountedWrapper({ gtmId, logLevel, user, children }) {
   useGoogleTagManager(gtmId);
 
   return (
     <App>
       <AuthProvider user={user}>
-        <AppProvider>{children}</AppProvider>
+        <AppProvider logLevel={logLevel}>{children}</AppProvider>
       </AuthProvider>
     </App>
   );

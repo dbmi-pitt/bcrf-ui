@@ -1,6 +1,7 @@
 import { isProtectedPath } from '@/lib/auth/paths';
 import { getCurrentUser } from '@/lib/auth/services';
 import { hasCurrentUserGlobalReadPermission } from '@/lib/permission/actions';
+import { getAppBaseUrl } from '@/lib/envs';
 import { NextResponse } from 'next/server';
 
 export async function proxy(request) {
@@ -10,7 +11,7 @@ export async function proxy(request) {
   if (isProtected) {
     const user = await getCurrentUser(request);
     if (!user) {
-      const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
+      const url = new URL('/login', getAppBaseUrl());
       url.searchParams.set('from', request.nextUrl.pathname);
       return NextResponse.redirect(url);
     }
@@ -19,7 +20,7 @@ export async function proxy(request) {
     if (!hasPermission) {
       const url = new URL(
         '/unauthorized',
-        process.env.NEXT_PUBLIC_APP_BASE_URL,
+        getAppBaseUrl(),
       );
       return NextResponse.rewrite(url);
     }
