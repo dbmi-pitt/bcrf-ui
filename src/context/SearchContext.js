@@ -29,11 +29,8 @@ export const SearchProvider = ({ children, config }) => {
       url.searchParams.delete(key);
     }
     for (const key in filters) {
-      const currentFilters = url.searchParams.get(key);
-      const currentFiltersArray = currentFilters ? currentFilters.split(',') : [];
       const newFiltersArray = Array.isArray(filters[key]) ? filters[key] : [filters[key]];
-      const mergedFiltersArray = Array.from(new Set([...currentFiltersArray, ...newFiltersArray]));
-      url.searchParams.append(key, mergedFiltersArray.join(','));
+      url.searchParams.append(key, newFiltersArray.join(','));
     }
     window.history.replaceState(null, '', url.toString());
   };
