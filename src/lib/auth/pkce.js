@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { getAppBaseUrl } from '@/lib/envs';
 import { cookies } from 'next/headers';
 import 'server-only';
 import log from 'xac-loglevel';
@@ -46,7 +47,7 @@ export function safeRedirectPath(path, fallback = '/') {
     return fallback;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_BASE_URL.replace(/\/$/, '');
+  const baseUrl = getAppBaseUrl().replace(/\/$/, '');
 
   try {
     // Confirm it resolves to the same origin

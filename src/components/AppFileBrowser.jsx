@@ -13,7 +13,6 @@ import { formatSize } from '@/lib/general';
 import log from 'xac-loglevel';
 import AppSpinner from './AppSpinner';
 import ClipboardCopy from './ClipboardCopy';
-import URLS from '@/lib/urls';
 
 const { DirectoryTree } = Tree;
 const { Text } = Typography;
@@ -105,7 +104,7 @@ const AppFileBrowser = ({ dataSourceId, files }) => {
             &nbsp;{nodeData.title}{' '}
             <ClipboardCopy
               title="Copy url to clipboard"
-              text={`${URLS.base}${previewFileBase}${nodeData.title}`}
+              text={`${window.location.origin}${previewFileBase}${nodeData.title}`}
             />
           </span>
         </span>

@@ -28,14 +28,14 @@ export const AuthProvider = ({ user, children }) => {
           }
 
           // Redirect to login if the user is not authenticated or lacks permission.
-          const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
+          const url = new URL('/login', window.location.origin);
           url.searchParams.set('from', window.location.pathname);
           window.location.replace(url.toString());
         })
         .catch(console.error);
 
       // Redirect to login if the user is not authenticated or lacks permission.
-      const url = new URL('/login', process.env.NEXT_PUBLIC_APP_BASE_URL);
+      const url = new URL('/login', window.location.origin);
       url.searchParams.set('from', window.location.pathname);
       window.location.replace(url.toString());
     };
