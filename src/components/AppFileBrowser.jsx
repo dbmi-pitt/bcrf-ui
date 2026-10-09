@@ -7,6 +7,7 @@ import {
   FileOutlined,
   FileImageOutlined,
   FilePdfOutlined,
+  InboxOutlined,
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { formatSize } from '@/lib/general';
@@ -36,9 +37,7 @@ const AppFileBrowser = ({ dataSourceId, files }) => {
           setFileUrl(url);
         } else {
           setError(
-            <span>
-              File <code>{selectedKeys[0]}</code> <br /> {result.statusText}
-            </span>,
+            { statusText: result.statusText, status: result.status, file: selectedKeys[0] }
           );
         }
         setIsBusy(false);
@@ -133,11 +132,26 @@ const AppFileBrowser = ({ dataSourceId, files }) => {
     );
   };
 
+  const hasFiles = files && files.length > 0;
+
   return (
     <div className="c-fileBrowser">
       {/* Ant Design Directory Tree */}
       <div className="row mt-3">
-        <div className="col-8">
+        {!hasFiles && (
+          <div className="col-12">
+            <div
+              className="c-fileBrowser__previewNotice alert alert-secondary"
+              role="alert"
+            >
+              <p className="text-center">
+                <InboxOutlined className="fs-1" /> <br />
+                <span>No files found for this source.</span>
+              </p>
+            </div>
+          </div>
+        )}
+        {hasFiles && (<div className="col-8">
           {/* Header Row for columns */}
           <div className="c-fileBrowser__header" style={{}}>
             <span style={{ flex: 1 }}>Name</span>
@@ -163,31 +177,67 @@ const AppFileBrowser = ({ dataSourceId, files }) => {
               },
             }}
           >
-            <DirectoryTree
-              onSelect={onSelect}
-              defaultExpandAll
-              treeData={treeData}
-              titleRender={renderTitle}
-              icon={(props) => {
-                if (props.isLeaf) return <></>;
-                return props.expanded ? (
-                  <FolderOpenOutlined />
-                ) : (
-                  <FolderOutlined />
-                );
-              }}
-              style={{ background: 'transparent' }}
-            />
+            
+              <DirectoryTree
+                onSelect={onSelect}
+                defaultExpandAll
+                treeData={treeData}
+                titleRender={renderTitle}
+                icon={(props) => {
+                  if (props.isLeaf) return <></>;
+                  return props.expanded ? (
+                    <FolderOpenOutlined />
+                  ) : (
+                    <FolderOutlined />
+                  );
+                }}
+                style={{ background: 'transparent' }}
+              />
+            
           </ConfigProvider>
-        </div>
+        </div>)}
         <div className="col-4">
-          {error && <div className="alert alert-warning" role="alert">{error}</div>}
-          {isBusy && <div className="text-center p-5"><AppSpinner fullscreen={false} /></div>}
-          {fileUrl && <div style={{height: '100%'}}>
-            <Link className='c-btn c-btn--secondary c-btn--sm mb-2' href={fileUrl} target='_blank'>View file in new tab</Link>
-            <iframe src={fileUrl} width={'100%'} height={'90%'} />
-            </div>}
-          {!fileUrl && !error && !isBusy && <div className="alert alert-secondary" role="alert">Select a file on the left to preview it.</div>}
+          {error && (
+            <div
+              className="c-fileBrowser__previewNotice alert alert-warning"
+              role="alert"
+            >
+             
+              <p className="text-center">
+                <i class="fs-1">{error.status}</i> <br />
+                <span>{error.statusText}</span><br />
+                <span>File: <code>{error.file}</code></span>
+              </p>
+            </div>
+          )}
+          {isBusy && (
+            <div className="text-center p-5">
+              <AppSpinner fullscreen={false} />
+            </div>
+          )}
+          {fileUrl && (
+            <div style={{ height: '100%' }}>
+              <Link
+                className="c-btn c-btn--secondary c-btn--sm mb-2"
+                href={fileUrl}
+                target="_blank"
+              >
+                View file in new tab
+              </Link>
+              <iframe src={fileUrl} width={'100%'} height={'90%'} />
+            </div>
+          )}
+          {!fileUrl && !error && !isBusy && hasFiles && (
+            <div
+              className="c-fileBrowser__previewNotice alert alert-secondary"
+              role="alert"
+            >
+              <p className="text-center">
+                <i class="bi bi-easel fs-1"></i> <br />
+                <span>Select a file on the left to preview it.</span>
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
