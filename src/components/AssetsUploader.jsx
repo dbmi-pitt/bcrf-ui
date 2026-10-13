@@ -54,7 +54,7 @@ const AssetsUploader = ({ dataSourceId }) => {
           {errors.map((error, index) => (
             <div key={index}>
               <strong>{error.file}</strong> upload failed. &nbsp;
-              <span>{error.response}</span>
+              <span>{error.response?.replace(/\.?$/, '.')}</span>
             </div>
           ))}
         </div>
