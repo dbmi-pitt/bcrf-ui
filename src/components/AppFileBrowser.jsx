@@ -203,7 +203,7 @@ const AppFileBrowser = ({ dataSourceId, files }) => {
             >
              
               <p className="text-center">
-                <i class="fs-1">{error.status}</i> <br />
+                <i className="fs-1">{error.status}</i> <br />
                 <span>{error.statusText}</span><br />
                 <span>File: <code>{error.file}</code></span>
               </p>

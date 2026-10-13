@@ -8,6 +8,7 @@ import log from 'xac-loglevel';
 
 const AssetsUploader = ({ dataSourceId }) => {
   const [messageApi, contextHolder] = message.useMessage();
+  const [errors, setErrors] = React.useState([]);
   const props = {
     name: 'file',
     multiple: true,
@@ -21,6 +22,7 @@ const AssetsUploader = ({ dataSourceId }) => {
         messageApi.success(`${info.file.name} file uploaded successfully.`);
       }
       if (status === 'error') {
+        setErrors((prevErrors => [...prevErrors, {file: info.file.name, status: info.file.status, response: info.file.response?.error}]));
         messageApi.error(`${info.file.name} file upload failed.`);
       }
     },
@@ -29,17 +31,32 @@ const AssetsUploader = ({ dataSourceId }) => {
     },
   };
   return (
-    <div className='c-assetsUploader mt-3'>
+    <div className="c-assetsUploader mt-3">
       {contextHolder}
       <Dragger {...props}>
         <p className="ant-upload-drag-icon">
           <InboxOutlined />
         </p>
-        <p className="ant-upload-text">Click or drag file to this area to upload</p>
+        <p className="ant-upload-text">
+          Click or drag file to this area to upload
+        </p>
         <p className="ant-upload-hint">
-          Drag files onto the box below, or click to choose files. You can select or drop multiple files at once — they&apos;ll upload in parallel.
+          Drag files onto the box below, or click to choose files. You can
+          select or drop multiple files at once — they&apos;ll upload in
+          parallel.
         </p>
       </Dragger>
+      {errors.length > 0 && (
+        <div className="alert alert-danger mt-2" role="alert">
+          <i className="bi bi-exclamation-triangle fs-4 text-capitalize">&nbsp; Error</i> <br />
+          {errors.map((error, index) => (
+            <div key={index}>
+              <strong>{error.file}</strong> upload failed. &nbsp;
+              <span>{error.response?.replace(/\.?$/, '.')}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
