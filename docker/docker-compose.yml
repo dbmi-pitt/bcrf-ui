@@ -16,6 +16,8 @@ services:
     init: true
     volumes:
       - '../public/content/banner.json:/usr/src/app/public/content/banner.json'
+      # Mount directory for asset manager (Need to create this on the file system first)
+      - '${ASSETMANAGER_PATH}:/assets'
     healthcheck:
       test: ['CMD', 'curl', '--fail', 'http://localhost:${PORT_MAPPING}']
       interval: 1m30s
