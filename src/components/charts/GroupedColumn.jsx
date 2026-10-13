@@ -128,7 +128,7 @@ function GroupedColumn({
         minDomain={style.minDomain}
         maxDomain={style.maxDomain}
       >
-        <VictoryLegend orientation="horizontal" data={getLegendData(data)} />
+        <VictoryLegend orientation="horizontal" x={60} data={getLegendData(data)} />
         <VictoryGroup offset={50}>{getBars(data, style)}</VictoryGroup>
         <VictoryAxis dependentAxis tickFormat={style.tickFormat} />
         <VictoryAxis
