@@ -22,8 +22,6 @@ const AssetsUploader = ({ dataSourceId }) => {
         messageApi.success(`${info.file.name} file uploaded successfully.`);
       }
       if (status === 'error') {
-        console.log('AssetsUploader.onChange', info.file, info.fileList);
-        
         setErrors((prevErrors => [...prevErrors, {file: info.file.name, status: info.file.status, response: info.file.response?.error}]));
         messageApi.error(`${info.file.name} file upload failed.`);
       }
