@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   VictoryLegend,
   VictoryAxis,
@@ -84,8 +84,43 @@ function GroupedColumn({
     labelComponent: <DoubleLabel />,
   },
 }) {
+  const containerRef = useRef(null);
+  
+  
+  /** 
+   * Victory package is limited and oddly doesn't allow for wrapping its VictoryChart children in a single <g> tag.
+   * Thus this method does just that after render with JS.
+   * Individual <g> tags in the VictoryContainer are all wrapped into a single <g> tag called "c-chart__group" 
+   * and a style transform to move the <g> down so the legend doesn't overlap the bars.
+   */
+  const wrapAllInGroup = () => {
+    if (!containerRef.current) return;
+    const bars = containerRef.current.querySelectorAll('g');
+    let legend;
+    if (bars.length > 0) {
+      const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      group.setAttribute('class', 'c-chart__group');
+      group.setAttribute('transform', 'translate(0, 20)');
+      bars.forEach((bar, index) => {
+        if (index === 0) {
+          legend = bar;
+        } else {
+          group.appendChild(bar);
+        }
+      });
+      const svg = containerRef.current.querySelector('svg');
+      const height = svg.getBoundingClientRect().height;
+      const newHeight = height + 50; // Adjust the height to accommodate the legend
+      svg.setAttribute('height', newHeight);
+      svg.appendChild(legend).appendChild(group);
+    }
+  }
+  useEffect(() => {
+    wrapAllInGroup();
+   }, [data]);
+
   return (
-    <div className="c-chart__groupedColumn d-flex justify-content-start">
+    <div className="c-chart__groupedColumn d-flex justify-content-start" ref={containerRef}>
       <VictoryChart
         key={new Date().getTime()}
         theme={VictoryTheme.clean}
@@ -93,6 +128,7 @@ function GroupedColumn({
         minDomain={style.minDomain}
         maxDomain={style.maxDomain}
       >
+        <VictoryLegend orientation="horizontal" x={60} data={getLegendData(data)} />
         <VictoryGroup offset={50}>{getBars(data, style)}</VictoryGroup>
         <VictoryAxis dependentAxis tickFormat={style.tickFormat} />
         <VictoryAxis
@@ -107,7 +143,6 @@ function GroupedColumn({
           }
         />
       </VictoryChart>
-      <VictoryLegend x={0} y={100} data={getLegendData(data)} />
     </div>
   );
 }
