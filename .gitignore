@@ -48,7 +48,6 @@ next-env.d.ts
 # Docker copied stuff
 docker/senotype-editor/src
 
-
 # UI react-app
 src/pnpm-lock.yaml
 pnpm-lock.yaml
@@ -65,3 +64,6 @@ puck_perms.puckdata
 *.wal
 *.puckdata
 assets/
+
+# scripts output
+uniqueCombinedValues.json
