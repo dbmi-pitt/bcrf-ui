@@ -10,6 +10,7 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { ReactGridLayout, useContainerWidth } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
+import * as CookieConsent from 'vanilla-cookieconsent';
 
 const chartLayoutDefaults = {
   pie: {
@@ -99,6 +100,7 @@ export default function GridLayout({
   header,
 }) {
   const STORAGE_KEY = `grid-layout-${dataSource}`;
+  const cookiePreferences = CookieConsent.getUserPreferences();
   const { width, containerRef, mounted } = useContainerWidth({
     measureBeforeMount: true,
   });
@@ -160,10 +162,19 @@ export default function GridLayout({
   }, []);
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      setLayout(JSON.parse(saved));
+    if (!CookieConsent.validConsent()) {
+      loadedRef.current = true;
+      return;
     }
+
+    if (CookieConsent.acceptedCategory('functionality')) {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (saved) {
+        setLayout(JSON.parse(saved));
+      }
+    }
+
     loadedRef.current = true;
   }, [STORAGE_KEY]);
 
@@ -274,8 +285,11 @@ export default function GridLayout({
         return changed || existing;
       });
 
-      // Save modified layout to localstorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      // Save modified layout to localstorage NEED TO CHECK COOKIE CONSENT
+      if (CookieConsent.acceptedCategory('functionality')) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      }
+
       return updated;
     });
   };

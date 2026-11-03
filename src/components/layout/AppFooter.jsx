@@ -1,3 +1,5 @@
+'use client';
+import * as CookieConsent from 'vanilla-cookieconsent';
 import Image from 'next/image';
 
 function AppFooter() {
@@ -17,7 +19,7 @@ function AppFooter() {
                   width={159}
                   height={101}
                 />
-                <span className='c-footer__divider'></span>
+                <span className="c-footer__divider"></span>
                 <Image
                   src="/imgs/upitt-logo-white-text.png"
                   className="w-fixed c-footer__logo--Pitt"
@@ -36,9 +38,19 @@ function AppFooter() {
       </div>
       <div
         aria-label="Footer copyright"
-        className="c-footer__meta bg--blue--primary--dk text-center p-3"
+        className="c-footer__meta bg--blue--primary--dk text-center p-3 position-relative"
       >
         &copy; Copyright {year}, Breast Cancer Research Foundation
+        <a
+          className="position-absolute end-0 top-50 translate-middle-y me-3 text-white"
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            CookieConsent.showPreferences();
+          }}
+        >
+          Cookie Preferences
+        </a>
       </div>
     </footer>
   );

@@ -41,6 +41,7 @@
     "remark-gfm": "^4.0.1",
     "resend": "^6.26.0",
     "stylus": "^0.64.0",
+    "vanilla-cookieconsent": "3.2.1",
     "victory": "^37.3.6",
     "xac-loglevel": "github:x-atlas-consortia/xac-loglevel#1.0.3"
   },
