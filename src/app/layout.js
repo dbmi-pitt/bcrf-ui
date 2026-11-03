@@ -3,6 +3,8 @@ import { AntdRegistry } from '@ant-design/nextjs-registry';
 import MountedWrapper from '@/components/MountedWrapper';
 import { getCurrentUser } from '@/lib/auth/services';
 import ENVS, { getLogLevel } from '@/lib/envs';
+import 'vanilla-cookieconsent/dist/cookieconsent.css';
+import CookieConsentBanner from '@/components/CookieConsent';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './main.css';
@@ -28,6 +30,7 @@ export default async function RootLayout({ children }) {
             logLevel={getLogLevel()}
             user={currentUser}
           >
+            <CookieConsentBanner />
             {children}
           </MountedWrapper>
         </AntdRegistry>
