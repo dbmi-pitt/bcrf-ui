@@ -1,4 +1,4 @@
-const PUBLIC_PATHS = ['/', '/login', '/about', '/unauthorized'];
+const PUBLIC_PATHS = ['/', '/login', '/about', '/unauthorized', '/terms-and-conditions', '/privacy-policy'];
 
 /**
  * Returns whether a pathname requires authentication.

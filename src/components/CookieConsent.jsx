@@ -33,14 +33,14 @@ export default function CookieConsentBanner() {
         translations: {
           en: {
             consentModal: {
-              title: "Hello traveller, it's cookie time!",
+              title: 'We value your privacy',
               description:
-                'We use cookies to make this website work, to understand how it is used and to show you relevant ads.',
+                'We use cookies to improve your experience and analyze site traffic. By clicking "Accept all", you consent to our use of cookies.',
               acceptAllBtn: 'Accept all',
               acceptNecessaryBtn: 'Reject all',
               showPreferencesBtn: 'Manage preferences',
               footer:
-                '<a href="#link">Privacy Policy</a>\n<a href="#link">Terms and conditions</a>',
+                '<a href="/privacy-policy">Privacy Policy</a>\n<a href="/terms-and-conditions">Terms and conditions</a>',
             },
             preferencesModal: {
               title: 'Consent Preferences Center',
@@ -53,7 +53,7 @@ export default function CookieConsentBanner() {
                 {
                   title: 'Cookie Usage',
                   description:
-                    'We use cookies to make this website work and to improve your experience. You can choose which categories to allow below and change your choice at any time. For more details, read our <a href="#link" class="cc__link">Privacy Policy</a>.',
+                    'We use cookies to make this website work and to improve your experience. You can choose which categories to allow below and change your choice at any time. For more details, read our <a href="/privacy-policy" class="cc__link">Privacy Policy</a>.',
                 },
                 {
                   title:
@@ -77,7 +77,7 @@ export default function CookieConsentBanner() {
                 {
                   title: 'More information',
                   description:
-                    'If you have any questions about our cookie policy or your choices, please <a class="cc__link" href="#yourdomain.com">contact us</a>.',
+                    'If you have any questions about our cookie policy or your choices, please <a class="cc__link" href="mailto:BCRFGDH@pitt.edu">contact us</a>.',
                 },
               ],
             },
